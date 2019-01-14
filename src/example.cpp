@@ -1,9 +1,6 @@
-#include "example.h"
+#include <iostream>
 
-Dummy::Dummy() {
-  
-}
-
-bool Dummy::doSomething() {
-  return true;
+int function() {
+	std::cout << "Hello world!" << std::endl;
+	return 0;
 }
