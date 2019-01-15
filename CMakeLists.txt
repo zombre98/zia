@@ -44,6 +44,7 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/src
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/tests
+    ${PROJECT_SOURCE_DIR}/external/asio
     ${PROJECT_SOURCE_DIR}/external/googletest
     ${PROJECT_SOURCE_DIR}/external/googletest/include)
 
@@ -142,3 +143,8 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # Ask CMake to output a compile_commands.json file for use with things like Vim YCM.
 set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
+
+# ---------------------------------------------------------------------------------
+#                    Others Cmakelist.txt
+# ---------------------------------------------------------------------------------
+add_subdirectory(src/server)
