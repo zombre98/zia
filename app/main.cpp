@@ -1,6 +1,7 @@
 #include <iostream>
 
 #define ASIO_STANDALONE 1
+#include "Utils/Logger.hpp"
 #include "server/asio/AsioServer.hpp"
 #include "server/IClient.hpp"
 
@@ -10,11 +11,11 @@ int main() {
 
   serv.whenOnConnected([](nkpp::IClient &client) {
     client.whenOnRead([](nkpp::Buffer &){
-      std::cout << "Reading !" << std::endl;
+      logging::debug << LOG_TIME << "Reading !" << std::endl;
     });
   });
   serv.whenOnDisconnected([](nkpp::IClient &){
-    std::cout << "He is disconnected !" << std::endl;
+    logging::debug << LOG_TIME << "He is disconnected !" << std::endl;
   });
   serv.run();
   return 0;

@@ -46,7 +46,7 @@ private:
     });
 
     acceptor_.async_accept(newClient->socket(), [nc = std::move(newClient), this](asio::error_code) mutable {
-      logging::info << LOG_TIME << "New connection" << std::endl;
+      logging::debug << LOG_TIME << "New connection" << std::endl;
       clients_.push_back(std::move(nc));
       if (connectedCallback_)
         connectedCallback_(*clients_.back());
