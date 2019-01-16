@@ -8,7 +8,7 @@
 #include <fstream>
 #include <memory>
 #define LOG_DEBUG "[" << __FILE__ << ":" << __LINE__ << "] "
-#define LOG_TIME "[" << __TIME__ << ":" << __LINE__ << "] "
+#define LOG_TIME "[" << __DATE__ << ":" << __TIME__ << "] "
 
 namespace logging {
 	template<typename T>

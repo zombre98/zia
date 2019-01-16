@@ -17,6 +17,7 @@ set(SRCS
 
 include_directories(
         ${PROJECT_SOURCE_DIR}/asio
+        ${PROJECT_SOURCE_DIR}/src/
         ${PROJECT_SOURCE_DIR}/../../external/asio/include
 )
 
