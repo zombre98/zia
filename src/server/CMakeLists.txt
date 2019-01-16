@@ -10,8 +10,10 @@ set(SRCS
         asio/AsioClient.hpp
         asio/AsioServer.hpp
         buffer.hpp
-        main.cpp
+        ../Utils/Logger.hpp
+        ../../app/main.cpp
         )
+
 
 include_directories(
         ${PROJECT_SOURCE_DIR}/asio
