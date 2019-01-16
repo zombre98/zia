@@ -5,19 +5,18 @@ project(server)
 set(CMAKE_CXX_STANDARD 17)
 
 set(SRCS
-        IClient.hpp
-        IServer.hpp
-        asio/AsioClient.hpp
-        asio/AsioServer.hpp
-        buffer.hpp
-        ../Utils/Logger.hpp
-        ../../app/main.cpp
+        server/IClient.hpp
+        server/IServer.hpp
+        server/asio/AsioClient.hpp
+        server/asio/AsioServer.hpp
+        server/buffer.hpp
+        Utils/Logger.hpp
+        ../app/main.cpp
         )
 
 
 include_directories(
         ${PROJECT_SOURCE_DIR}/asio
-        ${PROJECT_SOURCE_DIR}/src/
         ${PROJECT_SOURCE_DIR}/../../external/asio/include
 )
 

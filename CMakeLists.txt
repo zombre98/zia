@@ -147,4 +147,4 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
 # ---------------------------------------------------------------------------------
 #                    Others Cmakelist.txt
 # ---------------------------------------------------------------------------------
-add_subdirectory(src/server)
+add_subdirectory(src)
