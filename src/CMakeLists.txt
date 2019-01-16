@@ -4,16 +4,8 @@ project(server)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(SRCS
-        server/IClient.hpp
-        server/IServer.hpp
-        server/asio/AsioClient.hpp
-        server/asio/AsioServer.hpp
-        server/buffer.hpp
-        Utils/Logger.hpp
-        ../app/main.cpp
-        )
 
+include(CMakeSources.cmake)
 
 include_directories(
         ${PROJECT_SOURCE_DIR}/asio
