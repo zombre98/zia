@@ -20,15 +20,23 @@ private:
   }
 
 public:
+  template<typename T>
+  void setData(T *ptr, size_t size) {
+    buffer_.resize(size);
+    ::memcpy(buffer_.data(), ptr, size);
+  }
+
+public:
   void clear() {
+    buffer_.resize(BUFFER_SIZE);
     std::fill(buffer_.begin(), buffer_.end(), 0);
   }
 
-  const auto &getBufferContainer() const {
+  const bufferContainer &getBufferContainer() const {
     return buffer_;
   }
 
-  auto &getBufferContainer() {
+  bufferContainer &getBufferContainer() {
     return buffer_;
   }
 
