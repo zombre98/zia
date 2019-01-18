@@ -13,13 +13,8 @@ int main() {
     client.whenOnRead([&client](nkpp::Buffer &b){
       logging::debug << LOG_TIME << b.read<std::string>() << std::endl;
         nkpp::Buffer sendBuffer;
-        sendBuffer.write<std::string>("GET / HTTP/1.1 200\r\n");
-        sendBuffer.write<std::string>("Host: 0.0.0.0:4242\r\n");
-        sendBuffer.write<std::string>("Server: Apache/1.3.27\r\n");
-        sendBuffer.write<std::string>("Content-Type: text/html\r\n");
-        sendBuffer.write<std::string>("Connection: keep-alive\r\n");
-        sendBuffer.write<std::string>("Age: 3387\r\n");
-        sendBuffer.write<std::string>("Allow: GET\r\n\r\n");
+        sendBuffer.write<std::string>("HTTP/1.1 200\r\n");
+        sendBuffer.write<std::string>("Host: 0.0.0.0:4242\r\n\r\n");
         sendBuffer.write<std::string>("<html><h1>Coucou</h1></html>");
         client.write(sendBuffer);
     });
