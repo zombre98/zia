@@ -1,17 +1,16 @@
 #pragma once
 
 #include <vector>
-
 #include <iostream>
 
 namespace nkpp {
 
 class Buffer {
   using bufferContainer = std::vector<uint8_t>;
-  static constexpr int32_t BUFFER_SIZE = 512;
+  static constexpr int32_t BUFFER_SIZE = 1024;
 public:
   Buffer() {
-    buffer_.resize(BUFFER_SIZE);
+   buffer_.resize(BUFFER_SIZE);
   }
 
 private:
@@ -60,20 +59,20 @@ public:
   //std::string
   template <typename T, typename = typename std::enable_if_t<std::is_same<std::string, T>::value, T>>
   void write(std::string data) {
-    write<size_t>(data.size());
+    // write<size_t>(data.size());
     buffer_.insert(buffer_.end(), data.c_str(), data.c_str() + data.size());
+    for (auto &it : buffer_)
+	    logging::debug << static_cast<char>(it);
+    std::cout << std::endl;
   }
 
   template <typename T, typename = typename std::enable_if_t<std::is_same<std::string, T>::value, T>>
   std::string read() {
     std::string data;
-    auto length = read<size_t>();
 
-    data.resize(length);
-    if (buffer_.size() < length)
-      throw std::runtime_error("Bad Read Size");
-    ::memcpy(&data[0], &buffer_[0], length);
-    eraseFront(length);
+    data.resize(buffer_.size());
+    ::memcpy(&data[0], &buffer_[0], buffer_.size());
+    eraseFront(buffer_.size());
     return data;
   }
 

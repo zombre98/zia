@@ -17,8 +17,9 @@ public:
   {}
 public:
   void write(const Buffer &buffer) override {
+  	logging::debug << LOG_DEBUG << buffer.getBufferContainer().size() << std::endl;
     asio::async_write(socket_, asio::buffer(buffer.getBufferContainer()), [](asio::error_code, std::size_t){
-      std::cout << "writed some byted" << std::endl;
+      logging::debug << LOG_DEBUG << "writed some byted" << std::endl;
     });
   }
 
@@ -34,7 +35,7 @@ public:
 #pragma ide diagnostic ignored "InfiniteRecursion"
   void read() {
     socket_.cancel();
-    std::cout << "Read Some" << std::endl;
+    logging::debug << LOG_DEBUG << "Read Some" << std::endl;
     socket_.async_read_some(asio::buffer(buffer_.getBufferContainer()), [this](asio::error_code error, std::size_t) {
       if (!onReadCall(error))
         return;
