@@ -27,8 +27,8 @@ public:
 
 public:
   void clear() {
+    buffer_.clear();
     buffer_.resize(BUFFER_SIZE);
-    std::fill(buffer_.begin(), buffer_.end(), 0);
   }
 
   const bufferContainer &getBufferContainer() const {
