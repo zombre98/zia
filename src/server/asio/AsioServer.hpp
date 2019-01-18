@@ -22,6 +22,10 @@ public:
     acceptor_.bind(asio::ip::tcp::endpoint(asio::ip::address::from_string(ip), port));
   }
 
+  std::string getIpAddress() {
+      return acceptor_.local_endpoint().address().to_string();
+  }
+
   void whenOnConnected(onConnected &&callback) override {
     connectedCallback_ = std::move(callback);
   }

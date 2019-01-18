@@ -60,23 +60,28 @@ public:
     return data;
   }
 
+  size_t getWroteSize() const noexcept {
+    return cursor_;
+  }
+
+  void serCursor(size_t newSize) noexcept {
+    cursor_ = newSize;
+  }
+
   //std::string
   template <typename T, typename = typename std::enable_if_t<std::is_same<std::string, T>::value, T>>
   void write(std::string data) {
     // write<size_t>(data.size());
     buffer_.insert(buffer_.begin() + cursor_, data.c_str(), data.c_str() + data.size());
     cursor_ += data.size();
-    for (auto &it : buffer_)
-	    logging::debug << static_cast<char>(it);
-    std::cout << std::endl;
   }
 
   template <typename T, typename = typename std::enable_if_t<std::is_same<std::string, T>::value, T>>
   std::string read() {
     std::string data;
 
-    data.resize(buffer_.size());
-    ::memcpy(&data[0], &buffer_[0], buffer_.size());
+    data.resize(cursor_);
+    ::memcpy(&data[0], &buffer_[0], cursor_);
     eraseFront(buffer_.size());
     return data;
   }

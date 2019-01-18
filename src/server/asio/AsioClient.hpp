@@ -17,9 +17,8 @@ public:
   {}
 public:
   void write(const Buffer &buffer) override {
-  	logging::debug << LOG_DEBUG << buffer.getBufferContainer().size() << std::endl;
-    asio::async_write(socket_, asio::buffer(buffer.getBufferContainer()), [](asio::error_code, std::size_t){
-      logging::debug << LOG_DEBUG << "writed some byted" << std::endl;
+    asio::async_write(socket_, asio::buffer(buffer.getBufferContainer(), buffer.getWroteSize()), [](asio::error_code, std::size_t size){
+        logging::debug << "Send data" << std::endl;
     });
   }
 
@@ -36,8 +35,8 @@ public:
   void read() {
     socket_.cancel();
     logging::debug << LOG_DEBUG << "Read Some" << std::endl;
-    socket_.async_read_some(asio::buffer(buffer_.getBufferContainer()), [this](asio::error_code error, std::size_t) {
-      if (!onReadCall(error))
+    socket_.async_read_some(asio::buffer(buffer_.getBufferContainer()), [this](asio::error_code error, std::size_t bTranfered) {
+      if (!onReadCall(error, bTranfered))
         return;
       if (repeatRead_)
         read();
@@ -50,13 +49,13 @@ public:
   void read(const std::string &delim) {
     socket_.cancel();
     std::cout << "Reading Until" << std::endl;
-    asio::async_read_until(socket_, streamBuffer_, delim, [delim, this](asio::error_code error, std::size_t) {
+    asio::async_read_until(socket_, streamBuffer_, delim, [delim, this](asio::error_code error, std::size_t bTranfered) {
       std::istream is(&streamBuffer_);
       std::string streamData = getUntilDelim(is, delim);
 
       std::cout << "RECEIVED:" << streamData << std::endl;
       buffer_.setData(streamData.data(), streamData.size());
-      if (!onReadCall(error))
+      if (!onReadCall(error, bTranfered))
         return;
       if (repeatRead_)
         read(delim);
@@ -69,7 +68,8 @@ public:
   asio::ip::tcp::socket &socket() { return socket_; }
 
 private:
-  bool onReadCall(asio::error_code error) {
+  bool onReadCall(asio::error_code error, std::size_t bytesTransfered) {
+    buffer_.serCursor(bytesTransfered);
     if (error) {
       if (onDisconnectedCallback_)
         onDisconnectedCallback_(*this);
