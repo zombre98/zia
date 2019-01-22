@@ -4,7 +4,6 @@ project(server)
 
 set(CMAKE_CXX_STANDARD 17)
 set(TARGET_NAME ${PROJECT_NAME})
-
 include(CMakeSources.cmake)
 
 include_directories(
