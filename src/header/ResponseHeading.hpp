@@ -29,8 +29,10 @@ namespace header {
 				headers[key] += "," + value;
 			}
 
-			std::string getHeader(std::string const &key) const {
-				return headers.at(key);
+			std::optional<std::string> getHeader(std::string const &key) const {
+				if (headers.count(key))
+					return std::optional<std::string>{headers.at(key)};
+				return std::nullopt;
 			}
 
 			operator std::string() const {
@@ -43,7 +45,15 @@ namespace header {
 				return response;
 			}
 
-		private:
+			std::string &operator[](std::string const &key) {
+				return headers[key];
+			}
+
+		std::string const &operator[](std::string const &key) const{
+			return headers.at(key);
+		}
+
+	private:
 				std::unordered_map<std::string, std::string> headers;
 				http::StatusCode statusCode;
 		};
