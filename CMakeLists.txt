@@ -51,7 +51,7 @@ include_directories(
 # Make variables referring to all the sources and test files.
 file(GLOB SOURCES "src/*.cpp")
 file(GLOB TESTFILES "tests/*.cpp")
-set(TEST_MAIN unit_tests.x)  # Default name for test executable (change if you wish).
+set(TEST_MAIN unit_tests)  # Default name for test executable (change if you wish).
 
 
 
