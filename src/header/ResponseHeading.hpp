@@ -16,8 +16,7 @@ namespace header {
 	class ResponseHeading {
 		public:
 			ResponseHeading() = delete;
-			ResponseHeading(http::StatusCode code) : statusCode{code} {
-			};
+			explicit ResponseHeading(http::StatusCode code) : statusCode{code} {};
 
 			http::StatusCode getStatusCode() const noexcept { return statusCode; }
 			void setStatusCode(http::StatusCode const &code) noexcept { statusCode = code; }
@@ -27,7 +26,7 @@ namespace header {
 					headers.emplace(key, value);
 					return;
 				}
-				headers[key] += ";" + value;
+				headers[key] += "," + value;
 			}
 
 			std::string getHeader(std::string const &key) const {

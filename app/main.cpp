@@ -7,18 +7,17 @@
 #include "header/ResponseHeading.hpp"
 
 int main() {
-	header::ResponseHeading responseHeading(http::StatusCode::OK);
-	responseHeading.setHeader("Value", "1");
-
-/*  nkpp::AsioServer serv("0.0.0.0", 4242);
+	nkpp::AsioServer serv("0.0.0.0", 4242);
 
   serv.whenOnConnected([](nkpp::IClient &client) {
     client.whenOnRead([&client](nkpp::Buffer &b){
       logging::debug << LOG_TIME << b.read<std::string>() << std::endl;
-      nkpp::Buffer sendBuffer;
-      sendBuffer.write<std::string>("HTTP/1.1 200\r\n");
-      sendBuffer.write<std::string>("Content-Length: 28\r\n");
-      sendBuffer.write<std::string>("Host: 0.0.0.0:4242\r\n\r\n");
+			header::ResponseHeading responseHeading(http::StatusCode::OK);
+			responseHeading.setHeader("Content-Length", "28");
+			responseHeading.setHeader("Host", "0.0.0.0:4242");
+			responseHeading.setHeader("NewValue", "Coucou");
+			nkpp::Buffer sendBuffer;
+			sendBuffer.write<std::string>(responseHeading);
       sendBuffer.write<std::string>("<html><h1>Coucou</h1></html>\r\n\r\n");
       client.write(sendBuffer);
     });
@@ -26,5 +25,5 @@ int main() {
   serv.whenOnDisconnected([](nkpp::IClient &client){
   });
   serv.run();
-  return 0;*/
+  return 0;
 }
