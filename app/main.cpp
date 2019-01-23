@@ -1,4 +1,5 @@
 #include <iostream>
+#include <server/ModulesManager.hpp>
 
 #define ASIO_STANDALONE 1
 #include "Utils/Logger.hpp"
@@ -7,7 +8,9 @@
 
 int main() {
   nkpp::AsioServer serv("0.0.0.0", 4242);
+  //api::ModulesManager modManager;
 
+  //modManager.loadModules("modules/");
   serv.whenOnConnected([](nkpp::IClient &client) {
     client.whenOnRead([&client](nkpp::Buffer &b){
       logging::debug << LOG_TIME << b.read<std::string>() << std::endl;

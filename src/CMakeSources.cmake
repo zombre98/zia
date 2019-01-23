@@ -4,6 +4,8 @@ set(SERVER
         server/asio/AsioClient.hpp
         server/asio/AsioServer.hpp
         server/buffer.hpp
+        server/ModulesManager.hpp
+        server/DlWrapper.hpp
         )
 
 set(UTILS
