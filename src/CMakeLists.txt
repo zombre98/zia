@@ -11,7 +11,7 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/../../external/asio/include
 )
 
-add_executable(${PROJECT_NAME} ${SRCS})
+add_executable(${PROJECT_NAME} ${SRCS} server/AModulesManager.hpp)
 
 #target_include_directories(${PROJECT_NAME} PRIVATE include)
 #target_include_directories(${PROJECT_NAME} PRIVATE include/Audio)
