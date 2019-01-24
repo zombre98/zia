@@ -69,7 +69,7 @@ public:
 
 private:
   bool onReadCall(asio::error_code error, std::size_t bytesTransfered) {
-    buffer_.serCursor(bytesTransfered);
+		buffer_.setCursor(bytesTransfered);
     if (error) {
       if (onDisconnectedCallback_)
         onDisconnectedCallback_(*this);

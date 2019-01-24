@@ -64,7 +64,7 @@ public:
     return cursor_;
   }
 
-  void serCursor(size_t newSize) noexcept {
+  void setCursor(size_t newSize) noexcept {
     cursor_ = newSize;
   }
 
