@@ -15,6 +15,10 @@ public:
 	ModulesManager() = default;
 
 public:
+	/**
+	 * Load all the modules present in a directory
+	 * @param directoryPath the path to the directory containing the modules
+	 */
 	void loadModules(const std::string &directoryPath) override {
 		for (const auto &entry : std::filesystem::directory_iterator(directoryPath)) {
 			if (entry.is_regular_file()) {
@@ -23,6 +27,10 @@ public:
 		}
 	}
 
+	/**
+	 * Load one module
+	 * @param filePath the path to the module
+	 */
 	void loadOneModule(const std::string &filePath) override {
 		zia::DlWrapper handler;
 

@@ -8,7 +8,7 @@
 #include <chrono>
 #include <thread>
 
-namespace nkpp::Utils {
+namespace zia::Utils {
 
 class FileWatcher {
   using chronoDelay = std::chrono::duration<int, std::milli>;
@@ -18,12 +18,21 @@ public:
   };
 
 public:
+	/**
+	 * Construct the filewatcher to lookup a directory
+	 * @param path THe path to the directory to look
+	 * @param delay The delay the Filewatcher needs to update the status of each files present in a directory
+	 */
   FileWatcher(std::string path, chronoDelay delay) : path_(std::move(path)), delay_(delay), running_(true) {
     for (auto &file : std::filesystem::recursive_directory_iterator(path_))
       filesPaths_[file.path()] = std::filesystem::last_write_time(file);
   }
 
 public:
+	/**
+	 * Start watching a directory
+	 * @param callback The call when a files has been updated, with the path of the file as first arg and the state as second
+	 */
   void watch(const std::function<void(const std::string &, FileWatcher::State)> &&callback) {
     while (running_) {
       std::this_thread::sleep_for(delay_);
@@ -50,6 +59,9 @@ public:
     }
   }
 
+  /**
+   * Stop the watch
+   */
   void stop() {
     running_ = false;
   }
