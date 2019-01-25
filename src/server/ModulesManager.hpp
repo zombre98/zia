@@ -28,9 +28,17 @@ public:
 
 		try {
 			handler.open(filePath);
-			auto fnc = handler.getSymbol<void(*)(ModulesManager &)>("registersHook");
+			auto fnc = handler.getSymbol<void(*)(StageManager &)>("registersHook");
 
-			fnc(*this);
+			std::cout << "Le Path " << filePath << std::endl;
+			fnc(getStageManager());
+			const api::Stage::hookMap &end = getStageManager().requests().endsHooks();
+			auto it = end.find("testmodule");
+			if (it != end.end()) {
+				std::cout << "Module well added" << std::endl;
+				api::Context lol = {"lol", "desbarres"};
+				it->second(lol);
+			}
 		} catch (const std::exception &e) {
 			std::cout << "Dl Error: " << e.what() << std::endl;
 		}
