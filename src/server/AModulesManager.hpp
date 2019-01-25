@@ -18,6 +18,7 @@ enum class HookTime {
 };
 
 class Stage {
+public:
 	using hookModuleCallback = std::function<void(Context &)>;
 	using hookMap = std::map<std::string, hookModuleCallback>;
 public:
@@ -41,11 +42,7 @@ private:
 	hookMap last_;
 };
 
-class AModulesManager {
-public:
-	virtual void loadModules(const std::string &directoryPath) = 0;
-	virtual void loadOneModule(const std::string &filePath) = 0;
-
+class StageManager {
 public:
 	Stage &requests() { return request_; }
 	Stage &configs() { return config_; }
@@ -53,6 +50,17 @@ public:
 private:
 	Stage request_;
 	Stage config_;
+};
+
+class AModulesManager {
+public:
+	virtual void loadModules(const std::string &directoryPath) = 0;
+	virtual void loadOneModule(const std::string &filePath) = 0;
+
+	StageManager &getStageManager() { return stageManager_; }
+
+private:
+	StageManager stageManager_;
 };
 
 }
