@@ -6,6 +6,7 @@ set(SERVER
         server/buffer.hpp
         server/ModulesManager.hpp
         server/DlWrapper.hpp
+        server/AModulesManager.hpp
         )
 
 set(HEADER
