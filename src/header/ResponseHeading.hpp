@@ -28,7 +28,7 @@ namespace header {
 			 * Constructor
 			 * @param code HTTP status do you need for your header
 			 */
-			explicit ResponseHeading(http::StatusCode code) : statusCode{code} {};
+			explicit ResponseHeading(http::StatusCode code) : statusCode{code} {}
 
 			/**
 			 * Return the HTTP status code
