@@ -6,6 +6,9 @@
 
 namespace http {
 
+	/**
+	 *  The Method  token indicates the method to be performed on the resource identified by the Request-URI
+	 */
 	enum class Mehod {
 		GET,
 		HEAD,
