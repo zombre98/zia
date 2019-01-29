@@ -7,7 +7,7 @@
 namespace http {
 
 	/**
-	 *  The Method  token indicates the method to be performed on the resource identified by the Request-URI
+	 * @brief The Method  token indicates the method to be performed on the resource identified by the Request-URI
 	 */
 	enum class Mehod {
 		GET,
@@ -22,7 +22,7 @@ namespace http {
 	};
 
 	/**
-	 * Enum for HTTP status code
+	 * @brief Enum for HTTP status code
 	 * 1xx: Informational - Request received, continuing process
    * 2xx: Success - The action was successfully received, understood, and accepted
    * 3xx: Redirection - Further action must be taken in order to complete the request
