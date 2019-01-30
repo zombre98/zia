@@ -8,25 +8,43 @@ namespace api {
 /**
  * The context that is send to each hook callback when a stage is triggered
  */
-struct Context {
-	std::string header;
+
+class IHeading {
+public:
+	virtual ~IHeading() = default;
+
+	virtual std::string &getURL() const = 0;
+
+	virtual uint16_t &getStatusCode() const = 0;
+
+	virtual std::string &getHeader(const std::string &headerName) const = 0;
+
+	virtual std::string &getStatusMessage() const = 0;
+
+	virtual void setURL(const std::string &url) = 0;
+
+	virtual void setStatusCode(const uint16_t &code) = 0;
+
+	virtual void setHeader(const std::string &key, const std::string &value) = 0;
+
+	virtual void setStatusMessage(const std::string &message) = 0;
+};
+
+struct HTTPMessage {
+	std::unique_ptr<IHeading> header;
 	std::string body;
 };
 
-
-/**
- * The differents Stage Time
- */
-enum class StageTime {
-	FIRST,
-	MIDDLE,
-	LAST
+struct Context {
+	HTTPMessage request;
+	HTTPMessage response;
+	int socketFd;
 };
 
 class Stage {
 public:
 	using hookModuleCallback = std::function<void(Context &)>;
-	using hookMap = std::map<std::string, hookModuleCallback>;
+	using hookMap = std::map<std::string, hookModuleCallback>; // Alphabetical Ordered
 public:
 	/**
 	 * Hook to the debut of the stage
@@ -78,19 +96,26 @@ private:
 class StageManager {
 public:
 	/**
-	 * Get the the whole Request Stage
-	 * @return
+	 * Get the whole Request Stage
+	 * @return Request Stage
 	 */
 	Stage &requests() { return request_; }
 	/**
-	 * Get the the whole Configs Stage
-	 * @return
+	 * Get the whole Configs Stage
+	 * @return Config Stage
 	 */
 	Stage &configs() { return config_; }
+
+	/**
+	 * Get the whole chunk module
+	 * @return Chunks Stage
+	 */
+	Stage &chunks() { return chunks_; }
 
 private:
 	Stage request_;
 	Stage config_;
+	Stage chunks_;
 };
 
 class AModulesManager {
