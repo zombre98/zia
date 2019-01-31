@@ -11,6 +11,10 @@
 
 namespace api {
 
+/**
+ * @enum CodeStatus
+ * Enum returned by each Hook Callback Function set in a Stage
+ */
 enum class CodeStatus {
 	OK,
 	DECLINED,
@@ -26,6 +30,14 @@ struct Context {
 	int socketFd;
 };
 
+/**
+ * @class Stage
+ * Define function that will be called at a certain Moment.
+ * The hook will be at the First, middle and end of this Moment.
+ * Firts is Before the Moment
+ * Middle is during the Moment
+ * End is when the Moment ends
+ */
 class Stage {
 public:
 	using hookModuleCallback = std::function<CodeStatus(Context &)>;
@@ -78,6 +90,10 @@ private:
 	hookList last_;
 };
 
+/**
+ * @class StageManager
+ * Define the differents Stage and manage them
+ */
 class StageManager {
 public:
 

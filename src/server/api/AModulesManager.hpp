@@ -1,3 +1,7 @@
+//
+// Created by bilel fourati on 2019-01-31.
+//
+
 #pragma once
 
 #include <string>
@@ -5,8 +9,16 @@
 
 namespace api {
 
+/**
+ * @class AModulesManager
+ * Abstract class to implement for loading the differents module
+ */
 class AModulesManager {
 public:
+	/**
+	 * The destructor
+	 */
+	virtual ~AModulesManager() = default;
 	/**
 	 * Load all the modules present in a directory
 	 * @param directoryPath the path to the directory containing the modules
