@@ -43,11 +43,11 @@ public:
 			const auto &end = getStageManager().request().endsHooks();
 			auto it = std::find_if(end.begin(), end.end(), [](auto const &pair) { return pair.first == "testmodule"; });
 			if (it != end.end()) {
-//				dems::header::Heading heading;
+//				dems::headers::Heading heading;
 				std::cout << "Module well added" << std::endl;
-	//			dems::Context lol{{dems::header::Request{"HTTP/1.1", "200", ""}, std::make_unique<dems::header::Heading>(), "desbarres"},
-			//								{dems::header::Response{"HTTP/1.1", "200", ""},std::make_unique<dems::header::Heading>(), "desbarres"}, 0};
-		//		std::cout << std::get<dems::header::Request>(lol.response.variant).path << std::endl;
+	//			dems::Context lol{{dems::headers::Request{"HTTP/1.1", "200", ""}, std::make_unique<dems::headers::Heading>(), "desbarres"},
+			//								{dems::headers::Response{"HTTP/1.1", "200", ""},std::make_unique<dems::headers::Heading>(), "desbarres"}, 0};
+		//		std::cout << std::get<dems::headers::Request>(lol.response.variant).path << std::endl;
 				//it->second(lol);
 			}
 		} catch (const std::exception &e) {

@@ -89,7 +89,7 @@ As you see the function takes a Context (see **Context**) and return a Status co
  The **Context** is defined as follows :
 
  ```cpp
-namespace header {
+namespace headers {
 
     struct Request {
         std::string method;
@@ -105,14 +105,14 @@ namespace header {
      
     struct HTTPMessage {
         std::variant<Request, Response> firstLine;
-        std::unique_ptr<IHeading> header;
+        std::unique_ptr<IHeaders> headers;
         std::string body;
     };
 }
 
 struct Context {
-    header::HTTPMessage request;
-    header::HTTPMessage response;
+    headers::HTTPMessage request;
+    headers::HTTPMessage response;
     int socketFd;
 };
  ```
@@ -121,8 +121,8 @@ struct Context {
 
 ```cpp
 struct Context {
- 	header::HTTPMessage request;
- 	header::HTTPMessage response;
+ 	headers::HTTPMessage request;
+ 	headers::HTTPMessage response;
  	int socketFd;
  };
 ```
@@ -136,7 +136,7 @@ We give you the field `socketFd` if you want to read or write data depending on 
 ```cpp
 struct HTTPMessage {
 	std::variant<Request, Response> firstLine;
-	std::unique_ptr<IHeading> header;
+	std::unique_ptr<IHeaders> headers;
 	std::string body;
 };
 ```
@@ -149,21 +149,21 @@ To use a `std::variant` here is an example :
 (an std::variant is like an union in C, but it is type-safe)
 
 ```cpp
-dems::Context context{{dems::header::Request{"GET", "/path/file", "HTTP/1.1"}, std::make_unique<dems::header::Heading>(), ""},
-                     {dems::header::Response{"HTTP/1.1", "200", "OK"},std::make_unique<dems::header::Heading>(), ""}, 0};
+dems::Context context{{dems::headers::Request{"GET", "/path/file", "HTTP/1.1"}, std::make_unique<dems::headers::Heading>(), ""},
+                     {dems::headers::Response{"HTTP/1.1", "200", "OK"},std::make_unique<dems::headers::Heading>(), ""}, 0};
 
 
-std::cout << std::get<dems::header::Request>(context.request.firstLine).path << std::endl;
+std::cout << std::get<dems::headers::Request>(context.request.firstLine).path << std::endl;
 ```
 On the fist line we show you how to create a `dems::Context`<br/>
 On the last line we take the path from the variant Request by using `std::get<T>`, `T` being the type you want (in this case, it is either `Request` or `Response`).
 
-The `header` field contains a definition of Interface `IHeading`
+The `headers` field contains a definition of Interface `IHeaders`
 
 ```
-class IHeading {
+class IHeaders {
 public:
-	virtual ~IHeading() = default;
+	virtual ~IHeaders() = default;
 
 	virtual std::string &getHeader(const std::string &headerName) const = 0;
 
@@ -171,8 +171,8 @@ public:
 };
 ```
 
-All class who inherit from `IHeading` must provide its own container to store
-the Header, a header is composed with a name and a value:
+All class who inherit from `IHeaders` must provide its own container to store
+the Header, a headers is composed with a name and a value:
 
 * Name: accept
 * Value: application/json<br/>

@@ -13,12 +13,12 @@ namespace dems { namespace header {
  * @brief Interface for http header
  * This class is an interface that you must implement to access it via the Context
  */
-class IHeading {
+class IHeaders {
 public:
 	/**
 	 * The Destructor
 	 */
-	virtual ~IHeading() = default;
+	virtual ~IHeaders() = default;
 
 	/**
 	 * Give you the value corresponding to the Header Name
@@ -97,7 +97,7 @@ struct HTTPMessage {
 	/**
 	 * A pointer to a Heading Interface which contains all the informations about the HTTP header
 	 */
-	std::unique_ptr<IHeading> header;
+	std::unique_ptr<IHeaders> headers;
 	/**
 	 * The Request or Response Body
 	 */
