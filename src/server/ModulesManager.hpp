@@ -45,9 +45,9 @@ public:
 			if (it != end.end()) {
 				api::header::Heading heading;
 				std::cout << "Module well added" << std::endl;
-				api::Context lol{{api::header::request{"HTTP/1.1", "200", ""}, std::make_unique<api::header::Heading>(), "desbarres"},
-											{api::header::response{"HTTP/1.1", "200", ""},std::make_unique<api::header::Heading>(), "desbarres"}, 0};
-				std::cout << std::get<api::header::request>(lol.response.variant).path << std::endl;
+				api::Context lol{{api::header::Request{"HTTP/1.1", "200", ""}, std::make_unique<api::header::Heading>(), "desbarres"},
+											{api::header::Response{"HTTP/1.1", "200", ""},std::make_unique<api::header::Heading>(), "desbarres"}, 0};
+				std::cout << std::get<api::header::Request>(lol.response.variant).path << std::endl;
 				it->second(lol);
 			}
 		} catch (const std::exception &e) {
@@ -61,7 +61,6 @@ public:
 
 /*
  * TODO:
- *  - Split files
  *  - Doc
  *  - Big Readme
  *  - testing

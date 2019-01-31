@@ -32,7 +32,7 @@ public:
 	using hookList = std::list<std::pair<std::string, hookModuleCallback>>;
 public:
 	/**
-	 * Hook to the debut of the stage
+	 * Hook to the start of the stage
 	 * @param moduleName The name of the module
 	 * @param callback The callback called when a stage Time is triggered
 	 */
@@ -58,17 +58,17 @@ public:
 
 	/**
 	 * Return the modules hooked to the debut of the stage
-	 * @return
+	 * @return std::list of the modules hooked to the first
 	 */
-	const hookList &debutsHooks() { return first_; }
+	const hookList &firstsHooks() { return first_; }
 	/**
 	 * Return the modules hooked to the middle of the stage
-	 * @return
+	 * @return std::list of the modules hooked to the middles
 	 */
 	const hookList &middlesHooks() { return middle_; }
 	/**
 	 * Return the modules hooked to the end of the stage
-	 * @return
+	 * @return std::list of the modules hooked to the ends
 	 */
 	const hookList &endsHooks() { return last_; }
 

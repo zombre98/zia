@@ -6,52 +6,115 @@
 
 #include <variant>
 
-namespace api {
+namespace api { namespace header {
 
-namespace header {
-
+/**
+ * @class IHeading
+ * @brief Interface for http header
+ * This class is an interface that you must implement to access it via the Context
+ */
 class IHeading {
 public:
+	/**
+	 * The Destructor
+	 */
 	virtual ~IHeading() = default;
 
-	/*virtual std::string &getHeader(const std::string &headerName) const = 0;
+	/**
+	 * Give you the value corresponding to the Header Name
+	 * For example: ( accept: application/json ) := getHeader("accept") => return "application/json"
+	 * @param headerName The header name
+	 * @return The value corresponding to the header name
+	 */
+	virtual std::string &getHeader(const std::string &headerName) const = 0;
 
+	/**
+	 * Give the message status
+	 * @return The message status
+	 */
 	virtual std::string &getStatusMessage() const = 0;
 
-	virtual void setHeader(const std::string &key, const std::string &value) = 0;
 
-	virtual void setStatusMessage(const std::string &message) = 0;*/
+	/**
+	 * Set the value corresponding to the headerName
+	 * @param headerName The header name (ex: accept)
+	 * @param value The value corresponding to the header name (ex: application/json)
+	 */
+	virtual void setHeader(const std::string &headerName, const std::string &value) = 0;
+
+	/**
+	 * Set the message status
+	 * @param message the status message to set
+	 */
+	virtual void setStatusMessage(const std::string &message) = 0;
 };
 
-
-class Heading : public IHeading {
-public:
-	~Heading() = default;
-
-	Heading() = default;
-
-public:
-	std::string str{"Content-Length: 28\r\n\r\n"};
-};
-
-struct request {
+/**
+ * @struct Request
+ * @brief Contain the first line of the http Header for the request:
+ * GET /pub/WWW/TheProject.html HTTP/1.1 (See RFC for more details)
+ */
+struct Request {
+	/**
+	 * a public variable
+	 * Contain the method (GET / POST / PUT / DELETE ...)
+	 */
 	std::string method;
+	/**
+	 * a public variable
+	 * Contain the path ( /pub/WWW/TheProject.html )
+	 */
 	std::string path;
+	/**
+	 * a public variable
+	 * Contain the http version ( HTTP/1.1 )
+	 */
 	std::string httpVersion;
 };
 
-struct response {
+/**
+ * @struct Response
+ * @brief Contain the first line of the http Header for the response:
+ * HTTP/1.1 200 OK (See RFC for more details)
+ */
+struct Response {
+	/**
+	 * a public variable
+	 * Contain the http version ( HTTP/1.1 )
+	 */
 	std::string httpVersion;
+	/**
+	 * a public variable
+	 * Contain the status code (200, 404...)
+	 */
 	std::string statusCode;
+	/**
+	 * a public variable
+	 * (optional) The message of the response (bad request, OK ...)
+	 */
 	std::string message;
 };
 
+/**
+ * @struct HTTPMessage
+ * @brief Describe a response or a request header
+ */
 struct HTTPMessage {
-	std::variant<request, response> variant;
+	/**
+	 * The first line of a HTTP Header, it depends on either a request or a response
+	 * For request the variant will be used as a Request Type
+	 * For response the variant will be used as a Reponse Type
+	 * (Technical details: https://en.cppreference.com/w/cpp/utility/variant)
+	 */
+	std::variant<Request, Response> firstLine;
+	/**
+	 * A pointer to a Heading Interface which contains all the informations about the HTTP header
+	 */
 	std::unique_ptr<IHeading> header;
+	/**
+	 * The Request or Response Body
+	 */
 	std::string body;
 };
 
-}
-
-}
+}}
