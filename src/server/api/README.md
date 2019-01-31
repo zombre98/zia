@@ -86,7 +86,7 @@ As you see the function takes a Context (see **Context**) and return a Status co
 
  When a Stage is triggered it will call the different hooks and will give them a Context.
 
- The **Context** is defined:
+ The **Context** is defined as follows :
 
  ```cpp
 namespace header {
