@@ -30,7 +30,7 @@ You should give them your StageManager. She will use the StageManager to hook* h
 For that you will use a `registersHook` to hook your functions.
 
 For example, in pseudo-code, if you call your **StageManager** `manager` : <br/>
-`manager.stage.moment("functionName", function)`
+`manager.stage.moment("moduleName", module)`
 
 \* **A hook** is a function that will be called each time that a Stage it's triggered in one of three differents Stage 
 
@@ -65,6 +65,22 @@ call to the Stage and to the differents "Moments" provided:
 Request triggered =>
 Call the "request" Stage => 
 call the functions hooked by the modules =>
-First hooks Called =>
-Middle Hooks Called =>
-Last Hooks Called.
+Firsts hooks Called =>
+Middles Hooks Called =>
+Lasts Hooks Called.
+
+For example if you want to Hook a module Function to the beginning of the stage `request` you will have to do :
+
+`manager.requests().hookToFirst("moduleName", std::function<CodeStatus(Context &)>)`
+
+As you see the function take a Context that will explain later and return Status code defined in enum : 
+ ```
+ enum class CodeStatus {
+ 	OK, // If the module accept the call
+ 	DECLINED, // If he decline
+ 	HTTP_ERROR // If there is an error
+ };
+ ```
+ 
+ ## Context
+ 
