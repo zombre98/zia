@@ -150,7 +150,7 @@ dems::Context context{{dems::header::Request{"GET", "/path/file", "HTTP/1.1"}, s
                      {dems::header::Response{"HTTP/1.1", "200", "OK"},std::make_unique<dems::header::Heading>(), ""}, 0};
 
 
-std::cout << std::get<dems::header::Request>(context.request.variant).path << std::endl;
+std::cout << std::get<dems::header::Request>(context.request.firstLine).path << std::endl;
 ```
 On the fist line we show you how to create a `dems::Context`<br/>
 On the last line we take the path from the variant Request by using `std::get<T>`, `T` being the type you want (in this case, it is either `Request` or `Response`).
@@ -172,7 +172,7 @@ All class who inherit from `IHeading` must provide its own container to store
 the Header, a header is composed with a name and a value:
 
 * Name: accept
-*  Value: application/json<br/>
+* Value: application/json<br/>
 
 (key / value, which container to use ? ...)
 <br/>
