@@ -7,9 +7,9 @@
 #include "server/api/AModulesManager.hpp"
 #include "DlWrapper.hpp"
 
-namespace api {
+namespace dems {
 
-class *ModulesManager : public AModulesManager {
+class ModulesManager : public AModulesManager {
 	using moduleCallback = std::function<void(Context &)>;
 public:
 	ModulesManager() = default;
@@ -43,11 +43,11 @@ public:
 			const auto &end = getStageManager().requests().endsHooks();
 			auto it = std::find_if(end.begin(), end.end(), [](auto const &pair) { return pair.first == "testmodule"; });
 			if (it != end.end()) {
-				api::header::Heading heading;
+				dems::header::Heading heading;
 				std::cout << "Module well added" << std::endl;
-				api::Context lol{{api::header::Request{"HTTP/1.1", "200", ""}, std::make_unique<api::header::Heading>(), "desbarres"},
-											{api::header::Response{"HTTP/1.1", "200", ""},std::make_unique<api::header::Heading>(), "desbarres"}, 0};
-				std::cout << std::get<api::header::Request>(lol.response.variant).path << std::endl;
+				dems::Context lol{{dems::header::Request{"HTTP/1.1", "200", ""}, std::make_unique<dems::header::Heading>(), "desbarres"},
+											{dems::header::Response{"HTTP/1.1", "200", ""},std::make_unique<dems::header::Heading>(), "desbarres"}, 0};
+				std::cout << std::get<dems::header::Request>(lol.response.variant).path << std::endl;
 				it->second(lol);
 			}
 		} catch (const std::exception &e) {

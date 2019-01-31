@@ -32,12 +32,12 @@ For that you will use a `registersHook` to hook your functions.
 For example, in pseudo-code, if you call your **StageManager** `manager` : <br/>
 `manager.stage.moment("moduleName", module)`
 
-\* **A hook** is a function that will be called each time that a Stage it's triggered in one of three differents Stage 
+\* **A hook** is a function that will be called each time that a Stage it's triggered in one of three different Moment (see the Stage section for more details).
 
 ## StageManager
 
-StageManager will manage differents Stage in your Server.
-We implement four Stage :<br/>
+StageManager will manage many Stages in your Server.
+There is four Stage implemented:<br/>
 
 | Stage      | Description | 
 | :----:       |    :----:     |
@@ -64,7 +64,7 @@ call to the Stage and to the differents "Moments" provided:
 
 Request triggered =>
 Call the "request" Stage => 
-call the functions hooked by the modules =>
+call the functions hooked by the modules :=
 Firsts hooks Called =>
 Middles Hooks Called =>
 Lasts Hooks Called.
@@ -72,7 +72,7 @@ Lasts Hooks Called.
 For example if you want to Hook a module Function to the beginning of the stage `request` you will have to do :
 
 `manager.requests().hookToFirst("moduleName", std::function<CodeStatus(Context &)>)`
-
+(A module can hook one function to one Moment, so 3 max functions per Stage)
 As you see the function take a Context that will explain later and return Status code defined in enum : 
  ```cpp
  enum class CodeStatus {
@@ -143,6 +143,7 @@ The `firstLine` field contains a Request or Response depending on which HTTPMess
 * In `response` the type of firstLine will be a `struct Response`
 
 To use a `std::variant` here is an example :
+(an std::variant is like an union, with type-safe)
 ```cpp
 dems::Context context{{dems::header::Request{"GET", "/path/file", "HTTP/1.1"}, std::make_unique<dems::header::Heading>(), ""},
                      {dems::header::Response{"HTTP/1.1", "200", "OK"},std::make_unique<dems::header::Heading>(), ""}, 0};
@@ -170,5 +171,56 @@ public:
 };
 ```
 
-All class who inherite from `IHeading` must provide his own container, to stock each header given by the function `setHeader`.
-If you want you can use a container who associate a key and a value
+All class who inherite from `IHeading` must provide his own container to store
+the Header, a header is composed with a name and a value:
+* Name: accept | Value: application/json<br/>
+
+(key / value, which container to use ? ...)
+<br/>
+<br/>
+<br/>
+The last field of the HTTPMessage is the `body`.
+The `body` can be anything.<br/>
+
+example:
+```html
+<html>
+    <head></head>
+    <body>
+        <h1>Hello World</h1>
+    </body>
+</html>"
+```
+
+That's all !
+If you have any questions contact:
+`anatole.juge@epitech.eu`
+
+Here is a very very simple Logger Implementation:
+```cpp
+static constexpr char MODULE_NAME[] = "Logger";
+
+extern "C" {
+
+void registersHook(dems::StageManager &manager) {
+    manager.requests().hookToFirst(MODULE_NAME, [](dems::Context &ctx) {
+        std::cout << "Stage: Request FIRST" << std::endl;
+        std::cout << ctx.response.body << std::endl;
+        return dems::CodeStatus::OK;
+    });
+
+    manager.requests().hookToMiddle(MODULE_NAME, [](dems::Context &ctx) {
+        std::cout << "Stage: Request MIDDLE" << std::endl;
+        std::cout << ctx.response.body << std::endl;
+        return dems::CodeStatus::OK;
+    });
+
+    manager.requests().hookToEnd(MODULE_NAME, [](dems::Context &ctx) {
+        std::cout << "Stage: Request END" << std::endl;
+        std::cout << ctx.response.body << std::endl;
+        return dems::CodeStatus::OK;
+    });
+}
+
+};
+```

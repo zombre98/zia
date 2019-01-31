@@ -8,7 +8,7 @@
 
 int main() {
   nkpp::AsioServer serv("0.0.0.0", 4242);
-  api::ModulesManager modManager;
+  dems::ModulesManager modManager;
 
   modManager.loadModules("modules/");
   serv.whenOnConnected([](nkpp::IClient &client) {

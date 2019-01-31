@@ -7,7 +7,7 @@
 #include <string>
 #include "Stage.hpp"
 
-namespace api {
+namespace dems {
 
 /**
  * @class AModulesManager

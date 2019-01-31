@@ -9,7 +9,7 @@
 #include <functional>
 #include "Heading.hpp"
 
-namespace api {
+namespace dems {
 
 /**
  * @enum CodeStatus
