@@ -86,31 +86,33 @@ As you see the function takes a Context (see **Context**) and return a Status co
 
  When a Stage is triggered it will call the different hooks and will give them a Context.
 
- The **Context** is defined as follows :
+ The **Context** is defined:
 
  ```cpp
-struct Request {
- 	std::string method;
- 	std::string path;
- 	std::string httpVersion;
-};
- 
-struct Response {
-    std::string httpVersion;
-    std::string statusCode;
-    std::string message;
-};
- 
-struct HTTPMessage {
-    std::variant<Request, Response> firstLine;
-    std::unique_ptr<IHeading> header;
-    std::string body;
-};
+namespace header {
+    struct Request {
+        std::string method;
+        std::string path;
+        std::string httpVersion;
+    };
+     
+    struct Response {
+        std::string httpVersion;
+        std::string statusCode;
+        std::string message;
+    };
+     
+    struct HTTPMessage {
+        std::variant<Request, Response> firstLine;
+        std::unique_ptr<IHeading> header;
+        std::string body;
+    };
+}
 
 struct Context {
- 	header::HTTPMessage request;
- 	header::HTTPMessage response;
- 	int socketFd;
+    header::HTTPMessage request;
+    header::HTTPMessage response;
+    int socketFd;
 };
  ```
 
