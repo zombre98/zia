@@ -89,30 +89,30 @@ As you see the function take a Context that will explain later and return Status
  The **Context** is defined as the following :
  
  ```cpp
- struct Request {
+struct Request {
  	std::string method;
  	std::string path;
  	std::string httpVersion;
- };
+};
  
- struct Response {
- 	std::string httpVersion;
- 	std::string statusCode;
- 	std::string message;
- };
+struct Response {
+    std::string httpVersion;
+    std::string statusCode;
+    std::string message;
+};
  
 struct HTTPMessage {
-	std::variant<Request, Response> firstLine;
-	std::unique_ptr<IHeading> header;
-	std::string body;
+    std::variant<Request, Response> firstLine;
+    std::unique_ptr<IHeading> header;
+    std::string body;
 };
 
 struct Context {
  	header::HTTPMessage request;
  	header::HTTPMessage response;
  	int socketFd;
- };
- ```
+};
+```
 
 #### Struct Context
 
