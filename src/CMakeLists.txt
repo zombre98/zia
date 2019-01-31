@@ -12,7 +12,7 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/../../external/asio/include
 )
 
-add_executable(${PROJECT_NAME} ${SRCS} server/Modules/TestModule.cpp)
+add_executable(${PROJECT_NAME} ${SRCS} server/Modules/TestModule.cpp server/api/Stage.hpp)
 
 target_include_directories(${TARGET_NAME} PRIVATE lib/asio/include)
 target_include_directories(${TARGET_NAME} PRIVATE src)

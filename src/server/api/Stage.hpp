@@ -1,65 +1,29 @@
+//
+// Created by bilel fourati on 2019-01-31.
+//
+
 #pragma once
 
 #include <string>
 #include <list>
-#include <variant>
+#include <functional>
+#include "Heading.hpp"
 
 namespace api {
-
-/**
- * The context that is send to each hook callback when a stage is triggered
- */
-
-class IHeading {
-public:
-	virtual ~IHeading() = default;
-
-/*	virtual std::string &getHeader(const std::string &headerName) const = 0;
-
-	virtual std::string &getStatusMessage() const = 0;
-
-	virtual void setHeader(const std::string &key, const std::string &value) = 0;
-
-	virtual void setStatusMessage(const std::string &message) = 0;*/
-};
-
-class Heading : public IHeading {
-public:
-	~Heading() = default;
-	Heading() = default;
-
-public:
-	std::string str{"Content-Length: 28\r\n\r\n"};
-};
-
-struct request {
-	std::string method;
-	std::string path;
-	std::string httpVersion;
-};
-
-struct response {
-	std::string httpVersion;
-	std::string statusCode;
-	std::string message;
-};
-
-struct HTTPMessage {
-	std::variant<request, response> variant;
-	std::unique_ptr<IHeading> header;
-	std::string body;
-};
-
-struct Context {
-	HTTPMessage request;
-	HTTPMessage response;
-	int socketFd;
-};
 
 enum class CodeStatus {
 	OK,
 	DECLINED,
 	HTTP_ERROR
+};
+
+/**
+ * The context that is send to each hook callback when a stage is triggered
+ */
+struct Context {
+	header::HTTPMessage request;
+	header::HTTPMessage response;
+	int socketFd;
 };
 
 class Stage {
@@ -146,35 +110,6 @@ private:
 	Stage chunks_;
 	Stage connection_;
 	Stage disconnect_;
-};
-
-class AModulesManager {
-public:
-	/**
-	 * Load all the modules present in a directory
-	 * @param directoryPath the path to the directory containing the modules
-	 */
-	virtual void loadModules(const std::string &directoryPath) = 0;
-	/**
-	 * Load one module
-	 * @param filePath the path to the module
-	 */
-	virtual void loadOneModule(const std::string &filePath) = 0;
-
-	/**
-	 * Delete all Modules who have the same name as the parameter
-	 * @param name Name os the modules
-	 */
-	virtual void deleteModule(const std::string &name) = 0;
-
-	/**
-	 * Get the Stage Manager
-	 * @return Stage Manager
-	 */
-	StageManager &getStageManager() { return stageManager_; }
-
-private:
-	StageManager stageManager_;
 };
 
 }

@@ -6,7 +6,9 @@ set(SERVER
         server/buffer.hpp
         server/ModulesManager.hpp
         server/DlWrapper.hpp
-        server/AModulesManager.hpp
+        server/api/AModulesManager.hpp
+        server/api/Heading.hpp
+        server/api/Stage.hpp
         )
 
 set(UTILS

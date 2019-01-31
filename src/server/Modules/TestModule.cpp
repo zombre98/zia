@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../AModulesManager.hpp"
+#include "server/api/AModulesManager.hpp"
 
 extern "C" {
 

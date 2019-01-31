@@ -1,0 +1,31 @@
+#pragma once
+
+#include <string>
+#include "Stage.hpp"
+
+namespace api {
+
+class AModulesManager {
+public:
+	/**
+	 * Load all the modules present in a directory
+	 * @param directoryPath the path to the directory containing the modules
+	 */
+	virtual void loadModules(const std::string &directoryPath) = 0;
+	/**
+	 * Load one module
+	 * @param filePath the path to the module
+	 */
+	virtual void loadOneModule(const std::string &filePath) = 0;
+
+	/**
+	 * Get the Stage Manager
+	 * @return Stage Manager
+	 */
+	StageManager &getStageManager() { return stageManager_; }
+
+private:
+	StageManager stageManager_;
+};
+
+}

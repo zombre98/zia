@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <filesystem>
 #include <iostream>
-#include "AModulesManager.hpp"
+#include "server/api/AModulesManager.hpp"
 #include "DlWrapper.hpp"
 
 namespace api {
@@ -40,13 +40,14 @@ public:
 
 			std::cout << "Le Path " << filePath << std::endl;
 			fnc(getStageManager());
-			const api::Stage::hookList &end = getStageManager().requests().endsHooks();
-			auto it = std::find(end.begin(), end.end(), [](auto const &pair) { return pair.first == "testmodule"; });
+			const auto &end = getStageManager().requests().endsHooks();
+			auto it = std::find_if(end.begin(), end.end(), [](auto const &pair) { return pair.first == "testmodule"; });
 			if (it != end.end()) {
-				Heading heading;
+				api::header::Heading heading;
 				std::cout << "Module well added" << std::endl;
-				api::Context lol{{response{"HTTP/1.1", "200", ""}, std::make_unique<Heading>(), "desbarres"},
-											{response{"HTTP/1.1", "200", ""},std::make_unique<Heading>(), "desbarres"}, 0};
+				api::Context lol{{api::header::request{"HTTP/1.1", "200", ""}, std::make_unique<api::header::Heading>(), "desbarres"},
+											{api::header::response{"HTTP/1.1", "200", ""},std::make_unique<api::header::Heading>(), "desbarres"}, 0};
+				std::cout << std::get<api::header::request>(lol.response.variant).path << std::endl;
 				it->second(lol);
 			}
 		} catch (const std::exception &e) {
@@ -57,3 +58,11 @@ public:
 };
 
 }
+
+/*
+ * TODO:
+ *  - Split files
+ *  - Doc
+ *  - Big Readme
+ *  - testing
+ */
