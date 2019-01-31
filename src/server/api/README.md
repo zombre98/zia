@@ -1,9 +1,8 @@
 # dems API Zia
-##### The goal of this Api is to provide a example on How to add modules to your Zia project
+##### The goal of this Api is to provide a example on how to add modules to your Zia project
 ###### Produced by Armand Megrot, Bilel Fourati, Anatole Juge and Thomas Burgaud
 
-Our goal for this API is to simplify the way to add modules in your ZIA<br/>
-For this we have our best tried to minimize the constraints that we impose<br/>
+The goal of this API is to simplify the way you add modules in your ZIA<br/> In order to do this we tried to minimize the constraints that we impose<br/>
 
 For example to add your modules you just have to make : 
 ```cpp
@@ -21,35 +20,35 @@ extern "C" {
 
 ## AModulesManager
 
-The implementation of AModulesManager **should** be instanciated **only one time** in your project.<br/>
-It will let you load a directory of modules or a single module through the function `loadModules`on `loadOneModule`.<br/>
+The implementation of AModulesManager **should** be instanciated **only once** in your project.<br/>
+It will let you load a directory of modules or a single module via the function `loadModules` or `loadOneModule`.<br/>
 AModulesManager bring you an implementation of StatesManager through `getStageManager`
 
-Each module need to `extern` a function called `registersHook`
-You should give them your StageManager. She will use the StageManager to hook* his functions where he want.<br/>
-For that you will use a `registersHook` to hook your functions.
+Each module needs to `extern` a function called `registersHook`
+You should give them your StageManager. The StageManager will be used in order to hook* his functions where he wants.<br/>
+ `registersHook` will be used to hook your functions.
 
 For example, in pseudo-code, if you call your **StageManager** `manager` : <br/>
 `manager.stage.moment("moduleName", module)`
 
-\* **A hook** is a function that will be called each time that a Stage it's triggered in one of three different Moment (see the Stage section for more details).
+\* **A hook** is a function that will be called each time that a Stage is triggered.Three different **moments** exist (see the Stage section for more details).
 
 ## StageManager
 
 StageManager will manage many Stages in your Server.
-There is four Stage implemented:<br/>
+There is four Stages implemented:<br/>
 
-| Stage      | Description | 
+| Stage      | Description |
 | :----:       |    :----:     |
-| **connection** | It should provide hooks* for when the clients connect on the server.     |
-| **request** | When a server receive a request, the provided hooks of this Stage should be called.       |
-| **chunks**  | When a data it received by chunk (see rfc2616) it should called the provided hooks of this stage        |
-| **disconnection**  | It should provide hooks for when the clients disconnect on the server.        |
+| **connection** | It should provide hooks* for when the clients connects to the server. |
+| **request** | When a server receives a request, the provided hooks of this Stage should be called.      |
+| **chunks**  | When a data it received by a chunk (see rfc2616) it should call the provided hooks of this stage      |
+| **disconnection**  | It should provide hooks for when the clients disconnects from the server.   |
 
 
 ## Stage
 
-| Moment      | Description | 
+| Moment      | Description |
 | :----:       |    :----:     |
 | **first** | It's called before middle when the event occurs (Example : SSL module)     |
 | **middle** | It's called before last during the event (Example : PHP module)       |
@@ -59,21 +58,22 @@ Example :
 
 When a request is received :
 
-She will trigger the "request" stage. So **you** will have to make the 
-call to the Stage and to the differents "Moments" provided:
+It will trigger the "request" stage. So **you** will have to make the 
+call to the Stage and to the different "Moments" provided:
 
-Request triggered =>
-Call the "request" Stage => 
-call the functions hooked by the modules :=
-Firsts hooks Called =>
-Middles Hooks Called =>
-Lasts Hooks Called.
+1. Request triggered 
+2. Call the "request" Stage =
+3. Call the functions hooked by the modules 
+4. Firsts hooks Called 
+5. Middles Hooks Called 
+6. Lasts Hooks Called.
 
 For example if you want to Hook a module Function to the beginning of the stage `request` you will have to do :
 
 `manager.requests().hookToFirst("moduleName", std::function<CodeStatus(Context &)>)`
-(A module can hook one function to one Moment, so 3 max functions per Stage)
-As you see the function take a Context that will explain later and return Status code defined in enum : 
+(A module can hook one function to one Moment, so 3 functions max. per Stage)
+As you see the function takes a Context (see **Context**) and return a Status code defined in an enum : 
+
  ```cpp
  enum class CodeStatus {
  	OK, // If the module accept the call
@@ -81,13 +81,13 @@ As you see the function take a Context that will explain later and return Status
  	HTTP_ERROR // If there is an error
  };
  ```
- 
+
  ## Context
- 
- When a Stage is triggered he will call to the different hook and will give them a Context.
- 
- The **Context** is defined as the following :
- 
+
+ When a Stage is triggered it will call the different hooks and will give them a Context.
+
+ The **Context** is defined as follows :
+
  ```cpp
 struct Request {
  	std::string method;
@@ -112,7 +112,7 @@ struct Context {
  	header::HTTPMessage response;
  	int socketFd;
 };
-```
+ ```
 
 #### Struct Context
 
@@ -124,10 +124,10 @@ struct Context {
  };
 ```
 
-From the structure `Context`, the field `request` will contain the original request of the client.<br/>
-The field `response` should be constructed by the differents modules.<br/>
+In the `Context` structure, the field `request` will contain the original request of the client.<br/>
+The field `response` should be filled by the different modules.<br/>
 We give you the field `socketFd` if you want to read or write data depending on the modules. 
- 
+
 #### Struct HTTPMessage
 
 ```cpp
@@ -143,7 +143,8 @@ The `firstLine` field contains a Request or Response depending on which HTTPMess
 * In `response` the type of firstLine will be a `struct Response`
 
 To use a `std::variant` here is an example :
-(an std::variant is like an union, with type-safe)
+(an std::variant is like an union in C, but it is type-safe)
+
 ```cpp
 dems::Context context{{dems::header::Request{"GET", "/path/file", "HTTP/1.1"}, std::make_unique<dems::header::Heading>(), ""},
                      {dems::header::Response{"HTTP/1.1", "200", "OK"},std::make_unique<dems::header::Heading>(), ""}, 0};
@@ -152,9 +153,9 @@ dems::Context context{{dems::header::Request{"GET", "/path/file", "HTTP/1.1"}, s
 std::cout << std::get<dems::header::Request>(context.request.variant).path << std::endl;
 ```
 On the fist line we show you how to create a `dems::Context`<br/>
-On the last line we take the path from the variant Request by using `std::get<T>`, `T` is the type you want (in this case is either `Request` or `Response`).
+On the last line we take the path from the variant Request by using `std::get<T>`, `T` being the type you want (in this case, it is either `Request` or `Response`).
 
-The `header` field contain a definition of Interface `IHeading`
+The `header` field contains a definition of Interface `IHeading`
 
 ```
 class IHeading {
@@ -171,9 +172,11 @@ public:
 };
 ```
 
-All class who inherite from `IHeading` must provide his own container to store
+All class who inherit from `IHeading` must provide its own container to store
 the Header, a header is composed with a name and a value:
-* Name: accept | Value: application/json<br/>
+
+* Name: accept
+*  Value: application/json<br/>
 
 (key / value, which container to use ? ...)
 <br/>
@@ -194,7 +197,7 @@ example:
 
 That's all !
 If you have any questions contact:
-`anatole.juge@epitech.eu`
+`anatole.juge@epitech.eu` or `armand.megrot@epitech.eu`
 
 Here is a very very simple Logger Implementation:
 ```cpp
