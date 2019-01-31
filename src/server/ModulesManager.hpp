@@ -36,7 +36,7 @@ public:
 
 		try {
 			handler.open(filePath);
-			auto fnc = handler.getSymbol<void(*)(StageManager &)>("registersHook");
+			auto fnc = handler.getSymbol<void(*)(StageManager &)>("registerHooks");
 
 			std::cout << "Le Path " << filePath << std::endl;
 			fnc(getStageManager());

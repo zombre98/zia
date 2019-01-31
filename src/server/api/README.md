@@ -8,7 +8,7 @@ For example to add your modules you just have to make :
 ```cpp
 extern "C" {
 
-    void registersHook(api::StageManager &manager) {
+    void registerHooks(api::StageManager &manager) {
         manager.request().hookToEnd("Example", [](api::Context &ctx) {
             std::cout << "I'm an example module" << std::endl;
             return api::CodeStatus::OK;
@@ -24,9 +24,9 @@ The implementation of AModulesManager **should** be instanciated **only once** i
 It will let you load a directory of modules or a single module via the function `loadModules` or `loadOneModule`.<br/>
 AModulesManager bring you an implementation of StatesManager through `getStageManager`
 
-Each module needs to `extern` a function called `registersHook`
+Each module needs to `extern` a function called `registerHooks`
 You should give them your StageManager. The StageManager will be used in order to hook* his functions where he wants.<br/>
- `registersHook` will be used to hook your functions.
+ `registerHooks` will be used to hook your functions.
 
 For example, in pseudo-code, if you call your **StageManager** `manager` : <br/>
 `manager.stage.moment("moduleName", module)`
@@ -204,7 +204,7 @@ static constexpr char MODULE_NAME[] = "Logger";
 
 extern "C" {
 
-void registersHook(dems::StageManager &manager) {
+void registerHooks(dems::StageManager &manager) {
     manager.request().hookToFirst(MODULE_NAME, [](dems::Context &ctx) {
         std::cout << "Stage: Request FIRST" << std::endl;
         std::cout << ctx.response.body << std::endl;

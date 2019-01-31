@@ -9,7 +9,7 @@ extern "C" {
  * The fonction requested by the ModuleManager to load the module
  * @param manager The Stage manager to hook the module
  */
-void registersHook(dems::StageManager &manager) {
+void registerHooks(dems::StageManager &manager) {
 	manager.request().hookToFirst(MODULE_NAME, [](dems::Context &ctx) {
 		std::cout << "Stage: Request FIRST" << std::endl;
 		std::cout << ctx.response.body << std::endl;
