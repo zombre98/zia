@@ -160,7 +160,7 @@ On the last line we take the path from the variant Request by using `std::get<T>
 
 The `headers` field contains a definition of Interface `IHeaders`
 
-```
+```cpp
 class IHeaders {
 public:
 	virtual ~IHeaders() = default;
