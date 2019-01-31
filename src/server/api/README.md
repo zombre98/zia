@@ -62,7 +62,7 @@ It will trigger the "request" stage. So **you** will have to make the
 call to the Stage and to the different "Moments" provided:
 
 1. Request triggered 
-2. Call the "request" Stage =
+2. Call the "request" Stage
 3. Call the functions hooked by the modules 
 4. Firsts hooks Called 
 5. Middles Hooks Called 
