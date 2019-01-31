@@ -9,7 +9,7 @@ For example to add your modules you just have to make :
 extern "C" {
 
     void registersHook(api::StageManager &manager) {
-        manager.requests().hookToEnd("Example", [](api::Context &ctx) {
+        manager.request().hookToEnd("Example", [](api::Context &ctx) {
             std::cout << "I'm an example module" << std::endl;
             return api::CodeStatus::OK;
         });
@@ -70,7 +70,7 @@ call to the Stage and to the different "Moments" provided:
 
 For example if you want to Hook a module Function to the beginning of the stage `request` you will have to do :
 
-`manager.requests().hookToFirst("moduleName", std::function<CodeStatus(Context &)>)`
+`manager.request().hookToFirst("moduleName", std::function<CodeStatus(Context &)>)`
 (A module can hook one function to one Moment, so 3 functions max. per Stage)
 As you see the function takes a Context (see **Context**) and return a Status code defined in an enum : 
 
@@ -90,6 +90,7 @@ As you see the function takes a Context (see **Context**) and return a Status co
 
  ```cpp
 namespace header {
+
     struct Request {
         std::string method;
         std::string path;
@@ -204,19 +205,19 @@ static constexpr char MODULE_NAME[] = "Logger";
 extern "C" {
 
 void registersHook(dems::StageManager &manager) {
-    manager.requests().hookToFirst(MODULE_NAME, [](dems::Context &ctx) {
+    manager.request().hookToFirst(MODULE_NAME, [](dems::Context &ctx) {
         std::cout << "Stage: Request FIRST" << std::endl;
         std::cout << ctx.response.body << std::endl;
         return dems::CodeStatus::OK;
     });
 
-    manager.requests().hookToMiddle(MODULE_NAME, [](dems::Context &ctx) {
+    manager.request().hookToMiddle(MODULE_NAME, [](dems::Context &ctx) {
         std::cout << "Stage: Request MIDDLE" << std::endl;
         std::cout << ctx.response.body << std::endl;
         return dems::CodeStatus::OK;
     });
 
-    manager.requests().hookToEnd(MODULE_NAME, [](dems::Context &ctx) {
+    manager.request().hookToEnd(MODULE_NAME, [](dems::Context &ctx) {
         std::cout << "Stage: Request END" << std::endl;
         std::cout << ctx.response.body << std::endl;
         return dems::CodeStatus::OK;

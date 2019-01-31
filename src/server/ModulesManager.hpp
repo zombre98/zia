@@ -40,7 +40,7 @@ public:
 
 			std::cout << "Le Path " << filePath << std::endl;
 			fnc(getStageManager());
-			const auto &end = getStageManager().requests().endsHooks();
+			const auto &end = getStageManager().request().endsHooks();
 			auto it = std::find_if(end.begin(), end.end(), [](auto const &pair) { return pair.first == "testmodule"; });
 			if (it != end.end()) {
 				dems::header::Heading heading;

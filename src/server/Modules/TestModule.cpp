@@ -10,19 +10,19 @@ extern "C" {
  * @param manager The Stage manager to hook the module
  */
 void registersHook(dems::StageManager &manager) {
-	manager.requests().hookToFirst(MODULE_NAME, [](dems::Context &ctx) {
+	manager.request().hookToFirst(MODULE_NAME, [](dems::Context &ctx) {
 		std::cout << "Stage: Request FIRST" << std::endl;
 		std::cout << ctx.response.body << std::endl;
 		return dems::CodeStatus::OK;
 	});
 
-	manager.requests().hookToMiddle(MODULE_NAME, [](dems::Context &ctx) {
+	manager.request().hookToMiddle(MODULE_NAME, [](dems::Context &ctx) {
 		std::cout << "Stage: Request MIDDLE" << std::endl;
 		std::cout << ctx.response.body << std::endl;
 		return dems::CodeStatus::OK;
 	});
 
-	manager.requests().hookToEnd(MODULE_NAME, [](dems::Context &ctx) {
+	manager.request().hookToEnd(MODULE_NAME, [](dems::Context &ctx) {
 		std::cout << "Stage: Request END" << std::endl;
 		std::cout << ctx.response.body << std::endl;
 		return dems::CodeStatus::OK;

@@ -101,7 +101,7 @@ public:
 	 * Get the whole Request Stage
 	 * @return Request Stage
 	 */
-	Stage &requests() { return request_; }
+	Stage &request() { return request_; }
 
 	/**
 	 * Get the whole Configs Stage
