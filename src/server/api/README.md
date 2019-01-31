@@ -152,3 +152,23 @@ std::cout << std::get<dems::header::Request>(context.request.variant).path << st
 ```
 On the fist line we show you how to create a `dems::Context`<br/>
 On the last line we take the path from the variant Request by using `std::get<T>`, `T` is the type you want (in this case is either `Request` or `Response`).
+
+The `header` field contain a definition of Interface `IHeading`
+
+```
+class IHeading {
+public:
+	virtual ~IHeading() = default;
+
+	virtual std::string &getHeader(const std::string &headerName) const = 0;
+
+	virtual std::string &getStatusMessage() const = 0;
+
+	virtual void setHeader(const std::string &headerName, const std::string &value) = 0;
+
+	virtual void setStatusMessage(const std::string &message) = 0;
+};
+```
+
+All class who inherite from `IHeading` must provide his own container, to stock each header given by the function `setHeader`.
+If you want you can use a container who associate a key and a value
