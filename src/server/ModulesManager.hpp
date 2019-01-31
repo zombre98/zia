@@ -9,7 +9,7 @@
 
 namespace api {
 
-class ModulesManager : public AModulesManager {
+class *ModulesManager : public AModulesManager {
 	using moduleCallback = std::function<void(Context &)>;
 public:
 	ModulesManager() = default;

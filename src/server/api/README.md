@@ -74,7 +74,7 @@ For example if you want to Hook a module Function to the beginning of the stage 
 `manager.requests().hookToFirst("moduleName", std::function<CodeStatus(Context &)>)`
 
 As you see the function take a Context that will explain later and return Status code defined in enum : 
- ```
+ ```cpp
  enum class CodeStatus {
  	OK, // If the module accept the call
  	DECLINED, // If he decline
@@ -84,3 +84,71 @@ As you see the function take a Context that will explain later and return Status
  
  ## Context
  
+ When a Stage is triggered he will call to the different hook and will give them a Context.
+ 
+ The **Context** is defined as the following :
+ 
+ ```cpp
+ struct Request {
+ 	std::string method;
+ 	std::string path;
+ 	std::string httpVersion;
+ };
+ 
+ struct Response {
+ 	std::string httpVersion;
+ 	std::string statusCode;
+ 	std::string message;
+ };
+ 
+struct HTTPMessage {
+	std::variant<Request, Response> firstLine;
+	std::unique_ptr<IHeading> header;
+	std::string body;
+};
+
+struct Context {
+ 	header::HTTPMessage request;
+ 	header::HTTPMessage response;
+ 	int socketFd;
+ };
+ ```
+
+#### Struct Context
+
+```cpp
+struct Context {
+ 	header::HTTPMessage request;
+ 	header::HTTPMessage response;
+ 	int socketFd;
+ };
+```
+
+From the structure `Context`, the field `request` will contain the original request of the client.<br/>
+The field `response` should be constructed by the differents modules.<br/>
+We give you the field `socketFd` if you want to read or write data depending on the modules. 
+ 
+#### Struct HTTPMessage
+
+```cpp
+struct HTTPMessage {
+	std::variant<Request, Response> firstLine;
+	std::unique_ptr<IHeading> header;
+	std::string body;
+};
+```
+
+The `firstLine` field contains a Request or Response depending on which HTTPMessage you are : <br/>
+* In `request` the type of firstLine will be a `struct Request`
+* In `response` the type of firstLine will be a `struct Response`
+
+To use a `std::variant` here is an example :
+```cpp
+dems::Context context{{dems::header::Request{"GET", "/path/file", "HTTP/1.1"}, std::make_unique<dems::header::Heading>(), ""},
+                     {dems::header::Response{"HTTP/1.1", "200", "OK"},std::make_unique<dems::header::Heading>(), ""}, 0};
+
+
+std::cout << std::get<dems::header::Request>(context.request.variant).path << std::endl;
+```
+On the fist line we show you how to create a `dems::Context`<br/>
+On the last line we take the path from the variant Request by using `std::get<T>`, `T` is the type you want (in this case is either `Request` or `Response`).
