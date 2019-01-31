@@ -164,11 +164,7 @@ public:
 
 	virtual std::string &getHeader(const std::string &headerName) const = 0;
 
-	virtual std::string &getStatusMessage() const = 0;
-
 	virtual void setHeader(const std::string &headerName, const std::string &value) = 0;
-
-	virtual void setStatusMessage(const std::string &message) = 0;
 };
 ```
 

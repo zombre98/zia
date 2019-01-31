@@ -29,24 +29,11 @@ public:
 	virtual std::string &getHeader(const std::string &headerName) const = 0;
 
 	/**
-	 * Give the message status
-	 * @return The message status
-	 */
-	virtual std::string &getStatusMessage() const = 0;
-
-
-	/**
 	 * Set the value corresponding to the headerName
 	 * @param headerName The header name (ex: accept)
 	 * @param value The value corresponding to the header name (ex: application/json)
 	 */
 	virtual void setHeader(const std::string &headerName, const std::string &value) = 0;
-
-	/**
-	 * Set the message status
-	 * @param message the status message to set
-	 */
-	virtual void setStatusMessage(const std::string &message) = 0;
 };
 
 /**
