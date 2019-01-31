@@ -119,13 +119,13 @@ public:
 	 * Get the disconnect Stage
 	 * @return Chunks Stage
 	 */
-	Stage &disconnect() { return disconnect_; }
+	Stage &disconnect() { return disconnection_; }
 
 private:
 	Stage request_;
 	Stage chunks_;
 	Stage connection_;
-	Stage disconnect_;
+	Stage disconnection_;
 };
 
 }
