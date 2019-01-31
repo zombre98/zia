@@ -197,7 +197,7 @@ example:
 
 That's all !
 If you have any questions contact:
-[anatole.juge@epitech.eu](mailto:"anatole.juge@epitech.eu")
+[anatole.juge@epitech.eu](mailto:anatole.juge@epitech.eu)
 
 Here is a very very simple Logger Implementation:
 ```cpp
