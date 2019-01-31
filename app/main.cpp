@@ -8,9 +8,9 @@
 
 int main() {
   nkpp::AsioServer serv("0.0.0.0", 4242);
-  api::ModulesManager modManager;
+//  api::ModulesManager modManager;
 
-  modManager.loadModules("modules/");
+  //modManager.loadModules("modules/");
   serv.whenOnConnected([](nkpp::IClient &client) {
     client.whenOnRead([&client](nkpp::Buffer &b){
       logging::debug << LOG_TIME << b.read<std::string>() << std::endl;

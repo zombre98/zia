@@ -40,11 +40,13 @@ public:
 
 			std::cout << "Le Path " << filePath << std::endl;
 			fnc(getStageManager());
-			const api::Stage::hookMap &end = getStageManager().requests().endsHooks();
-			auto it = end.find("testmodule");
+			const api::Stage::hookList &end = getStageManager().requests().endsHooks();
+			auto it = std::find(end.begin(), end.end(), [](auto const &pair) { return pair.first == "testmodule"; });
 			if (it != end.end()) {
+				Heading heading;
 				std::cout << "Module well added" << std::endl;
-				api::Context lol = {"lol", "desbarres"};
+				api::Context lol{{response{"HTTP/1.1", "200", ""}, std::make_unique<Heading>(), "desbarres"},
+											{response{"HTTP/1.1", "200", ""},std::make_unique<Heading>(), "desbarres"}, 0};
 				it->second(lol);
 			}
 		} catch (const std::exception &e) {

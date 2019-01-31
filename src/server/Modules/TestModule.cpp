@@ -11,6 +11,7 @@ void registersHook(api::StageManager &manager) {
 	std::cout << "Je Suis Un Module Lol" << std::endl;
 	manager.requests().hookToEnd("testmodule", [](api::Context &ctx) {
 		std::cout << "I'm The test module lol" << std::endl;
+		return api::CodeStatus::OK;
 	});
 }
 
