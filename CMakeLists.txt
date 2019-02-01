@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.1.3)
 # Set project name, version and laguages here. (change as needed)
 # Version numbers are available by including "exampleConfig.h" in 
 # the source. See exampleConfig.h.in for some more details.
-project(CPP_BOILERPLATE VERSION 1.2.3.4 LANGUAGES C CXX)
+project(Zia VERSION 1.2.3.4 LANGUAGES C CXX)
 
 
 # Include stuff. No change needed.
@@ -44,13 +44,14 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/src
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/tests
+    ${PROJECT_SOURCE_DIR}/external/asio/include
     ${PROJECT_SOURCE_DIR}/external/googletest
     ${PROJECT_SOURCE_DIR}/external/googletest/include)
 
 # Make variables referring to all the sources and test files.
 file(GLOB SOURCES "src/*.cpp")
 file(GLOB TESTFILES "tests/*.cpp")
-set(TEST_MAIN unit_tests.x)  # Default name for test executable (change if you wish).
+set(TEST_MAIN unit_tests)  # Default name for test executable (change if you wish).
 
 
 
@@ -58,13 +59,13 @@ set(TEST_MAIN unit_tests.x)  # Default name for test executable (change if you w
 #                            Build! (Change as needed)
 # --------------------------------------------------------------------------------
 # Compile all sources into a library. Called engine here (change if you wish).
-add_library( engine ${SOURCES} )
+add_library(engine ${SOURCES} )
 
 # Add an executable for the file main.cpp, here called main.x.
 # If you add more executables, copy these three lines accordingly.
-add_executable(main.x app/main.cpp)   # Name of exec. and location of file.
-add_dependencies(main.x engine)       # main.cpp uses the 'engine', add dep.
-target_link_libraries(main.x engine)  # Link the executable to the 'engine'.
+add_executable(zia app/main.cpp)   # Name of exec. and location of file.
+add_dependencies(zia engine)       # main.cpp uses the 'engine', add dep.
+target_link_libraries(zia engine)  # Link the executable to the 'engine'.
 
 
 
@@ -142,3 +143,8 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # Ask CMake to output a compile_commands.json file for use with things like Vim YCM.
 set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
+
+# ---------------------------------------------------------------------------------
+#                    Others Cmakelist.txt
+# ---------------------------------------------------------------------------------
+add_subdirectory(src)

@@ -1,3 +1,8 @@
+# Clion
+cmake-build-debug/
+.idea/
+build/
+
 # Prerequisites
 *.d
 
@@ -30,3 +35,4 @@
 *.exe
 *.out
 *.app
+
