@@ -17,7 +17,7 @@ namespace dems {
 namespace header {
 
 /**
- * @class IHeading
+ * @class IHeaders
  * @brief Interface for http headers
  * This class is an interface that you must implement to access it via the Context
  */
