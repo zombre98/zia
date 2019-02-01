@@ -41,6 +41,6 @@ install:
 script:
   - mkdir -p build
   - cd build
-  - cmake --build /Users/zombre/Epitech/zia/cmake-build-debug --target googletest -- -j 4
+  - cmake --build /Users/zombre/Epitech/zia/cmake-build-debug --target googletest -- -j 4 ..
   - make
   - unit_tests
