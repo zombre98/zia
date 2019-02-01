@@ -52,7 +52,7 @@ TEST(Buffer, Buffer_Buff_Get_Wroted_Size_Int_Test) {
 	auto value = buff.getWroteSize();
 	EXPECT_EQ(data.length(), value);
 	EXPECT_EQ(data, buff.read<std::string>());
-}*/
+}
 
 TEST(Buffer, Buffer_Buff_Set_Data_int_Test) {
 	nkpp::Buffer buff;
@@ -62,4 +62,4 @@ TEST(Buffer, Buffer_Buff_Set_Data_int_Test) {
 	auto value = buff.getWroteSize();
 	EXPECT_EQ(sizeof(data), value);
 	EXPECT_EQ(data, buff.read<int>());
-}
+} */
