@@ -40,7 +40,6 @@ install:
   - sudo pip install codecov
 
 script:
-  - cmake --version
   - mkdir -p build
   - cd build
   - cmake ..

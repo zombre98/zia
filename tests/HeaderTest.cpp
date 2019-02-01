@@ -31,7 +31,7 @@ TEST(Header, Header_set_and_get_Status) {
 	header::ResponseHeading responseHeading(http::StatusCode::OK);
 	EXPECT_EQ(http::StatusCode::OK, responseHeading.getStatusCode());
 	responseHeading.setStatusCode(http::StatusCode::Accepted);
-	EXPECT_EQ(http::StatusCode::OK, responseHeading.getStatusCode());
+	EXPECT_EQ(http::StatusCode::Accepted, responseHeading.getStatusCode());
 }
 
 TEST(Header, Header_operator_hook) {
