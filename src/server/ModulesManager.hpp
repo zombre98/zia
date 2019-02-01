@@ -58,10 +58,3 @@ public:
 };
 
 }
-
-/*
- * TODO:
- *  - Doc
- *  - Big Readme
- *  - testing
- */

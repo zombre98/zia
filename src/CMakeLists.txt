@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 
-project(server)
+project(serverzia)
 
 set(CMAKE_CXX_STANDARD 17)
 set(TARGET_NAME ${PROJECT_NAME})
@@ -12,7 +12,7 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/../../external/asio/include
 )
 
-add_executable(${PROJECT_NAME} ${SRCS} server/Modules/TestModule.cpp server/api/Stage.hpp)
+add_executable(${PROJECT_NAME} ${SRCS} server/Modules/TestModule.cpp )
 
 target_include_directories(${TARGET_NAME} PRIVATE lib/asio/include)
 target_include_directories(${TARGET_NAME} PRIVATE src)
