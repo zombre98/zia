@@ -43,7 +43,13 @@ struct Context {
  */
 class Stage {
 public:
+	/**
+	 * @brief Defines the hook functions' prototype
+	 */
 	using hookModuleCallback = std::function<CodeStatus(Context &)>;
+	/**
+	 * @brief Defines a list of hooked functions
+	 */
 	using hookList = std::list<std::pair<std::string, hookModuleCallback>>;
 public:
 	/**
