@@ -43,6 +43,6 @@ script:
   - mkdir -p build
   - cd build
   - ls
-  - cmake --build /Users/zombre/Epitech/zia/cmake-build-debug --target googletest -- -j 4 ..
+  - cmake ..
   - make unit_tests
   - unit_tests
