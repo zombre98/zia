@@ -72,8 +72,8 @@ namespace header {
 			operator std::string() const {
 				std::string response("HTTP/1.1 ");
 				response += std::to_string(static_cast<int>(statusCode)) + CRLF;
-				response = std::transform_reduce(headers.cbegin(), headers.cend(), response, std::plus<>(), [](auto const &header) {
-					return header.first + ":" + header.second + CRLF;
+				std::for_each(headers.cbegin(), headers.cend(), [&response](auto const &header) {
+					response += header.first + ":" + header.second + CRLF;
 				});
 				response += CRLF;
 				return response;
