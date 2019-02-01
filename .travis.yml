@@ -15,17 +15,6 @@ matrix:
       dist: trusty
       sudo: true
       compiler: gcc
-      addons:
-        apt:
-          packages: &precise_latest_boost_packages
-            - gcc-8.2.1
-            - g++-8.2.1
-            #- gcov-4.9
-            - clang-7.0.1
-            - valgrind
-          sources: &precise_latest_boost_sources
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
 
 before_install:
   # Combine global build options with OS/compiler-dependent options
