@@ -4,8 +4,17 @@
 #include <functional>
 #include "IClient.hpp"
 
+/** @file
+ * @brief Class @ref IServer
+ */
+/** @namespace nkpp
+ * @brief nkpp library
+ */
 namespace nkpp {
 
+/**
+ * @brief A Server interface
+ */
 class IServer {
 protected:
   using onConnected = std::function<void(IClient &)>;

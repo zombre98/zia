@@ -9,6 +9,9 @@
 #include <functional>
 #include "Heading.hpp"
 
+/**
+ * @brief dems namespace
+ */
 namespace dems {
 
 /**
@@ -22,7 +25,7 @@ enum class CodeStatus {
 };
 
 /**
- * The context that is send to each hook callback when a stage is triggered
+ * The context that is sent to each hook callback when a stage is triggered
  */
 struct Context {
 	header::HTTPMessage request;
@@ -32,11 +35,11 @@ struct Context {
 
 /**
  * @class Stage
- * Define function that will be called at a certain Moment.
- * The hook will be at the First, middle and end of this Moment.
- * Firts is Before the Moment
- * Middle is during the Moment
- * End is when the Moment ends
+ * Defines function that will be called at a certain Stage.
+ * The hook will be at the First, middle and end of this Stage.
+ * First is at Stage start
+ * Middle is during the Stage
+ * End is at Stage end
  */
 class Stage {
 public:
@@ -69,20 +72,20 @@ public:
 	}
 
 	/**
-	 * Return the modules hooked to the debut of the stage
+	 * Returns the modules hooked to the debut of the stage
 	 * @return std::list of the modules hooked to the first
 	 */
-	const hookList &firstsHooks() { return first_; }
+	const hookList &firstHooks() { return first_; }
 	/**
-	 * Return the modules hooked to the middle of the stage
-	 * @return std::list of the modules hooked to the middles
+	 * Returns the modules hooked to the middle of the stage
+	 * @return std::list of the modules hooked to the middle
 	 */
-	const hookList &middlesHooks() { return middle_; }
+	const hookList &middleHooks() { return middle_; }
 	/**
-	 * Return the modules hooked to the end of the stage
-	 * @return std::list of the modules hooked to the ends
+	 * Returns the modules hooked to the end of the stage
+	 * @return std::list of the modules hooked to the end
 	 */
-	const hookList &endsHooks() { return last_; }
+	const hookList &endHooks() { return last_; }
 
 private:
 	hookList first_;
@@ -92,32 +95,32 @@ private:
 
 /**
  * @class StageManager
- * Define the differents Stage and manage them
+ * Defines the different Stages and manages them
  */
 class StageManager {
 public:
 
 	/**
-	 * Get the whole Request Stage
+	 * Gets the whole Request Stage
 	 * @return Request Stage
 	 */
 	Stage &request() { return request_; }
 
 	/**
-	 * Get the whole Configs Stage
-	 * @return Connection Stage
+	 * Gets the whole Config Stage
+	 * @return Config Stage
 	 */
 	Stage &connection() { return connection_; }
 
 	/**
-	 * Get the chunk Stage
+	 * Gets the chunks Stage
 	 * @return Chunks Stage
 	 */
 	Stage &chunks() { return chunks_; }
 
 	/**
-	 * Get the disconnect Stage
-	 * @return Chunks Stage
+	 * Gets the disconnect Stage
+	 * @return Disconnect Stage
 	 */
 	Stage &disconnect() { return disconnection_; }
 
