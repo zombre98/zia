@@ -39,8 +39,10 @@ install:
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
     fi
 script:
+  - ls
   - mkdir -p build
   - cd build
+  - ls
   - cmake --build /Users/zombre/Epitech/zia/cmake-build-debug --target googletest -- -j 4 ..
-  - make
+  - make unit_tests
   - unit_tests
