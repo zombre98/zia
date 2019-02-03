@@ -4,7 +4,14 @@ set(SERVER
         server/asio/AsioClient.hpp
         server/asio/AsioServer.hpp
         server/buffer.hpp
+        server/ModulesManager.hpp
+        server/DlWrapper.hpp
+        server/AModulesManager.hpp
         )
+
+set(HEADER
+        header/HeaderEnum.hpp
+        header/ResponseHeading.hpp)
 
 set(UTILS
         Utils/Logger.hpp
@@ -16,6 +23,7 @@ set(MAIN
 
 set(SRCS
         ${SERVER}
+        ${HEADER}
         ${UTILS}
         ${MAIN}
         )
