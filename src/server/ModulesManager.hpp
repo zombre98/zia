@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <filesystem>
 #include <iostream>
+#include "Utils/Logger.hpp"
 #include "AModulesManager.hpp"
 #include "DlWrapper.hpp"
 
@@ -38,7 +39,7 @@ public:
 			handler.open(filePath);
 			auto fnc = handler.getSymbol<void(*)(StageManager &)>("registersHook");
 
-			std::cout << "Le Path " << filePath << std::endl;
+			logging::debug << LOG_DEBUG << "Le path : " << filePath << std::endl;
 			fnc(getStageManager());
 			const api::Stage::hookMap &end = getStageManager().requests().endsHooks();
 			auto it = end.find("testmodule");
