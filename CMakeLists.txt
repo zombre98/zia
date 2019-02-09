@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.1.3)
 # Set project name, version and laguages here. (change as needed)
 # Version numbers are available by including "exampleConfig.h" in 
 # the source. See exampleConfig.h.in for some more details.
-project(Zia VERSION 1.2.3.4 LANGUAGES C CXX)
+project(Zia VERSION 1.0 LANGUAGES C CXX)
 
 
 # Include stuff. No change needed.
@@ -51,7 +51,7 @@ include_directories(
 # Make variables referring to all the sources and test files.
 file(GLOB SOURCES "src/*.cpp")
 file(GLOB TESTFILES "tests/*.cpp")
-set(TEST_MAIN unit_tests.x)  # Default name for test executable (change if you wish).
+set(TEST_MAIN unit_tests)  # Default name for test executable (change if you wish).
 
 
 
