@@ -102,6 +102,9 @@ public:
     return cursor_;
   }
 
+  /**
+   * Set the cursor position
+   */
   void setCursor(size_t newSize) noexcept {
     cursor_ = newSize;
   }

@@ -9,7 +9,7 @@
 #include <numeric>
 #include "HeaderEnum.hpp"
 
-#define CRLF "\r\n"
+constexpr char CRLF[] = "\r\n";
 
 namespace header {
 
@@ -39,7 +39,7 @@ namespace header {
 			 * Set the HTTP status code
 			 * @param code New HTTP code to set
 			 */
-			void setStatusCode(http::StatusCode const &code) noexcept { statusCode = code; }
+			void setStatusCode(http::StatusCode code) noexcept { statusCode = code; }
 
 			/**
 			 * Create a Header with a key and value
