@@ -83,7 +83,7 @@ private:
         disconnectedCallback_(client);
     });
 
-    acceptor_.async_accept(newClient_->socket(), [this](asio::error_code) mutable {
+    acceptor_.async_accept(newClient_->socket(), [this](asio::error_code) {
       clients_.push_back(std::move(newClient_));
       if (connectedCallback_)
         connectedCallback_(*clients_.back());
