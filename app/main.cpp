@@ -9,7 +9,7 @@
 
 int main() {
 
-  nkpp::AsioServer serv("0.0.0.0", 4242);
+  nkpp::AsioServer serv("127.0.0.1", 4242);
   dems::ModulesManager modManager;
 
   modManager.loadModules("modules/");

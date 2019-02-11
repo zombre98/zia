@@ -78,13 +78,13 @@ private:
    * Start accepting connections
    */
   void startAccept() {
-    AsioClient::AsioClientUPtr newClient = std::make_unique<AsioClient>(service_, [this](IClient &client){
+    newClient_ = std::make_unique<AsioClient>(service_, [this](IClient &client){
       if (disconnectedCallback_)
         disconnectedCallback_(client);
     });
 
-    acceptor_.async_accept(newClient->socket(), [nc = std::move(newClient), this](asio::error_code) mutable {
-      clients_.push_back(std::move(nc));
+    acceptor_.async_accept(newClient_->socket(), [this](asio::error_code) {
+      clients_.push_back(std::move(newClient_));
       if (connectedCallback_)
         connectedCallback_(*clients_.back());
       clients_.back()->read();
@@ -101,7 +101,7 @@ private:
   asio::ip::tcp::acceptor acceptor_;
 
   std::vector<AsioClient::AsioClientUPtr> clients_;
-
+  AsioClient::AsioClientUPtr newClient_;
 };
 
 }
