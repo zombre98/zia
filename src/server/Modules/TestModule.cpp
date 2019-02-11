@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "server/api/AModulesManager.hpp"
 
 static constexpr char MODULE_NAME[] = "Logger";
@@ -26,6 +27,7 @@ void registerHooks(dems::StageManager &manager) {
 		std::cout << "Stage: Request END" << std::endl;
 		std::cout << ctx.response.body << std::endl;
 		return dems::CodeStatus::OK;
+
 	});
 }
 

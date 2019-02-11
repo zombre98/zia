@@ -105,6 +105,7 @@ public:
   /**
    * Set the cursor position
    */
+
   void serCursor(size_t newSize) noexcept {
     cursor_ = newSize;
   }
