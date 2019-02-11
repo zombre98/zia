@@ -4,11 +4,12 @@
 #include <unordered_map>
 #include <filesystem>
 #include <iostream>
-#include "Utils/Logger.hpp"
-#include "AModulesManager.hpp"
+#include <Utils/Logger.hpp>
+
+#include "server/api/AModulesManager.hpp"
 #include "DlWrapper.hpp"
 
-namespace api {
+namespace dems {
 
 class ModulesManager : public AModulesManager {
 	using moduleCallback = std::function<void(Context &)>;
@@ -37,21 +38,15 @@ public:
 
 		try {
 			handler.open(filePath);
-			auto fnc = handler.getSymbol<void(*)(StageManager &)>("registersHook");
+			auto fnc = handler.getSymbol<void(*)(StageManager &)>("registerHooks");
 
-			logging::debug << LOG_DEBUG << "Le path : " << filePath << std::endl;
+			logging::debug << LOG_DEBUG << "Module Path : " << filePath << std::endl;
 			fnc(getStageManager());
-			const api::Stage::hookMap &end = getStageManager().requests().endsHooks();
-			auto it = end.find("testmodule");
-			if (it != end.end()) {
-				std::cout << "Module well added" << std::endl;
-				api::Context lol = {"lol", "desbarres"};
-				it->second(lol);
-			}
 		} catch (const std::exception &e) {
-			std::cout << "Dl Error: " << e.what() << std::endl;
+			logging::error << "Dl Error: " << e.what() << std::endl;
 		}
 	}
 
 };
+
 }

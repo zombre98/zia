@@ -4,9 +4,14 @@ set(SERVER
         server/asio/AsioClient.hpp
         server/asio/AsioServer.hpp
         server/buffer.hpp
-        server/ModulesManager.hpp
         server/DlWrapper.hpp
-        server/AModulesManager.hpp
+        server/ModulesManager.hpp
+        server/Modules/TestModule.cpp
+        )
+
+set(API server/api/AModulesManager.hpp
+        server/api/Heading.hpp
+        server/api/Stage.hpp
         )
 
 set(HEADER
@@ -25,5 +30,6 @@ set(SRCS
         ${SERVER}
         ${HEADER}
         ${UTILS}
+        ${API}
         ${MAIN}
         )

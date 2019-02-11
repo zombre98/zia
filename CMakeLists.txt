@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.1.3)
 # Set project name, version and laguages here. (change as needed)
 # Version numbers are available by including "exampleConfig.h" in 
 # the source. See exampleConfig.h.in for some more details.
-project(Zia VERSION 1.0 LANGUAGES C CXX)
+project(zia VERSION 1.0 LANGUAGES C CXX)
 
 
 # Include stuff. No change needed.
@@ -59,7 +59,7 @@ set(TEST_MAIN unit_tests)  # Default name for test executable (change if you wis
 #                            Build! (Change as needed)
 # --------------------------------------------------------------------------------
 # Compile all sources into a library. Called engine here (change if you wish).
-add_library(engine ${SOURCES} )
+add_library(engine ${SOURCES})
 
 # Add an executable for the file main.cpp, here called main.x.
 # If you add more executables, copy these three lines accordingly.
@@ -115,7 +115,7 @@ endif(DOXYGEN_FOUND)
 # --------------------------------------------------------------------------------
 # The following makes sure that an up-to-date version of googletest is available,
 # and built so that it may be used by your tests. 
-add_custom_target( git_update
+add_custom_target(git_update
     COMMAND git submodule init
     COMMAND git submodule update
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} )
