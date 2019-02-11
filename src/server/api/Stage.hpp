@@ -6,6 +6,7 @@
 
 #include <string>
 #include <list>
+#include <vector>
 #include <functional>
 #include "Heading.hpp"
 
@@ -25,6 +26,7 @@ enum class CodeStatus {
  * The context that is send to each hook callback when a stage is triggered
  */
 struct Context {
+	std::vector<uint8_t> rawData;
 	header::HTTPMessage request;
 	header::HTTPMessage response;
 	int socketFd;
@@ -34,7 +36,7 @@ struct Context {
  * @class Stage
  * Define function that will be called at a certain Moment.
  * The hook will be at the First, middle and end of this Moment.
- * Firts is Before the Moment
+ * First is Before the Moment
  * Middle is during the Moment
  * End is when the Moment ends
  */
