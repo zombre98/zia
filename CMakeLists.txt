@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.1.3)
 # Set project name, version and laguages here. (change as needed)
 # Version numbers are available by including "exampleConfig.h" in 
 # the source. See exampleConfig.h.in for some more details.
-project(Zia VERSION 1.0 LANGUAGES C CXX)
+project(zia VERSION 1.0 LANGUAGES C CXX)
 
 
 # Include stuff. No change needed.

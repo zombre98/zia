@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <filesystem>
 #include <iostream>
+#include <Utils/Logger.hpp>
 
 #include "server/api/AModulesManager.hpp"
 #include "DlWrapper.hpp"
@@ -39,20 +40,15 @@ public:
 			handler.open(filePath);
 			auto fnc = handler.getSymbol<void(*)(StageManager &)>("registerHooks");
 
-			std::cout << "Le Path " << filePath << std::endl;
+			logging::debug << LOG_DEBUG << "Module Path : " << filePath << std::endl;
 			fnc(getStageManager());
 			const auto &end = getStageManager().request().endsHooks();
 			auto it = std::find_if(end.begin(), end.end(), [](auto const &pair) { return pair.first == "testmodule"; });
 			if (it != end.end()) {
-//				dems::headers::Heading heading;
-				std::cout << "Module well added" << std::endl;
-	//			dems::Context lol{{dems::headers::Request{"HTTP/1.1", "200", ""}, std::make_unique<dems::headers::Heading>(), "desbarres"},
-			//								{dems::headers::Response{"HTTP/1.1", "200", ""},std::make_unique<dems::headers::Heading>(), "desbarres"}, 0};
-		//		std::cout << std::get<dems::headers::Request>(lol.response.variant).path << std::endl;
-				//it->second(lol);
+				logging::debug << LOG_DEBUG << "Module well added" << std::endl;
 			}
 		} catch (const std::exception &e) {
-			std::cout << "Dl Error: " << e.what() << std::endl;
+			logging::error << "Dl Error: " << e.what() << std::endl;
 		}
 	}
 
