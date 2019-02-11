@@ -20,15 +20,10 @@ target_include_directories(${TARGET_NAME} PRIVATE src)
 if (APPLE)
     target_link_directories(${TARGET_NAME} PRIVATE /usr/local/opt/llvm/lib)
     target_link_libraries(${TARGET_NAME} PRIVATE c++fs)
-endif()
-
-
-target_include_directories(${TARGET_NAME} PRIVATE lib/asio/include)
-target_include_directories(${TARGET_NAME} PRIVATE src)
-
-if (APPLE)
-    target_link_directories(${TARGET_NAME} PRIVATE /usr/local/opt/llvm/lib)
-    target_link_libraries(${TARGET_NAME} PRIVATE c++fs)
+else()
+    target_link_libraries(${TARGET_NAME} PRIVATE stdc++fs)
+    target_link_libraries(${TARGET_NAME} PRIVATE dl)
+    target_link_libraries(${TARGET_NAME} PRIVATE pthread)
 endif()
 
 #target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS})
