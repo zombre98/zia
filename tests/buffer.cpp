@@ -2,7 +2,7 @@
 #include "server/buffer.hpp"
 
 TEST(Buffer, Buffer_Buff_Int_Test) {
-	nkpp::Buffer buff;
+	zia::Buffer buff;
 
 	buff.write<int>(4);
 	auto value = buff.read<int>();
@@ -10,7 +10,7 @@ TEST(Buffer, Buffer_Buff_Int_Test) {
 }
 
 TEST(Buffer, Buffer_Buff_String_Test) {
-	nkpp::Buffer buff;
+	zia::Buffer buff;
 
 	buff.write<std::string>("Value");
 	auto value = buff.read<std::string>();
@@ -18,7 +18,7 @@ TEST(Buffer, Buffer_Buff_String_Test) {
 }
 
 TEST(Buffer, Buffer_Buff_Clear_Test) {
-	nkpp::Buffer buff;
+	zia::Buffer buff;
 
 	buff.write<std::string>("Value");
 	buff.clear();
@@ -27,7 +27,7 @@ TEST(Buffer, Buffer_Buff_Clear_Test) {
 }
 
 TEST(Buffer, Buffer_Buff_Get_Wroted_Size_String_Test) {
-	nkpp::Buffer buff;
+	zia::Buffer buff;
 	auto str = std::string("Value");
 
 	buff.write<std::string>(str);
@@ -36,7 +36,7 @@ TEST(Buffer, Buffer_Buff_Get_Wroted_Size_String_Test) {
 }
 
 TEST(Buffer, Buffer_Buff_Get_Wroted_Size_Int_Test) {
-	nkpp::Buffer buff;
+	zia::Buffer buff;
 	auto nb = 5;
 
 	buff.write<int>(nb);
@@ -45,7 +45,7 @@ TEST(Buffer, Buffer_Buff_Get_Wroted_Size_Int_Test) {
 }
 
 /* TEST(Buffer, Buffer_Buff_Set_Data_String_Test) {
-	nkpp::Buffer buff;
+	zia::Buffer buff;
 	auto data = std::string("Some Data");
 
 	buff.setData<std::string>(&data, data.length());
@@ -55,7 +55,7 @@ TEST(Buffer, Buffer_Buff_Get_Wroted_Size_Int_Test) {
 }
 
 TEST(Buffer, Buffer_Buff_Set_Data_int_Test) {
-	nkpp::Buffer buff;
+	zia::Buffer buff;
 	auto data = 1234567;
 
 	buff.setData<int>(&data, sizeof(data));
