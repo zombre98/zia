@@ -91,7 +91,7 @@ Hooked functions take a Context (see Context section below) and return a status 
  enum class CodeStatus {
  	OK, // The module accepts the call
  	DECLINED, // The module declines the call
- 	HTTP_ERROR // The module alerts fo an error
+ 	HTTP_ERROR // The module alerts in case of an error
  };
  ```
 
