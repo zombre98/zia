@@ -22,8 +22,6 @@ if (APPLE)
     target_link_libraries(${TARGET_NAME} PRIVATE c++fs)
 endif()
 
-add_executable(${PROJECT_NAME} ${SRCS} server/Modules/TestModule.cpp)
-
 
 target_include_directories(${TARGET_NAME} PRIVATE lib/asio/include)
 target_include_directories(${TARGET_NAME} PRIVATE src)

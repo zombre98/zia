@@ -115,7 +115,7 @@ endif(DOXYGEN_FOUND)
 # --------------------------------------------------------------------------------
 # The following makes sure that an up-to-date version of googletest is available,
 # and built so that it may be used by your tests. 
-add_custom_target( git_update
+add_custom_target(git_update
     COMMAND git submodule init
     COMMAND git submodule update
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} )
