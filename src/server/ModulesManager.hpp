@@ -34,11 +34,10 @@ public:
 	 * @param filePath the path to the module
 	 */
 	void loadOneModule(const std::string &filePath) override {
-		zia::DlWrapper handler;
-
+		handlers_[filePath] = zia::DlWrapper();
 		try {
-			handler.open(filePath);
-			auto fnc = handler.getSymbol<void(*)(StageManager &)>("registerHooks");
+			handlers_[filePath].open(filePath);
+			auto fnc = handlers_[filePath].getSymbol<void(*)(StageManager &)>("registerHooks");
 
 			logging::debug << LOG_DEBUG << "Module Path : " << filePath << std::endl;
 			fnc(getStageManager());
@@ -47,6 +46,8 @@ public:
 		}
 	}
 
+private:
+	std::unordered_map<std::string, zia::DlWrapper> handlers_;
 };
 
 }

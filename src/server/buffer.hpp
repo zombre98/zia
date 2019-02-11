@@ -3,7 +3,7 @@
 #include <vector>
 #include <iostream>
 
-namespace nkpp {
+namespace zia {
 
 class Buffer {
   using bufferContainer = std::vector<uint8_t>;

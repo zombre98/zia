@@ -4,8 +4,11 @@
 #include "Utils/Logger.hpp"
 #include "server/IServer.hpp"
 #include "AsioClient.hpp"
+#include "server/ModulesManager.hpp"
 
-namespace nkpp {
+namespace zia {
+
+constexpr char MODULES_PATH[] = "/tmp/modules";
 
 class AsioServer : public IServer {
 public:
@@ -16,6 +19,7 @@ public:
 	 */
   AsioServer(const std::string &ip, unsigned short port) :
   acceptor_(service_, asio::ip::tcp::endpoint(asio::ip::address::from_string(ip), port)) {
+    moduleManager_.loadModules(MODULES_PATH);
     startAccept();
   }
 
@@ -79,15 +83,32 @@ private:
    */
   void startAccept() {
     AsioClient::AsioClientUPtr newClient = std::make_unique<AsioClient>(service_, [this](IClient &client){
+
       if (disconnectedCallback_)
         disconnectedCallback_(client);
     });
 
     acceptor_.async_accept(newClient->socket(), [nc = std::move(newClient), this](asio::error_code) mutable {
+    	// First hooks
+      for (auto &first : moduleManager_.getStageManager().connection().firstsHooks()) {
+        first.second(nc->getContext());
+      }
+
       clients_.push_back(std::move(nc));
       if (connectedCallback_)
         connectedCallback_(*clients_.back());
+
+      // Middle Hooks
+      for (auto &middle: moduleManager_.getStageManager().connection().middlesHooks()) {
+        middle.second(clients_.back()->getContext());
+      }
+
       clients_.back()->read();
+
+      // Last Hooks
+      for (auto &last: moduleManager_.getStageManager().connection().endsHooks()) {
+        last.second(clients_.back()->getContext());
+      }
       startAccept();
     });
   }
@@ -101,6 +122,8 @@ private:
   asio::ip::tcp::acceptor acceptor_;
 
   std::vector<AsioClient::AsioClientUPtr> clients_;
+
+  dems::ModulesManager moduleManager_;
 
 };
 

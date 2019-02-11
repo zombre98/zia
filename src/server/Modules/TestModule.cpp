@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "server/api/AModulesManager.hpp"
-#include "Utils/Logger.hpp"
+#include "../api/AModulesManager.hpp"
+#include "../../Utils/Logger.hpp"
 
 static constexpr char MODULE_NAME[] = "Logger";
 
@@ -12,23 +12,22 @@ extern "C" {
  * @param manager The Stage manager to hook the module
  */
 void registerHooks(dems::StageManager &manager) {
-	manager.request().hookToFirst(MODULE_NAME, [](dems::Context &ctx) {
+	manager.connection().hookToFirst(MODULE_NAME, [](dems::Context &ctx) {
 		logging::debug << LOG_DEBUG << "Stage: Request FIRST" << std::endl;
-		logging::debug << LOG_DEBUG << ctx.response.body << std::endl;
+		//logging::debug << LOG_DEBUG << ctx.response.body << std::endl;
 		return dems::CodeStatus::OK;
 	});
 
-	manager.request().hookToMiddle(MODULE_NAME, [](dems::Context &ctx) {
+	manager.connection().hookToMiddle(MODULE_NAME, [](dems::Context &ctx) {
 		logging::debug << LOG_DEBUG << "Stage: Request MIDDLE" << std::endl;
-		logging::debug << LOG_DEBUG << ctx.response.body << std::endl;
+		//logging::debug << LOG_DEBUG << ctx.response.body << std::endl;
 		return dems::CodeStatus::OK;
 	});
 
-	manager.request().hookToEnd(MODULE_NAME, [](dems::Context &ctx) {
+	manager.connection().hookToEnd(MODULE_NAME, [](dems::Context &ctx) {
 		logging::debug << LOG_DEBUG << "Stage: Request END";
-		logging::debug << LOG_DEBUG << ctx.response.body << std::endl;
+		//logging::debug << LOG_DEBUG << ctx.response.body << std::endl;
 		return dems::CodeStatus::OK;
-
 	});
 }
 

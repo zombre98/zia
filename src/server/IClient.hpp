@@ -2,7 +2,7 @@
 
 #include "buffer.hpp"
 
-namespace nkpp {
+namespace zia {
 
 class IClient {
 protected:

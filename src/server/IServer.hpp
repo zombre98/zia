@@ -4,7 +4,7 @@
 #include <functional>
 #include "IClient.hpp"
 
-namespace nkpp {
+namespace zia {
 
 class IServer {
 protected:

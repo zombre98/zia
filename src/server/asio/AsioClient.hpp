@@ -6,7 +6,7 @@
 #include <asio.hpp>
 #include <iostream>
 
-namespace nkpp {
+namespace zia {
 
 class AsioClient : public IClient {
 public:
@@ -133,6 +133,16 @@ private:
     return str;
   }
 
+public:
+
+  dems::Context &getContext() {
+    return context_;
+  }
+
+  const dems::Context &getContext() const {
+    return context_;
+  }
+
 private:
   onRead onReadCallback_;
   onDisconnected onDisconnectedCallback_;
@@ -143,6 +153,8 @@ private:
   asio::streambuf streamBuffer_;
 
   std::atomic_bool repeatRead_;
+
+  dems::Context context_;
 };
 
 }
