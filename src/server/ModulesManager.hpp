@@ -42,11 +42,6 @@ public:
 
 			logging::debug << LOG_DEBUG << "Module Path : " << filePath << std::endl;
 			fnc(getStageManager());
-			const auto &end = getStageManager().request().endsHooks();
-			auto it = std::find_if(end.begin(), end.end(), [](auto const &pair) { return pair.first == "testmodule"; });
-			if (it != end.end()) {
-				logging::debug << LOG_DEBUG << "Module well added" << std::endl;
-			}
 		} catch (const std::exception &e) {
 			logging::error << "Dl Error: " << e.what() << std::endl;
 		}
