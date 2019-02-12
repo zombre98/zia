@@ -68,7 +68,8 @@ available on each stage.
 | **middle** | Mostly for processing modules (e.g. PHP module). |
 | **last** | Called after processing (e.g. Logging module). |
 
-**If multiple functions hook to the same moment they will be called in the order the modules were loaded.**
+**If you wan't to hook multiple modules to the same hook you can chose the order by giving to the function an index.**
+**This index will order the map in Stage Object.**
 
 ---
 
