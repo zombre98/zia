@@ -2,8 +2,14 @@
 
 #include "buffer.hpp"
 
+/** @file
+ * @brief Class @ref IClient
+ */
 namespace nkpp {
 
+/**
+ * @brief A Client interface
+ */
 class IClient {
 protected:
   using onRead = std::function<void(Buffer &buffer)>;

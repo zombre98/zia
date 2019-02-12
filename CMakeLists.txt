@@ -102,10 +102,16 @@ include(CodeCoverage)
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-    add_custom_target(doc 
-        ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile &> doxygen.log
+    set(DOXYGEN_ENGINE Doxyfile)
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/external/m.css/doxygen/dox2html5.py)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile-mcss ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile-mcss @ONLY)
+        set(DOXYGEN_EXECUTABLE ${CMAKE_CURRENT_SOURCE_DIR}/external/m.css/doxygen/dox2html5.py)
+        set(DOXYGEN_ENGINE Doxyfile-mcss)
+    endif()
+    add_custom_target(doc
+        ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${DOXYGEN_ENGINE} &> /dev/null
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        COMMENT "${BoldMagenta}Generating API documentation with Doxygen (open ./html/index.html to view).${ColourReset}" VERBATIM
+        COMMENT "${BoldMagenta}Generating API documentation with ${DOXYGEN_ENGINE} (open ${CMAKE_CURRENT_BINARY_DIR}/doc/html/index.html to view).${ColourReset}" VERBATIM
         )
 endif(DOXYGEN_FOUND)
 
