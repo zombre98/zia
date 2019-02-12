@@ -51,7 +51,7 @@ public:
 	* Unload a Module
 	* @param moduleName The module to unload
 	*/
-	virtual void unloadModule(const std::string &moduleName) override {}
+	void unloadModule(const std::string &moduleName) override {}
 
 
 };
