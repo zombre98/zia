@@ -53,14 +53,14 @@ public:
 	 * @brief Defines a hooked module function
 	 */
 	struct hook {
-		hook(std::string const &name, hookModuleCallback &&function) : moduleName(name), callback(std::move(callback)) {}
+		hook(std::string const &name, hookModuleCallback &&function) : moduleName(name), callback(std::move(function)) {}
 		std::string moduleName;
 		hookModuleCallback callback;
 	};
 	/**
 	 * @brief Defines a map of hooked functions
 	 */
-	using hookMap = std::map<uint, hook>;
+	using hookMap = std::multimap<uint, hook>;
 public:
 	/**
 	 * Hook to the start of the stage
