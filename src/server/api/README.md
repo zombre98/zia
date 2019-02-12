@@ -6,7 +6,7 @@ The goal of this API is to simplify the way you add modules in your ZIA<br/>
 In order to do that we tried to minimize the constraints that we impose
 
 Documentation: https://zia.bilel-fourati.fr/<br/>
-Discord: https://discord.gg/TwHGTn<br/>
+Discord: https://discord.gg/YymhyAx<br/>
 Issues: https://github.com/zombre98/dems-zia-api/issues
 
 For example to add a module you just have to do:
