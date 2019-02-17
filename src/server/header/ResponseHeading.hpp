@@ -6,99 +6,60 @@
 
 #include <unordered_map>
 #include <string>
-#include <numeric>
+#include "server/api/Heading.hpp"
 #include "HeaderEnum.hpp"
 
 constexpr char CRLF[] = "\r\n";
 
+namespace dems {
+
 namespace header {
 
-	class ResponseHeading {
+	class Heading : public IHeaders {
 		public:
-			/**
-			 * Deleted default constructor
-			 */
-			ResponseHeading() = delete;
-
 			/**
 			 * Default destructor
 			 */
-			~ResponseHeading() = default;
-			/**
-			 * Constructor
-			 * @param code HTTP status do you need for your header
-			 */
-			explicit ResponseHeading(http::StatusCode code) : statusCode{code} {}
+			~Heading() = default;
 
 			/**
-			 * Return the HTTP status code
-			 * @return
+			 * Default Constructor
 			 */
-			http::StatusCode getStatusCode() const noexcept { return statusCode; }
-			/**
-			 * Set the HTTP status code
-			 * @param code New HTTP code to set
-			 */
-			void setStatusCode(http::StatusCode code) noexcept { statusCode = code; }
+			Heading() = default;
 
-			/**
+		/**
+		 * Overload operator[] to make it work af a operator[] of std::map<std::string, std::string>
+		 * @param key for access to HTTP value
+		 * @return the header value
+		 */
+		std::string &operator[](std::string const &key) override {
+			return headers[key];
+		}
+
+		/**
+		 * Return header for the key
+		 * @param key Value that you searching
+		 * @return the value if it exist
+		 */
+		std::string const &getHeader(std::string const &key) const override {
+				return headers.at(key);
+		}
+
+		/**
 			 * Create a Header with a key and value
-			 * @param key for HTTP header
+			 * @param headerName for HTTP header
 			 * @param value add Value with the key
 			 */
-			void setHeader(std::string const &key, std::string const &value) {
-				if (!headers.count(key)) {
-					headers.emplace(key, value);
+			void setHeader(std::string const &headerName, std::string const &value) = overide {
+				if (!headers.count(headerName)) {
+					headers.emplace(headerName, value);
 					return;
 				}
-				headers[key] += "," + value;
+				headers[headerName] += "," + value;
 			}
 
-			/**
-			 * Return header for the key
-			 * @param key Value that you searching
-			 * @return the value if it exist
-			 */
-			std::optional<std::string> getHeader(std::string const &key) const {
-				if (headers.count(key))
-					return std::optional<std::string>{headers.at(key)};
-				return std::nullopt;
-			}
-
-			/**
-			 * Create a string header
-			 * @return The string header when you asked it as a string
-			 */
-			operator std::string() const {
-				std::string response("HTTP/1.1 ");
-				response += std::to_string(static_cast<int>(statusCode)) + CRLF;
-				for (auto &header : headers)
-					response += header.first + ":" + header.second + CRLF;
-				response += CRLF;
-				return response;
-			}
-
-			/**
-			 * Overload operator[] to make it work af a operator[] of std::map<std::string, std::string>
-			 * @param key for access to HTTP value
-			 * @return the header value
-			 */
-			std::string &operator[](std::string const &key) {
-				return headers[key];
-			}
-
-			/**
-			 * Overload operator[] to make it work af a operator[] of std::map<std::string, std::string>
-			 * @param key for access HTTP value
-			 * @return the consteness string of header
-			 */
-			std::string const &operator[](std::string const &key) const {
-				return headers.at(key);
-			}
-
-	private:
+		private:
 				std::unordered_map<std::string, std::string> headers;
-				http::StatusCode statusCode;
 		};
-
+	}
 }
