@@ -14,7 +14,7 @@ set(API server/api/AModulesManager.hpp
         server/api/Stage.hpp
         )
 
-set(server/header
+set(HEADER
         server/header/HeaderEnum.hpp
         server/header/ResponseHeading.hpp)
 
