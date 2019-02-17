@@ -27,25 +27,25 @@ namespace header {
 			 */
 			Heading() = default;
 
-		/**
-		 * Overload operator[] to make it work af a operator[] of std::map<std::string, std::string>
-		 * @param key for access to HTTP value
-		 * @return the header value
-		 */
-		std::string &operator[](std::string const &key) override {
-			return headers[key];
-		}
+			/**
+			 * Overload operator[] to make it work af a operator[] of std::map<std::string, std::string>
+			 * @param key for access to HTTP value
+			 * @return the header value
+			 */
+			std::string &operator[](std::string const &key) override {
+				return headers[key];
+			}
 
-		/**
-		 * Return header for the key
-		 * @param key Value that you searching
-		 * @return the value if it exist
-		 */
-		std::string const &getHeader(std::string const &key) const override {
-				return headers.at(key);
-		}
+			/**
+			 * Return header for the key
+			 * @param key Value that you searching
+			 * @return the value if it exist
+			 */
+			std::string const &getHeader(std::string const &key) const override {
+					return headers.at(key);
+			}
 
-		/**
+			/**
 			 * Create a Header with a key and value
 			 * @param headerName for HTTP header
 			 * @param value add Value with the key
@@ -58,7 +58,7 @@ namespace header {
 				headers[headerName] += "," + value;
 			}
 
-		private:
+			private:
 				std::unordered_map<std::string, std::string> headers;
 		};
 	}
