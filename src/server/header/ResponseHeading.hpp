@@ -50,7 +50,7 @@ namespace header {
 			 * @param headerName for HTTP header
 			 * @param value add Value with the key
 			 */
-			void setHeader(std::string const &headerName, std::string const &value) = overide {
+			void setHeader(std::string const &headerName, std::string const &value) override {
 				if (!headers.count(headerName)) {
 					headers.emplace(headerName, value);
 					return;
