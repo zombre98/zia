@@ -6,40 +6,48 @@
 #include <gtest/gtest.h>
 
 TEST(Header, Header_Basic_header_Test) {
-	dems::header::Heading responseHeading(http::StatusCode::OK);
-	EXPECT_EQ("HTTP/1.1 200\r\n\r\n", static_cast<std::string>(responseHeading));
+	dems::header::Heading responseHeading;
+
+	responseHeading.setHeader("key", "value");
+	EXPECT_EQ("value", responseHeading.getHeader("key"));
 }
 
 TEST(Header, Header_Add_Set_Header_Test) {
-	dems::header::Heading responseHeading(http::StatusCode::OK);
-	responseHeading.setHeader("Key", "Value");
-	EXPECT_EQ("HTTP/1.1 200\r\nKey:Value\r\n\r\n", static_cast<std::string>(responseHeading));
-	responseHeading.setHeader("Key", "Value1");
-	EXPECT_EQ("HTTP/1.1 200\r\nKey:Value,Value1\r\n\r\n", static_cast<std::string>(responseHeading));
-}
+	dems::header::Heading responseHeading;
 
-TEST(Header, Header_Add_Get_Header_Test) {
-	dems::header::Heading responseHeading(http::StatusCode::OK);
 	responseHeading.setHeader("Key", "Value");
 	EXPECT_EQ("Value", responseHeading.getHeader("Key"));
 	responseHeading.setHeader("Key", "Value1");
 	EXPECT_EQ("Value,Value1", responseHeading.getHeader("Key"));
-	EXPECT_EQ(std::nullopt, responseHeading.getHeader("Unset_Key"));
 }
 
-TEST(Header, Header_set_and_get_Status) {
-	dems::header::Heading responseHeading(http::StatusCode::OK);
-	EXPECT_EQ(http::StatusCode::OK, responseHeading.getStatusCode());
-	responseHeading.setStatusCode(http::StatusCode::Accepted);
-	EXPECT_EQ(http::StatusCode::Accepted, responseHeading.getStatusCode());
+TEST(Header, Header_Add_Get_Header_Test) {
+	dems::header::Heading responseHeading;
+
+	responseHeading.setHeader("Key", "Value");
+	EXPECT_EQ("Value", responseHeading.getHeader("Key"));
+	responseHeading.setHeader("Key", "Value1");
+	EXPECT_EQ("Value,Value1", responseHeading.getHeader("Key"));
+	EXPECT_EQ("", responseHeading["Unset_Key"]);
 }
 
 TEST(Header, Header_operator_hook) {
-	dems::header::Heading responseHeading(http::StatusCode::OK);
+	dems::header::Heading responseHeading;
+
 	responseHeading["Key"] = "Value";
 	EXPECT_EQ("Value", responseHeading.getHeader("Key"));
 	responseHeading["Key"] = "Value1";
 	EXPECT_EQ("Value1", responseHeading.getHeader("Key"));
 	EXPECT_EQ("Value1", responseHeading["Key"]);
 	EXPECT_EQ("", responseHeading["Unset_Key"]);
+}
+
+TEST(Header, Header_reference) {
+	dems::header::Heading responseHeading;
+
+	responseHeading["Key"] = "Value";
+	EXPECT_EQ("Value", responseHeading["Key"]);
+	auto &ref = responseHeading["Key"];
+	ref = "Modified value";
+	EXPECT_EQ("Modified value", responseHeading["Key"]);
 }
