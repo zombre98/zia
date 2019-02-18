@@ -9,7 +9,7 @@
 
 int main() {
 
-  zia::AsioServer serv("0.0.0.0", 4242);
+  /*zia::AsioServer serv("0.0.0.0", 4242);
 
   serv.whenOnConnected([](zia::IClient &client) {
     client.whenOnRead([&client](zia::Buffer &b){
@@ -26,6 +26,6 @@ int main() {
   });
   serv.whenOnDisconnected([](zia::IClient &client){
   });
-  serv.run();
+  serv.run();*/
   return 0;
 }

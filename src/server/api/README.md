@@ -6,18 +6,19 @@ The goal of this API is to simplify the way you add modules in your ZIA<br/>
 In order to do that we tried to minimize the constraints that we impose
 
 Documentation: https://zia.bilel-fourati.fr/<br/>
-Discord: https://discord.gg/TwHGTn<br/>
+Discord: https://discord.gg/YymhyAx<br/>
 Issues: https://github.com/zombre98/dems-zia-api/issues
 
 For example to add a module you just have to do:
 ```cpp
 extern "C" {
 
-    void registerHooks(dems::StageManager &manager) {
+  std::string registerHooks(dems::StageManager &manager) {
         manager.request().hookToEnd(0, "MyModule", [](dems::Context &ctx) {
             std::cout << "I'm an example module" << std::endl;
             return dems::CodeStatus::OK;
         });
+        return "MyModule";
     }
 
 };
@@ -27,10 +28,9 @@ extern "C" {
 
 AModulesManager should be instanciated **only once** in your project.<br/>
 It will let you load a directory of modules or a single module via the functions `loadModules` or `loadOneModule` respectively.<br/>
-The modules **must** be loaded in alphabetical order.<br/>
 AModulesManager provides a StageManager through `getStageManager` (cf. StageManager section below).
 
-Each module must expose a function called `registerHooks` through the use of `extern`.<br/>
+Each module must expose a function called `registerHooks` through the use of `extern` (for unix based system...), it must return the name of the module.<br/>
 The server must call this function passing the StageManager as arguement. The module will use it to hook functions at different stages of the request process.
 
 For example, here is some code that would go in the `registerHooks` function of a module:
@@ -68,7 +68,9 @@ available on each stage.
 | **middle** | Mostly for processing modules (e.g. PHP module). |
 | **last** | Called after processing (e.g. Logging module). |
 
-**If multiple functions hook to the same moment they will be called in the order the modules were loaded.**
+**If you wan't to hook multiple modules to the same hook you can choose the execution order by giving an index to the function.**<br/>
+**The index will be used to sort the Stage Object map.**<br/>
+**If you choose the same index on the same hook it will be ordered by the emplace order. **
 
 ---
 
@@ -91,7 +93,7 @@ Hooked functions take a Context (see Context section below) and return a status 
  enum class CodeStatus {
  	OK, // The module accepts the call
  	DECLINED, // The module declines the call
- 	HTTP_ERROR // The module alerts fo an error
+ 	HTTP_ERROR // The module alerts in case of an error
  };
  ```
 
@@ -189,7 +191,7 @@ static constexpr char MODULE_NAME[] = "Logger";
 
 extern "C" {
 
-void registerHooks(dems::StageManager &manager) {
+  std::string registerHooks(dems::StageManager &manager) {
     manager.request().hookToFirst(0, MODULE_NAME, [](dems::Context &ctx) {
         std::cout << "Stage: Request FIRST" << std::endl;
         std::cout << ctx.response.body << std::endl;
@@ -207,6 +209,7 @@ void registerHooks(dems::StageManager &manager) {
         std::cout << ctx.response.body << std::endl;
         return dems::CodeStatus::OK;
     });
+    return MODULE_NAME;
 }
 
 };

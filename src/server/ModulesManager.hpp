@@ -9,10 +9,10 @@
 #include "server/api/AModulesManager.hpp"
 #include "DlWrapper.hpp"
 
-namespace dems {
+namespace zia {
 
-class ModulesManager : public AModulesManager {
-	using moduleCallback = std::function<void(Context &)>;
+class ModulesManager : public dems::AModulesManager {
+	using moduleCallback = std::function<void(dems::Context &)>;
 public:
 	ModulesManager() = default;
 
@@ -37,13 +37,24 @@ public:
 		handlers_[filePath] = zia::DlWrapper();
 		try {
 			handlers_[filePath].open(filePath);
-			auto fnc = handlers_[filePath].getSymbol<void(*)(StageManager &)>("registerHooks");
+			auto fnc = handlers_[filePath].getSymbol<std::string(*)(dems::StageManager &)>("registerHooks");
 
 			logging::debug << LOG_DEBUG << "Module Path : " << filePath << std::endl;
 			fnc(getStageManager());
 		} catch (const std::exception &e) {
 			logging::error << "Dl Error: " << e.what() << std::endl;
 		}
+	}
+
+	/**
+	* Unload a Module
+	* @param moduleName The module to unload
+	*/
+	void unloadModule(const std::string &moduleName) override {
+		getStageManager().connection().unhookAll(moduleName);
+		getStageManager().request().unhookAll(moduleName);
+		getStageManager().chunks().unhookAll(moduleName);
+		getStageManager().disconnect().unhookAll(moduleName);
 	}
 
 private:
