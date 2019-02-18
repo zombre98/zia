@@ -15,8 +15,8 @@ set(API server/api/AModulesManager.hpp
         )
 
 set(HEADER
-        header/HeaderEnum.hpp
-        header/ResponseHeading.hpp)
+        server/header/HeaderEnum.hpp
+        server/header/ResponseHeading.hpp)
 
 set(UTILS
         Utils/Logger.hpp

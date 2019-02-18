@@ -4,8 +4,17 @@
 #include <functional>
 #include "IClient.hpp"
 
+/** @file
+ * @brief Class @ref IServer
+ */
+/** @namespace zia
+ * @brief zia project
+ */
 namespace zia {
 
+/**
+ * @brief A Server interface
+ */
 class IServer {
 protected:
   using onConnected = std::function<void(IClient &)>;
