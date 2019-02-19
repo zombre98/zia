@@ -58,6 +58,10 @@ namespace header {
 				headers[headerName] += "," + value;
 			}
 
+			std::string getWholeHeader() const override {
+				return "";
+			}
+
 			private:
 				std::unordered_map<std::string, std::string> headers;
 		};
