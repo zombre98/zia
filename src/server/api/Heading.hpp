@@ -49,7 +49,7 @@ public:
 	 * Return all the headers separated the line by one CRLF
 	 * @return All headers add by setHeader of operator[]
 	 */
-	virtual std::string getWholeHeader() const = 0;
+	virtual std::string getWholeHeaders() const = 0;
 
 	/**
 	 * Sets the value corresponding to the header name

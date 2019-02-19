@@ -58,7 +58,7 @@ namespace header {
 				headers[headerName] += "," + value;
 			}
 
-			std::string getWholeHeader() const override {
+			std::string getWholeHeaders() const override {
 				return "";
 			}
 
