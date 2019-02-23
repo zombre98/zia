@@ -9,6 +9,7 @@
 #include <vector>
 #include <functional>
 #include "Heading.hpp"
+#include "Config.hpp"
 
 /**
  * @brief dems namespace
@@ -33,6 +34,7 @@ struct Context {
 	header::HTTPMessage request;
 	header::HTTPMessage response;
 	int socketFd;
+	dems::config::Config config;
 };
 
 /**
@@ -60,7 +62,7 @@ public:
 	/**
 	 * @brief Defines a map of hooked functions
 	 */
-	using hookMap = std::multimap<uint, Hook>;
+	using hookMap = std::multimap<unsigned int, Hook>;
 public:
 	/**
 	 * Hook to the start of the stage
@@ -68,7 +70,7 @@ public:
 	 * @param moduleName The name of the module
 	 * @param callback The callback called when a stage Time is triggered
 	 */
-	void hookToFirst(uint index, const std::string &moduleName, hookModuleCallback &&callback) {
+	void hookToFirst(unsigned int index, const std::string &moduleName, hookModuleCallback &&callback) {
 		first_.emplace(index, Hook{moduleName, std::move(callback)});
 	}
 	/**
@@ -77,7 +79,7 @@ public:
 	 * @param moduleName The name of the module
 	 * @param callback The callback called when a stage Time is triggered
 	 */
-	void hookToMiddle(uint index, const std::string &moduleName, hookModuleCallback &&callback) {
+	void hookToMiddle(unsigned int index, const std::string &moduleName, hookModuleCallback &&callback) {
 		middle_.emplace(index, Hook{moduleName, std::move(callback)});
 	}
 	/**
@@ -86,7 +88,7 @@ public:
 	 * @param moduleName The name of the module
 	 * @param callback The callback called when a stage Time is triggered
 	 */
-	void hookToEnd(uint index, const std::string &moduleName, hookModuleCallback &&callback) {
+	void hookToEnd(unsigned int index, const std::string &moduleName, hookModuleCallback &&callback) {
 		last_.emplace(index, Hook{moduleName, std::move(callback)});
 	}
 
@@ -96,8 +98,10 @@ public:
 	 */
 	void unhookFirst(const std::string &moduleName) {
 		for (auto &[idx, hook] : first_) {
-			if (hook.moduleName == moduleName)
+			if (hook.moduleName == moduleName) {
 				first_.erase(idx);
+				break;
+			}
 		}
 	}
 
@@ -107,8 +111,10 @@ public:
 	 */
 	void unhookMiddle(const std::string &moduleName) {
 		for (auto &[idx, hook] : middle_) {
-			if (hook.moduleName == moduleName)
+			if (hook.moduleName == moduleName) {
 				middle_.erase(idx);
+				break;
+			}
 		}
 	}
 
@@ -118,8 +124,10 @@ public:
 	 */
 	void unhookLast(const std::string &moduleName) {
 		for (auto &[idx, hook] : last_) {
-			if (hook.moduleName == moduleName)
+			if (hook.moduleName == moduleName) {
 				last_.erase(idx);
+				break;
+			}
 		}
 	}
 

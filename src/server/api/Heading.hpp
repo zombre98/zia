@@ -46,6 +46,12 @@ public:
 	virtual std::string const &getHeader(const std::string &headerName) const = 0;
 
 	/**
+	 * Return all the headers separated the line by one CRLF
+	 * @return All headers add by setHeader or operator[]
+	 */
+	virtual std::string getWholeHeaders() const = 0;
+
+	/**
 	 * Sets the value corresponding to the header name
 	 * @param headerName The header name (ex: accept)
 	 * @param value The value corresponding to the header name (ex: application/json)
