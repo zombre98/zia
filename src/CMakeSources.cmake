@@ -20,6 +20,7 @@ set(HEADER
 
 set(UTILS
         Utils/Logger.hpp
+        Utils/JsonParser.hpp
         )
 
 set(MAIN
