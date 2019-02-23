@@ -2,6 +2,7 @@
 // Created by Thomas Burgaud on 2019-01-22.
 //
 
+#include "server/api/Heading.hpp"
 #include "server/header/ResponseHeading.hpp"
 #include <gtest/gtest.h>
 
