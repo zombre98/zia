@@ -21,7 +21,6 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-8
-            - python3-pip
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
@@ -30,8 +29,6 @@ before_install:
   # Combine global build options with OS/compiler-dependent options
   - eval "${MATRIX_EVAL}"
   - clang --version
-  - pip3 install --upgrade pip
-  - pip3 install conan
   - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
   - export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
 
