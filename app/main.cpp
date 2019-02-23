@@ -14,6 +14,7 @@ int main() {
 
   serv.whenOnConnected([&serv](zia::IClient &client) {
     client.whenOnRead([&client, &serv](zia::Buffer &b){
+    	std::cout << b.read<std::string>() << std::endl;
       for (auto &first : serv.getModulesManager().getStageManager().request().firstHooks()) {
         first.second.callback(client.getContext());
       }
