@@ -51,3 +51,11 @@ TEST(Header, Header_reference) {
 	ref = "Modified value";
 	EXPECT_EQ("Modified value", responseHeading["Key"]);
 }
+
+TEST(Header, Header_getWholeHeader) {
+	dems::header::Heading responseHeading;
+
+	responseHeading["Key"] = "Value";
+	responseHeading.setHeader("Key1", "Value1");
+	EXPECT_EQ("Key1:Value1\r\nKey:Value\r\n", responseHeading.getWholeHeaders());
+}
