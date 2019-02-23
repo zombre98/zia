@@ -21,7 +21,7 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-8
-            - pip
+            - python-pip
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
