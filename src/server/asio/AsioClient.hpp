@@ -3,6 +3,7 @@
 #pragma once
 
 #include "../IClient.hpp"
+#include "server/header/ResponseHeading.hpp"
 #include <asio.hpp>
 #include <iostream>
 #include <server/header/ResponseHeading.hpp>
@@ -15,7 +16,9 @@ public:
 
   explicit AsioClient(asio::io_service &ios, onDisconnected &&callback) : onDisconnectedCallback_(std::move(callback)),
                                                                           socket_(ios), repeatRead_(true)
-  {}
+  {
+    context_.response.headers = std::make_unique<dems::header::Heading>();
+  }
 public:
   /**
 	 * send data to the client

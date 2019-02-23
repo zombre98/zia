@@ -17,17 +17,15 @@ extern "C" {
 std::string registerHooks(dems::StageManager &manager) {
 	manager.request().hookToFirst(2, MODULE_NAME, [](dems::Context &ctx) {
 		std::cout << "I'm in HookFirst of LoadPathModule" << std::endl;
-		std::get<dems::header::Request>(ctx.request.firstLine).path = "./test.html";
+		ctx.request.firstLine = dems::header::Request{"GET", "./test.html", "HTTP/1.1"};
 		std::cout << std::get<dems::header::Request>(ctx.request.firstLine).path << std::endl;
 		std::ifstream fStream(std::get<dems::header::Request>(ctx.request.firstLine).path);
 		std::string s((std::istreambuf_iterator<char>(fStream)),
 									std::istreambuf_iterator<char>());
 		ctx.response.body = s;
-/*
-		std::get<dems::header::Response>(ctx.response.firstLine).httpVersion = "HTTP/1.1";
-		std::get<dems::header::Response>(ctx.response.firstLine).statusCode = "200";
-		ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
-*/
+		std::cout << ctx.response.body << std::endl;
+		ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "200", ""};
+		ctx.response.headersheaders->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
 		return dems::CodeStatus::OK;
 	});
 
