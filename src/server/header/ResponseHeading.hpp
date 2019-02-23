@@ -33,7 +33,7 @@ namespace header {
 			 * @return the header value
 			 */
 			std::string &operator[](std::string const &key) override {
-				return headers[key];
+				return headers_[key];
 			}
 
 			/**
@@ -42,7 +42,7 @@ namespace header {
 			 * @return the value if it exist
 			 */
 			std::string const &getHeader(std::string const &key) const override {
-					return headers.at(key);
+					return headers_.at(key);
 			}
 
 			/**
@@ -51,19 +51,27 @@ namespace header {
 			 * @param value add Value with the key
 			 */
 			void setHeader(std::string const &headerName, std::string const &value) override {
-				if (!headers.count(headerName)) {
-					headers.emplace(headerName, value);
+				if (!headers_.count(headerName)) {
+					headers_.emplace(headerName, value);
 					return;
 				}
-				headers[headerName] += "," + value;
+				headers_[headerName] += "," + value;
 			}
 
+			/**
+			* Return all the headers separated the line by one CRLF
+			* @return All headers add by setHeader of operator[]
+			*/
 			std::string getWholeHeaders() const override {
-				return "";
+				std::string headers;
+				for (auto const &it : headers_) {
+					headers += it.first + ":" + it.second + CRLF;
+				}
+				return headers;
 			}
 
 			private:
-				std::unordered_map<std::string, std::string> headers;
+				std::unordered_map<std::string, std::string> headers_;
 		};
 	}
 }
