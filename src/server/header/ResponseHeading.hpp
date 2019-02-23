@@ -6,7 +6,6 @@
 
 #include <unordered_map>
 #include <string>
-#include <nlohmann/json.hpp>
 #include "server/api/Heading.hpp"
 #include "HeaderEnum.hpp"
 
