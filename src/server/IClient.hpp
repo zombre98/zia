@@ -1,5 +1,6 @@
 #pragma once
 
+#include <server/header/ResponseHeading.hpp>
 #include "buffer.hpp"
 
 /** @file
@@ -41,6 +42,21 @@ public:
    * @return The const context
    */
   virtual const dems::Context &getContext() const = 0;
+  /**
+   *
+   * @return The Heading as const
+   */
+  virtual const dems::header::Heading &getHeading() const = 0;
+  /**
+   *
+   * @return The Heading
+   */
+  virtual dems::header::Heading &getHeading() = 0;
+  /**
+   *
+   * @return The raw socket
+   */
+  virtual int getRawSocket() = 0;
   /**
    * The desctructor
    */

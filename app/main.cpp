@@ -14,6 +14,12 @@ int main() {
 
   serv.whenOnConnected([&serv](zia::IClient &client) {
     client.whenOnRead([&client, &serv](zia::Buffer &b){
+      auto data = b.read<std::string>();
+      auto &context = client.getContext();
+
+			std::copy(data.begin(), data.end(), std::back_inserter(context.rawData));
+			dems::header::fillHeading(data, context, client.getHeading());
+			context.socketFd = client.getRawSocket();
       for (auto &first : serv.getModulesManager().getStageManager().request().firstHooks()) {
         first.second.callback(client.getContext());
       }

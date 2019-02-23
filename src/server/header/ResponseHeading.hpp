@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by Thomas Burgaud on 2019-01-22.
 //
@@ -8,6 +10,7 @@
 #include <string>
 #include "server/api/Heading.hpp"
 #include "HeaderEnum.hpp"
+#include "Utils/Utils.hpp"
 
 constexpr char CRLF[] = "\r\n";
 
@@ -15,7 +18,13 @@ namespace dems {
 
 namespace header {
 
-	class Heading : public IHeaders {
+std::tuple<std::string, std::string, std::string> parseFirstLine(std::string line) {
+	std::vector<std::string> tokens = zia::utils::split(std::move(line), ' ');
+
+	return std::make_tuple(tokens[0], tokens[1], tokens[2]);
+}
+
+class Heading : public IHeaders {
 		public:
 			/**
 			 * Default destructor
@@ -73,5 +82,28 @@ namespace header {
 			private:
 				std::unordered_map<std::string, std::string> headers_;
 		};
+
+void fillHeading(const std::string &data, dems::Context &context, Heading &heading) {
+	std::istringstream dataStream(data);
+
+	std::string line;
+	std::getline(dataStream, line);
+	const auto &[method, path, httpversion] = dems::header::parseFirstLine(line);
+	context.request.firstLine = dems::header::Request {method, path, httpversion};
+
+	while (std::getline(dataStream, line)) {
+		std::cout << "LINE: " << line << std::endl;
+		auto members = zia::utils::split(line, ' ');
+
+		if (!members[0].empty() && !members[1].empty()) {
+			members[0].resize(members[0].size() - 1);
+			heading[members[0]] = members[1];
+			std::cout << members[0] << " FOR: " << members[1] << std::endl;
+		}
 	}
 }
+
+}
+
+}
+

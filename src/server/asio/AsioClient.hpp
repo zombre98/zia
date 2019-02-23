@@ -5,6 +5,7 @@
 #include "../IClient.hpp"
 #include <asio.hpp>
 #include <iostream>
+#include <server/header/ResponseHeading.hpp>
 
 namespace zia {
 
@@ -42,11 +43,14 @@ public:
     onDisconnectedCallback_ = std::move(callback);
   }
 
+  int getRawSocket() override {
+    return socket_.native_handle();
+  }
+
   /**
    * Read from the client without delimitation
    */
   void read() {
-    socket_.cancel();
     logging::debug << LOG_DEBUG << "Read Some" << std::endl;
     socket_.async_read_some(asio::buffer(buffer_.getBufferContainer()), [this](asio::error_code error, std::size_t bTranfered) {
       if (!onReadCall(error, bTranfered))
@@ -137,6 +141,14 @@ public:
     return context_;
   }
 
+  dems::header::Heading &getHeading() override {
+    return heading_;
+  }
+
+  const dems::header::Heading &getHeading() const override {
+    return heading_;
+  }
+
 private:
   onRead onReadCallback_;
   onDisconnected onDisconnectedCallback_;
@@ -149,6 +161,7 @@ private:
   std::atomic_bool repeatRead_;
 
   dems::Context context_;
+  dems::header::Heading heading_;
 };
 
 }
