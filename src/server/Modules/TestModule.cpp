@@ -28,7 +28,6 @@ std::string registerHooks(dems::StageManager &manager) {
 		logging::debug << LOG_DEBUG << "Stage: Request END";
 		logging::debug << LOG_DEBUG << ctx.response.body << std::endl;
 		return dems::CodeStatus::OK;
-
 	});
 	return MODULE_NAME;
 }

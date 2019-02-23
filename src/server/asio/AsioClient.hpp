@@ -21,7 +21,7 @@ public:
 	 * @param buffer The data to send
 	 */
   void write(const Buffer &buffer) override {
-    asio::async_write(socket_, asio::buffer(buffer.getBufferContainer(), buffer.getWroteSize()), [](asio::error_code, std::size_t size){
+    asio::async_write(socket_, asio::buffer(buffer.getBufferContainer(), buffer.getWroteSize()), [](asio::error_code, std::size_t){
         logging::debug << "Send data" << std::endl;
     });
   }
@@ -42,8 +42,6 @@ public:
     onDisconnectedCallback_ = std::move(callback);
   }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "InfiniteRecursion"
   /**
    * Read from the client without delimitation
    */
@@ -57,10 +55,7 @@ public:
         read();
     });
   }
-#pragma clang diagnostic pop
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "InfiniteRecursion"
   /**
    * Read from the client until a delimitation
    * @param delim The delimitation
@@ -80,7 +75,6 @@ public:
         read(delim);
     });
   }
-#pragma clang diagnostic pop
 
   /**
    * Read data continuously or not
@@ -135,11 +129,11 @@ private:
 
 public:
 
-  dems::Context &getContext() {
+  dems::Context &getContext() override {
     return context_;
   }
 
-  const dems::Context &getContext() const {
+  const dems::Context &getContext() const override {
     return context_;
   }
 

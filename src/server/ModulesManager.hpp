@@ -15,6 +15,9 @@ class ModulesManager : public dems::AModulesManager {
 	using moduleCallback = std::function<void(dems::Context &)>;
 public:
 	ModulesManager() = default;
+	~ModulesManager() override {
+		unloadModules();
+	}
 
 public:
 	/**
@@ -40,7 +43,7 @@ public:
 			auto fnc = handlers_[filePath].getSymbol<std::string(*)(dems::StageManager &)>("registerHooks");
 
 			logging::debug << LOG_DEBUG << "Module Path : " << filePath << std::endl;
-			fnc(getStageManager());
+			modulesNames_.push_back(fnc(getStageManager()));
 		} catch (const std::exception &e) {
 			logging::error << "Dl Error: " << e.what() << std::endl;
 		}
@@ -57,7 +60,14 @@ public:
 		getStageManager().disconnect().unhookAll(moduleName);
 	}
 
+	void unloadModules() {
+		for (const auto &name : modulesNames_) {
+			unloadModule(name);
+		}
+	}
+
 private:
+	std::vector<std::string> modulesNames_;
 	std::unordered_map<std::string, zia::DlWrapper> handlers_;
 };
 
