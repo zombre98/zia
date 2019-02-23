@@ -8,6 +8,7 @@
 
 #include <unordered_map>
 #include <string>
+#include "server/api/Stage.hpp"
 #include "server/api/Heading.hpp"
 #include "HeaderEnum.hpp"
 #include "Utils/Utils.hpp"
