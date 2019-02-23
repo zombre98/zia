@@ -23,6 +23,11 @@ std::string registerHooks(dems::StageManager &manager) {
 		std::string s((std::istreambuf_iterator<char>(fStream)),
 									std::istreambuf_iterator<char>());
 		ctx.response.body = s;
+/*
+		std::get<dems::header::Response>(ctx.response.firstLine).httpVersion = "HTTP/1.1";
+		std::get<dems::header::Response>(ctx.response.firstLine).statusCode = "200";
+		ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
+*/
 		return dems::CodeStatus::OK;
 	});
 
