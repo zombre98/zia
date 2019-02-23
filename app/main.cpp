@@ -3,8 +3,6 @@
 
 #define ASIO_STANDALONE 1
 
-class ResponseHeading;
-
 #include "Utils/Logger.hpp"
 #include "server/asio/AsioServer.hpp"
 #include "server/IClient.hpp"
