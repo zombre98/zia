@@ -92,13 +92,11 @@ void fillHeading(const std::string &data, dems::Context &context, Heading &headi
 	context.request.firstLine = dems::header::Request {method, path, httpversion};
 
 	while (std::getline(dataStream, line)) {
-		std::cout << "LINE: " << line << std::endl;
 		auto members = zia::utils::split(line, ' ');
 
 		if (!members[0].empty() && !members[1].empty()) {
 			members[0].resize(members[0].size() - 1);
 			heading[members[0]] = members[1];
-			std::cout << members[0] << " FOR: " << members[1] << std::endl;
 		}
 	}
 }
