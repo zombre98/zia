@@ -1,11 +1,10 @@
-#include <utility>
-
 //
 // Created by Thomas Burgaud on 2019-02-23.
 //
 
 #pragma once
 
+#include <utility>
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <string>
