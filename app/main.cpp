@@ -1,5 +1,6 @@
 #include <iostream>
 #include <server/ModulesManager.hpp>
+#include <Utils/JsonParser.hpp>
 
 #define ASIO_STANDALONE 1
 
@@ -9,13 +10,15 @@
 #include "server/header/ResponseHeading.hpp"
 
 int main() {
-
   zia::AsioServer serv("0.0.0.0", 4242);
+	zia::Utils::JsonParser config("config.json");
 
-  serv.whenOnConnected([&serv](zia::IClient &client) {
-    client.whenOnRead([&client, &serv](zia::Buffer &b){
+  serv.whenOnConnected([&serv, &config](zia::IClient &client) {
+    client.whenOnRead([&client, &serv, &config](zia::Buffer &b){
       auto data = b.read<std::string>();
       auto &context = client.getContext();
+      context.config["root"].v = config.get<std::string>("root");
+      std::cout << std::get<std::string>(context.config["root"].v) << std::endl;
 
 			std::copy(data.begin(), data.end(), std::back_inserter(context.rawData));
 			dems::header::fillHeading(data, context, client.getHeading());

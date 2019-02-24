@@ -5,6 +5,7 @@
 #include "LoadPathModule.hpp"
 #include "../api/AModulesManager.hpp"
 #include "../../Utils/Logger.hpp"
+#include "../api/Config.hpp"
 
 static constexpr char MODULE_NAME[] = "LoadPath";
 
@@ -17,7 +18,9 @@ extern "C" {
 std::string registerHooks(dems::StageManager &manager) {
 	manager.request().hookToFirst(2, MODULE_NAME, [](dems::Context &ctx) {
 		std::cout << "I'm in HookFirst of LoadPathModule" << std::endl;
-		std::ifstream fStream("." + std::get<dems::header::Request>(ctx.request.firstLine).path);
+		auto &root = std::get<std::string>(ctx.config["root"].v);
+		std::cout << root << std::endl;
+		std::ifstream fStream(root + std::get<dems::header::Request>(ctx.request.firstLine).path);
 		std::string s((std::istreambuf_iterator<char>(fStream)),
 									std::istreambuf_iterator<char>());
 		ctx.response.body = s;
