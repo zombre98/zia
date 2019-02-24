@@ -44,16 +44,6 @@ public:
   virtual const dems::Context &getContext() const = 0;
   /**
    *
-   * @return The Heading as const
-   */
-  virtual const dems::header::Heading &getHeading() const = 0;
-  /**
-   *
-   * @return The Heading
-   */
-  virtual dems::header::Heading &getHeading() = 0;
-  /**
-   *
    * @return The raw socket
    */
   virtual int getRawSocket() = 0;

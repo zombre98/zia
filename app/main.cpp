@@ -7,7 +7,7 @@
 #include "server/asio/AsioServer.hpp"
 #include "server/IClient.hpp"
 #include "server/header/ResponseHeading.hpp"
-#include "Utils/JsonParser.hpp"
+//#include "Utils/JsonParser.hpp"
 
 int main() {
 
@@ -19,7 +19,7 @@ int main() {
       auto &context = client.getContext();
 
 			std::copy(data.begin(), data.end(), std::back_inserter(context.rawData));
-			dems::header::fillHeading(data, context, client.getHeading());
+			dems::header::fillHeading(data, context, *context.request.headers);
 			context.socketFd = client.getRawSocket();
       for (auto &first : serv.getModulesManager().getStageManager().request().firstHooks()) {
         first.second.callback(client.getContext());

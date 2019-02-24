@@ -84,7 +84,7 @@ class Heading : public IHeaders {
 				std::unordered_map<std::string, std::string> headers_;
 		};
 
-void fillHeading(const std::string &data, dems::Context &context, Heading &heading) {
+void fillHeading(const std::string &data, dems::Context &context, IHeaders &heading) {
 	std::istringstream dataStream(data);
 
 	std::string line;
@@ -97,7 +97,8 @@ void fillHeading(const std::string &data, dems::Context &context, Heading &headi
 
 		if (!members[0].empty() && !members[1].empty()) {
 			members[0].resize(members[0].size() - 1);
-			heading[members[0]] = members[1];
+			if (!members[0].empty() && !members[1].empty())
+				heading[members[0]] = members[1];
 		}
 	}
 }
