@@ -102,6 +102,16 @@ void fillHeading(const std::string &data, Context &context, Heading &heading) {
 	}
 }
 
+std::string constructResponse(Context &context) {
+	std::string response;
+	auto ctxReponse = std::get<header::Response>(context.response.firstLine);
+
+	response = ctxReponse.httpVersion + " " + ctxReponse.statusCode + " " + ctxReponse.message + CRLF;
+	response += context.response.headers->getWholeHeaders() + CRLF;
+	response += context.response.body;
+	return response;
+}
+
 }
 
 }

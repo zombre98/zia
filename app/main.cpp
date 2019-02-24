@@ -29,6 +29,11 @@ int main() {
       for (auto &end : serv.getModulesManager().getStageManager().request().endHooks()) {
         end.second.callback(client.getContext());
       }
+      auto response = dems::header::constructResponse(client.getContext());
+      std::cout << response << std::endl;
+      zia::Buffer responseBuffer;
+      responseBuffer.write<std::string>(response);
+      client.write(responseBuffer);
       //logging::debug << LOG_TIME << b.read<std::string>() << std::endl;
 			/*header::ResponseHeading responseHeading(http::StatusCode::OK);
 			responseHeading.setHeader("Content-Length", "28");

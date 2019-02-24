@@ -17,18 +17,15 @@ extern "C" {
 std::string registerHooks(dems::StageManager &manager) {
 	manager.request().hookToFirst(2, MODULE_NAME, [](dems::Context &ctx) {
 		std::cout << "I'm in HookFirst of LoadPathModule" << std::endl;
-		ctx.request.firstLine = dems::header::Request{"GET", "./test.html", "HTTP/1.1"};
-		std::cout << std::get<dems::header::Request>(ctx.request.firstLine).path << std::endl;
-		std::ifstream fStream(std::get<dems::header::Request>(ctx.request.firstLine).path);
+		std::ifstream fStream("." + std::get<dems::header::Request>(ctx.request.firstLine).path);
 		std::string s((std::istreambuf_iterator<char>(fStream)),
 									std::istreambuf_iterator<char>());
 		ctx.response.body = s;
-		std::cout << ctx.response.body << std::endl;
 		ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "200", ""};
-		ctx.response.headersheaders->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
+		ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
+		std::cout << "Leaving LoadPath Module without problem" << std::endl;
 		return dems::CodeStatus::OK;
 	});
-
 	return MODULE_NAME;
 }
 
