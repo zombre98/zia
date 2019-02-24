@@ -25,7 +25,7 @@ if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
    set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-add_executable(${PROJECT_NAME} ${SRCS})
+add_executable(${PROJECT_NAME} ${SRCS} Utils/Utils.hpp)
 
 target_include_directories(${TARGET_NAME} PRIVATE lib/asio/include)
 target_include_directories(${TARGET_NAME} PRIVATE src)

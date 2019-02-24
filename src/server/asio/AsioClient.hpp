@@ -144,14 +144,6 @@ public:
     return context_;
   }
 
-  dems::header::Heading &getHeading() override {
-    return heading_;
-  }
-
-  const dems::header::Heading &getHeading() const override {
-    return heading_;
-  }
-
 private:
   onRead onReadCallback_;
   onDisconnected onDisconnectedCallback_;

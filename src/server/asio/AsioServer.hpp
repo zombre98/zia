@@ -102,6 +102,8 @@ private:
 
     acceptor_.async_accept(newClient_->socket(), [this](asio::error_code) {
       clients_.push_back(std::move(newClient_));
+      clients_.back()->getContext().request.headers = std::make_unique<dems::header::Heading>();
+      clients_.back()->getContext().response.headers = std::make_unique<dems::header::Heading>();
       // First Hooks
       for (auto &first: moduleManager_.getStageManager().connection().firstHooks()) {
         first.second.callback(clients_.back()->getContext());

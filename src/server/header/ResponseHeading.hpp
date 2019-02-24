@@ -84,20 +84,21 @@ class Heading : public IHeaders {
 				std::unordered_map<std::string, std::string> headers_;
 		};
 
-void fillHeading(const std::string &data, Context &context, Heading &heading) {
+void fillHeading(const std::string &data, dems::Context &context, IHeaders &heading) {
 	std::istringstream dataStream(data);
 
 	std::string line;
 	std::getline(dataStream, line);
-	const auto &[method, path, httpversion] = header::parseFirstLine(line);
-	context.request.firstLine = header::Request {method, path, httpversion};
+	const auto &[method, path, httpversion] = dems::header::parseFirstLine(line);
+	context.request.firstLine = dems::header::Request {method, path, httpversion};
 
 	while (std::getline(dataStream, line)) {
 		auto members = zia::utils::split(line, ' ');
 
 		if (!members[0].empty() && !members[1].empty()) {
 			members[0].resize(members[0].size() - 1);
-			heading[members[0]] = members[1];
+			if (!members[0].empty() && !members[1].empty())
+				heading[members[0]] = members[1];
 		}
 	}
 }
