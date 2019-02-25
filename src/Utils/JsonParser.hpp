@@ -24,6 +24,12 @@ namespace zia::Utils {
 			return data_[key].get<T>();
 		}
 
+		bool reloadFile(std::string const &filename) {
+			filename_ = filename;
+			open();
+			return true;
+		}
+
 		nlohmann::json &getJsonObject() {
 			return data_;
 		}

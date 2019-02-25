@@ -18,10 +18,7 @@ int main() {
     client.whenOnRead([&client, &serv, &config](zia::Buffer &b){
       auto data = b.read<std::string>();
       auto &context = client.getContext();
-      // TODO Make a functioin that load configugartion file
-      context.config["root"].v = config.get<std::string>("root");
-      std::cout << std::get<std::string>(context.config["root"].v) << std::endl;
-
+			dems::header::constructConfig(client.getContext(), config);
 			std::copy(data.begin(), data.end(), std::back_inserter(context.rawData));
 			dems::header::fillHeading(data, context, *context.request.headers);
 			context.socketFd = client.getRawSocket();

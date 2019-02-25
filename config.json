@@ -1,4 +1,4 @@
 {
   "root": "/tmp/",
-  "default": "index.html"
+  "default_file": "index.html"
 }

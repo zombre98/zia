@@ -65,7 +65,7 @@ class Heading : public IHeaders {
 					headers_.emplace(headerName, value);
 					return;
 				}
-				headers_[headerName] += "," + value;
+				headers_[headerName] = value;
 			}
 
 			/**
@@ -101,6 +101,12 @@ void fillHeading(const std::string &data, dems::Context &context, IHeaders &head
 				heading[members[0]] = members[1];
 		}
 	}
+}
+
+void constructConfig(Context &ctx, zia::Utils::JsonParser &config) {
+	ctx.config["root"].v = config.get<std::string>("root");
+	ctx.config["default_file"].v = config.get<std::string>("default_file"),
+	std::cout << std::get<std::string>(ctx.config["root"].v) << std::endl;
 }
 
 std::string constructResponse(Context &context) {
