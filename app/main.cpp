@@ -17,7 +17,7 @@ int main() {
     client.whenOnRead([&client, &serv, &config](zia::Buffer &b){
       auto data = b.read<std::string>();
       auto &context = client.getContext();
-			dems::header::constructConfig(client.getContext(), config);
+      dems::header::constructConfig(client.getContext(), config);
 			std::copy(data.begin(), data.end(), std::back_inserter(context.rawData));
 			dems::header::fillHeading(data, context, *context.request.headers);
 			context.socketFd = client.getRawSocket();
@@ -31,7 +31,6 @@ int main() {
         end.second.callback(client.getContext());
       }
       auto response = dems::header::constructResponse(client.getContext());
-      std::cout << response << std::endl;
       zia::Buffer responseBuffer;
       responseBuffer.write<std::string>(response);
       client.write(responseBuffer);

@@ -104,11 +104,32 @@ void fillHeading(const std::string &data, dems::Context &context, IHeaders &head
 	}
 }
 
-void constructConfig(Context &ctx, zia::utils::JsonParser &config) {
-	ctx.config["root"].v = config.get<std::string>("root");
-	ctx.config["default_file"].v = config.get<std::string>("default_file"),
-	std::cout << std::get<std::string>(ctx.config["root"].v) << std::endl;
+void constructObject(dems::config::Config &config, nlohmann::json const &jsonObject) {
+	for (nlohmann::json::const_iterator it = jsonObject.begin(); it != jsonObject.end(); ++it) {
+		if (jsonObject[it.key()].is_string()) {
+			config[it.key()].v = jsonObject[it.key()].get<std::string>();
+			std::cout << "String object : " << jsonObject[it.key()].get<std::string>() << std::endl;
+		}
+		if (jsonObject[it.key()].is_boolean()) {
+			config[it.key()].v = jsonObject[it.key()].get<bool>();
+			std::cout << "Boolean object : " << jsonObject[it.key()].get<bool>() << std::endl;
+		}
+		if (jsonObject[it.key()].is_number()) {
+			config[it.key()].v = jsonObject[it.key()].get<long long>();
+			std::cout << "Number object : " << jsonObject[it.key()].get<long long>() << std::endl;
+		}
+		if (jsonObject[it.key()].is_object()) {
+			std::cout << "Construct an Object for key : " << it.key()  << std::endl;
+			config.emplace(it.key(), dems::config::ConfigValue{dems::config::ConfigObject{}});
+			constructObject(std::get<dems::config::Config>(config[it.key()].v), jsonObject[it.key()].get<nlohmann::json>());
+		}
+	}
 }
+
+void constructConfig(Context &ctx, zia::utils::JsonParser &config) {
+		auto &jsonObject = config.getJsonObject();
+		constructObject(ctx.config, jsonObject);
+	}
 
 std::string constructResponse(Context &context) {
 	std::string response;

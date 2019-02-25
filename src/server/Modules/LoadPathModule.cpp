@@ -30,11 +30,10 @@ std::string registerHooks(dems::StageManager &manager) {
 		  ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
 		  return dems::CodeStatus::OK;
 		}
+		std::cout << "['object']['object'] = " << std::get<std::string>(std::get<dems::config::ConfigObject>(ctx.config["object"].v)["object"].v) << std::endl;
 		std::ifstream fStream(path);
-		std::cout << "Read is open : " << fStream.is_open() << std::endl;
 		std::string s((std::istreambuf_iterator<char>(fStream)), std::istreambuf_iterator<char>());
 		ctx.response.body = s;
-		std::cout << "In load File Module : " << s << std::endl;
 		ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "200", ""};
 		ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
 		std::cout << "Leaving LoadPath Module without problem" << std::endl;
