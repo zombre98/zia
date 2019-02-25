@@ -18,6 +18,7 @@ int main() {
     client.whenOnRead([&client, &serv, &config](zia::Buffer &b){
       auto data = b.read<std::string>();
       auto &context = client.getContext();
+      // TODO Make a functioin that load configugartion file
       context.config["root"].v = config.get<std::string>("root");
       std::cout << std::get<std::string>(context.config["root"].v) << std::endl;
 
