@@ -5,8 +5,9 @@
 #include "../IClient.hpp"
 #include <asio.hpp>
 #include <iostream>
+#include <server/header/ResponseHeading.hpp>
 
-namespace nkpp {
+namespace zia {
 
 class AsioClient : public IClient {
 public:
@@ -21,7 +22,7 @@ public:
 	 * @param buffer The data to send
 	 */
   void write(const Buffer &buffer) override {
-    asio::async_write(socket_, asio::buffer(buffer.getBufferContainer(), buffer.getWroteSize()), [](asio::error_code, std::size_t size){
+    asio::async_write(socket_, asio::buffer(buffer.getBufferContainer(), buffer.getWroteSize()), [](asio::error_code, std::size_t){
         logging::debug << "Send data" << std::endl;
     });
   }
@@ -42,13 +43,14 @@ public:
     onDisconnectedCallback_ = std::move(callback);
   }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "InfiniteRecursion"
+  int getRawSocket() override {
+    return socket_.native_handle();
+  }
+
   /**
    * Read from the client without delimitation
    */
   void read() {
-    socket_.cancel();
     logging::debug << LOG_DEBUG << "Read Some" << std::endl;
     socket_.async_read_some(asio::buffer(buffer_.getBufferContainer()), [this](asio::error_code error, std::size_t bTranfered) {
       if (!onReadCall(error, bTranfered))
@@ -57,10 +59,7 @@ public:
         read();
     });
   }
-#pragma clang diagnostic pop
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "InfiniteRecursion"
   /**
    * Read from the client until a delimitation
    * @param delim The delimitation
@@ -80,7 +79,6 @@ public:
         read(delim);
     });
   }
-#pragma clang diagnostic pop
 
   /**
    * Read data continuously or not
@@ -133,6 +131,16 @@ private:
     return str;
   }
 
+public:
+
+  dems::Context &getContext() override {
+    return context_;
+  }
+
+  const dems::Context &getContext() const override {
+    return context_;
+  }
+
 private:
   onRead onReadCallback_;
   onDisconnected onDisconnectedCallback_;
@@ -143,6 +151,9 @@ private:
   asio::streambuf streamBuffer_;
 
   std::atomic_bool repeatRead_;
+
+  dems::Context context_;
+  dems::header::Heading heading_;
 };
 
 }

@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "server/api/AModulesManager.hpp"
-#include "Utils/Logger.hpp"
+#include "../api/AModulesManager.hpp"
+#include "../../Utils/Logger.hpp"
 
 static constexpr char MODULE_NAME[] = "Logger";
 
@@ -11,7 +11,7 @@ extern "C" {
  * The fonction requested by the ModuleManager to load the module
  * @param manager The Stage manager to hook the module
  */
-void registerHooks(dems::StageManager &manager) {
+std::string registerHooks(dems::StageManager &manager) {
 	manager.request().hookToFirst(1,MODULE_NAME, [](dems::Context &ctx) {
 		logging::debug << LOG_DEBUG << "Stage: Request FIRST" << std::endl;
 		logging::debug << LOG_DEBUG << ctx.response.body << std::endl;
@@ -28,8 +28,8 @@ void registerHooks(dems::StageManager &manager) {
 		logging::debug << LOG_DEBUG << "Stage: Request END";
 		logging::debug << LOG_DEBUG << ctx.response.body << std::endl;
 		return dems::CodeStatus::OK;
-
 	});
+	return MODULE_NAME;
 }
 
 };

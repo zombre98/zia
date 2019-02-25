@@ -7,10 +7,10 @@
 /** @file
  * @brief Class @ref IServer
  */
-/** @namespace nkpp
- * @brief nkpp library
+/** @namespace zia
+ * @brief zia project
  */
-namespace nkpp {
+namespace zia {
 
 /**
  * @brief A Server interface

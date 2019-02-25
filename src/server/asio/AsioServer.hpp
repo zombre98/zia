@@ -4,8 +4,11 @@
 #include "Utils/Logger.hpp"
 #include "server/IServer.hpp"
 #include "AsioClient.hpp"
+#include "server/ModulesManager.hpp"
 
-namespace nkpp {
+namespace zia {
+
+constexpr char MODULES_PATH[] = "/tmp/modules";
 
 class AsioServer : public IServer {
 public:
@@ -16,6 +19,7 @@ public:
 	 */
   AsioServer(const std::string &ip, unsigned short port) :
   acceptor_(service_, asio::ip::tcp::endpoint(asio::ip::address::from_string(ip), port)) {
+    moduleManager_.loadModules(MODULES_PATH);
     startAccept();
   }
 
@@ -43,6 +47,10 @@ public:
       return acceptor_.local_endpoint().address().to_string();
   }
 
+  zia::ModulesManager &getModulesManager() {
+    return moduleManager_;
+  }
+
   /**
 	 * Set a callback when a client connect to the server
 	 * @param callback The callback to call
@@ -56,7 +64,18 @@ public:
 	 * @param callback The callback to call
 	 */
   void whenOnDisconnected(IClient::onDisconnected &&callback) override {
-    disconnectedCallback_ = std::move(callback);
+    disconnectedCallback_ = [this, callIner = std::move(callback)](IClient &client) {
+      for (auto &first : moduleManager_.getStageManager().disconnect().firstHooks()) {
+        first.second.callback(client.getContext());
+      }
+      for (auto &middle : moduleManager_.getStageManager().disconnect().middleHooks()) {
+        middle.second.callback(client.getContext());
+      }
+      for (auto &last : moduleManager_.getStageManager().disconnect().endHooks()) {
+        last.second.callback(client.getContext());
+      }
+      callIner(client);
+    };
   }
 
   /**
@@ -72,8 +91,6 @@ public:
   ~AsioServer() override = default;
 
 private:
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "InfiniteRecursion"
   /**
    * Start accepting connections
    */
@@ -85,13 +102,29 @@ private:
 
     acceptor_.async_accept(newClient_->socket(), [this](asio::error_code) {
       clients_.push_back(std::move(newClient_));
+      clients_.back()->getContext().request.headers = std::make_unique<dems::header::Heading>();
+      clients_.back()->getContext().response.headers = std::make_unique<dems::header::Heading>();
+      // First Hooks
+      for (auto &first: moduleManager_.getStageManager().connection().firstHooks()) {
+        first.second.callback(clients_.back()->getContext());
+      }
       if (connectedCallback_)
         connectedCallback_(*clients_.back());
+
+      // Middle Hooks
+      for (auto &middle: moduleManager_.getStageManager().connection().middleHooks()) {
+        middle.second.callback(clients_.back()->getContext());
+      }
+
+      // Last Hooks
+      for (auto &last: moduleManager_.getStageManager().connection().endHooks()) {
+        last.second.callback(clients_.back()->getContext());
+      }
+
       clients_.back()->read();
       startAccept();
     });
   }
-#pragma clang diagnostic pop
 
 private:
   onConnected connectedCallback_;
@@ -101,6 +134,7 @@ private:
   asio::ip::tcp::acceptor acceptor_;
 
   std::vector<AsioClient::AsioClientUPtr> clients_;
+  zia::ModulesManager moduleManager_;
   AsioClient::AsioClientUPtr newClient_;
 };
 

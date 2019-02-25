@@ -4,17 +4,20 @@
 #include <unordered_map>
 #include <filesystem>
 #include <iostream>
-#include <Utils/Logger.hpp>
 
+#include "Utils/Logger.hpp"
 #include "server/api/AModulesManager.hpp"
 #include "DlWrapper.hpp"
 
-namespace dems {
+namespace zia {
 
-class ModulesManager : public AModulesManager {
-	using moduleCallback = std::function<void(Context &)>;
+class ModulesManager : public dems::AModulesManager {
+	using moduleCallback = std::function<void(dems::Context &)>;
 public:
 	ModulesManager() = default;
+	~ModulesManager() override {
+		unloadModules();
+	}
 
 public:
 	/**
@@ -34,14 +37,13 @@ public:
 	 * @param filePath the path to the module
 	 */
 	void loadOneModule(const std::string &filePath) override {
-		zia::DlWrapper handler;
-
+		handlers_[filePath] = zia::DlWrapper();
 		try {
-			handler.open(filePath);
-			auto fnc = handler.getSymbol<void(*)(StageManager &)>("registerHooks");
+			handlers_[filePath].open(filePath);
+			auto fnc = handlers_[filePath].getSymbol<std::string(*)(dems::StageManager &)>("registerHooks");
 
 			logging::debug << LOG_DEBUG << "Module Path : " << filePath << std::endl;
-			fnc(getStageManager());
+			modulesNames_.push_back(fnc(getStageManager()));
 		} catch (const std::exception &e) {
 			logging::error << "Dl Error: " << e.what() << std::endl;
 		}
@@ -51,9 +53,22 @@ public:
 	* Unload a Module
 	* @param moduleName The module to unload
 	*/
-	void unloadModule(const std::string &moduleName) override {}
+	void unloadModule(const std::string &moduleName) override {
+		getStageManager().connection().unhookAll(moduleName);
+		getStageManager().request().unhookAll(moduleName);
+		getStageManager().chunks().unhookAll(moduleName);
+		getStageManager().disconnect().unhookAll(moduleName);
+	}
 
+	void unloadModules() {
+		for (const auto &name : modulesNames_) {
+			unloadModule(name);
+		}
+	}
 
+private:
+	std::vector<std::string> modulesNames_;
+	std::unordered_map<std::string, zia::DlWrapper> handlers_;
 };
 
 }
