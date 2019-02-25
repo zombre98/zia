@@ -33,17 +33,14 @@ public:
    */
   virtual void whenOnDisconnected(onDisconnected &&callback) = 0;
   /**
-   *
    * @return The Context
    */
   virtual dems::Context &getContext() = 0;
   /**
-   *
    * @return The const context
    */
   virtual const dems::Context &getContext() const = 0;
   /**
-   *
    * @return The raw socket
    */
   virtual int getRawSocket() = 0;
