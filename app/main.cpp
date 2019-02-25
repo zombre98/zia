@@ -11,7 +11,7 @@
 
 int main() {
   zia::AsioServer serv("0.0.0.0", 4242);
-	zia::Utils::JsonParser config("config.json");
+	zia::utils::JsonParser config("config.json");
 
   serv.whenOnConnected([&serv, &config](zia::IClient &client) {
     client.whenOnRead([&client, &serv, &config](zia::Buffer &b){

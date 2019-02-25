@@ -10,7 +10,7 @@
 #include <string>
 #include <iostream>
 
-namespace zia::Utils {
+namespace zia::utils {
 	class JsonParser {
 
 	public:

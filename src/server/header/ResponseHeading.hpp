@@ -12,6 +12,7 @@
 #include "server/api/Heading.hpp"
 #include "HeaderEnum.hpp"
 #include "Utils/Utils.hpp"
+#include "Utils/JsonParser.hpp"
 
 constexpr char CRLF[] = "\r\n";
 
@@ -103,7 +104,7 @@ void fillHeading(const std::string &data, dems::Context &context, IHeaders &head
 	}
 }
 
-void constructConfig(Context &ctx, zia::Utils::JsonParser &config) {
+void constructConfig(Context &ctx, zia::utils::JsonParser &config) {
 	ctx.config["root"].v = config.get<std::string>("root");
 	ctx.config["default_file"].v = config.get<std::string>("default_file"),
 	std::cout << std::get<std::string>(ctx.config["root"].v) << std::endl;
