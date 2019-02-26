@@ -76,6 +76,7 @@ target_link_libraries(zia engine)  # Link the executable to the 'engine'.
 # The setup of Google Test is done at the very end of this file.
 add_executable(${TEST_MAIN} ${TESTFILES})
 add_dependencies(${TEST_MAIN} googletest engine)
+target_link_libraries(${TEST_MAIN} PRIVATE ${CONAN_LIBS})
 target_link_libraries(${TEST_MAIN} googletest engine pthread)
 add_custom_target(gtest 
     COMMAND "${PROJECT_BINARY_DIR}/${TEST_MAIN}"
