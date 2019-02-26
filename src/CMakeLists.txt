@@ -11,19 +11,9 @@ include_directories(
         ${PROJECT_SOURCE_DIR}/../../external/asio/include
 )
 
-set(CONAN_CMAKE_VER v0.13)
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan-${CONAN_CMAKE_VER}.cmake")
-   message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-   file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/${CONAN_CMAKE_VER}/conan.cmake"
-       "${CMAKE_BINARY_DIR}/conan-${CONAN_CMAKE_VER}.cmake")
-endif()
 
 include(${CMAKE_BINARY_DIR}/conan-${CONAN_CMAKE_VER}.cmake)
 
-if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
-   set(CONAN_EXPORTED)
-   set(CMAKE_BUILD_TYPE Debug)
-endif()
 
 add_executable(${PROJECT_NAME} ${SRCS} Utils/Utils.hpp)
 
