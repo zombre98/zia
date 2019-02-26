@@ -88,6 +88,9 @@ endif()
 # --------------------------------------------------------------------------------
 # Add a make target 'gtest', that runs the tests (and builds all dependencies).
 # The setup of Google Test is done at the very end of this file.
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/conan-${CONAN_CMAKE_VER}.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/conan-${CONAN_CMAKE_VER}.cmake)
+endif()
 add_executable(${TEST_MAIN} ${TESTFILES})
 add_dependencies(${TEST_MAIN} googletest engine)
 message(STATUS ${CONAN_LIBS})
