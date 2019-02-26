@@ -104,6 +104,8 @@ void fillHeading(const std::string &data, dems::Context &context, IHeaders &head
 	}
 }
 
+void constructObject(dems::config::Config &config, nlohmann::json const &jsonObject);
+
 void createJsonArray(dems::config::ConfigArray &arrConf, nlohmann::json const &jsonObject) {
 	for (auto &arrIt : jsonObject) {
 		if (arrIt.is_number())
@@ -115,6 +117,10 @@ void createJsonArray(dems::config::ConfigArray &arrConf, nlohmann::json const &j
 		else if (arrIt.is_array()) {
 			arrConf.emplace_back(dems::config::ConfigValue{dems::config::ConfigArray{}});
 			createJsonArray(std::get<dems::config::ConfigArray>(arrConf.back().v), arrIt);
+		} else if (arrIt.is_object()) {
+			std::cout << "I will emplace a object from an array" << std::endl;
+			arrConf.emplace_back(dems::config::ConfigValue{dems::config::ConfigObject{}});
+			constructObject(std::get<dems::config::ConfigObject>(arrConf.back().v), arrIt);
 		}
 	}
 }
@@ -123,21 +129,18 @@ void constructObject(dems::config::Config &config, nlohmann::json const &jsonObj
 	for (nlohmann::json::const_iterator it = jsonObject.begin(); it != jsonObject.end(); ++it) {
 		if (jsonObject[it.key()].is_string()) {
 			config[it.key()].v = jsonObject[it.key()].get<std::string>();
-			std::cout << "String object : " << jsonObject[it.key()].get<std::string>() << std::endl;
 		}
 		if (jsonObject[it.key()].is_boolean()) {
 			config[it.key()].v = jsonObject[it.key()].get<bool>();
-			std::cout << "Boolean object : " << jsonObject[it.key()].get<bool>() << std::endl;
 		}
 		if (jsonObject[it.key()].is_number()) {
 			config[it.key()].v = jsonObject[it.key()].get<long long>();
-			std::cout << "Number object : " << jsonObject[it.key()].get<long long>() << std::endl;
 		}
 		if(jsonObject[it.key()].is_array()) {
 			config.emplace(it.key(), dems::config::ConfigValue{dems::config::ConfigArray{}});
 			std::cout << "Number of element for key "  << it.key()<< " = " << config.count(it.key()) << std::endl;
 			createJsonArray(std::get<dems::config::ConfigArray>(config[it.key()].v), jsonObject[it.key()]);
-			std::cout << "Array value : " << std::get<long long>(std::get<dems::config::ConfigArray>(config[it.key()].v)[1].v) << std::endl;
+			std::cout << "Array value : " << std::get<std::string>(std::get<dems::config::ConfigObject>(std::get<dems::config::ConfigArray>(config[it.key()].v)[0].v)["value"].v) << std::endl;
 		}
 		if (jsonObject[it.key()].is_object()) {
 			std::cout << "Construct an Object for key : " << it.key()  << std::endl;
