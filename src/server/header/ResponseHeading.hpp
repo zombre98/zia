@@ -118,6 +118,15 @@ void constructObject(dems::config::Config &config, nlohmann::json const &jsonObj
 			config[it.key()].v = jsonObject[it.key()].get<long long>();
 			std::cout << "Number object : " << jsonObject[it.key()].get<long long>() << std::endl;
 		}
+		if(jsonObject[it.key()].is_array()) {
+			auto &array = jsonObject[it.key()];
+			/*for (auto &arrIt : array) {
+				if (!config.count(it.key()))
+					config.emplace(it.key(), dems::config::ConfigArray{});
+				std::cout << "[" << arrIt << "]" << std::endl;
+				std::get<dems::config::ConfigArray>(config[it.key()].v).emplace_back(arrIt);
+			} */
+		}
 		if (jsonObject[it.key()].is_object()) {
 			std::cout << "Construct an Object for key : " << it.key()  << std::endl;
 			config.emplace(it.key(), dems::config::ConfigValue{dems::config::ConfigObject{}});
