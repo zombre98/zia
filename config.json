@@ -3,7 +3,7 @@
   "default_file": "index.html",
   "boolean": true,
   "int": 42,
-  "array": [32, 102, 12345],
+  "array": [[12, 45],32, 102, 12345],
   "object" : {
     "object": "valueofObject",
     "other": "ib object object",
