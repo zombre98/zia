@@ -2,9 +2,10 @@
 // Created by Thomas Burgaud on 2019-01-22.
 //
 
+#include <nlohmann/json.hpp>
+#include <gtest/gtest.h>
 #include "server/api/Heading.hpp"
 #include "server/header/ResponseHeading.hpp"
-#include <gtest/gtest.h>
 
 TEST(Header, Header_Basic_header_Test) {
 	dems::header::Heading responseHeading;
