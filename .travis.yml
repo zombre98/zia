@@ -43,6 +43,7 @@ install:
 
 script:
   - mkdir -p build
+  - conan remote add json https://api.bintray.com/conan/vthiery/conan-packages
   - cd build
   - conan install ..
   - cmake ..
