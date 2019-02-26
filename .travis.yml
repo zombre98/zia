@@ -38,7 +38,7 @@ install:
   - ${CXX} --version
   - ${CXX} -v
   - sudo pip install codecov
-  - pip install conan
+  - sudo pip install conan
   - conan user
 
 script:
