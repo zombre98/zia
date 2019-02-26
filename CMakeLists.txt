@@ -68,7 +68,6 @@ add_dependencies(zia engine)       # main.cpp uses the 'engine', add dep.
 target_link_libraries(zia engine)  # Link the executable to the 'engine'.
 
 
-
 set(CONAN_CMAKE_VER v0.13)
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan-${CONAN_CMAKE_VER}.cmake")
        message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
@@ -78,24 +77,22 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan-${CONAN_CMAKE_VER}.cmake)
 
-if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
+if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/conan-${CONAN_CMAKE_VER}.cmake)
    set(CONAN_EXPORTED)
    set(CMAKE_BUILD_TYPE Debug)
 endif()
+
+include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
+include_directories(${CONAN_INCLUDE_DIRS})
 
 # --------------------------------------------------------------------------------
 #                         Make Tests (no change needed).
 # --------------------------------------------------------------------------------
 # Add a make target 'gtest', that runs the tests (and builds all dependencies).
 # The setup of Google Test is done at the very end of this file.
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/conan-${CONAN_CMAKE_VER}.cmake)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/conan-${CONAN_CMAKE_VER}.cmake)
-endif()
 add_executable(${TEST_MAIN} ${TESTFILES})
 add_dependencies(${TEST_MAIN} googletest engine)
-message(STATUS ${CONAN_LIBS})
-target_link_libraries(${TEST_MAIN} ${CONAN_LIBS})
-target_link_libraries(${TEST_MAIN} googletest engine pthread)
+target_link_libraries(${TEST_MAIN} googletest engine pthread ${CONAN_LIBS})
 add_custom_target(gtest 
     COMMAND "${PROJECT_BINARY_DIR}/${TEST_MAIN}"
     DEPENDS engine ${TEST_MAIN})
