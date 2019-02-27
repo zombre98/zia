@@ -18,7 +18,6 @@ extern "C" {
  */
 std::string registerHooks(dems::StageManager &manager) {
 	manager.request().hookToFirst(2, MODULE_NAME, [](dems::Context &ctx) {
-		std::cout << "I'm in HookFirst of LoadPathModule" << std::endl;
 		auto &root = std::get<std::string>(ctx.config["root"].v);
 		auto path = root + std::get<dems::header::Request>(ctx.request.firstLine).path;
 		if (std::filesystem::is_directory(path)) {
@@ -30,13 +29,11 @@ std::string registerHooks(dems::StageManager &manager) {
 		  ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
 		  return dems::CodeStatus::OK;
 		}
-		std::cout << "['object']['object'] = " << std::get<std::string>(std::get<dems::config::ConfigObject>(ctx.config["object"].v)["object"].v) << std::endl;
 		std::ifstream fStream(path);
 		std::string s((std::istreambuf_iterator<char>(fStream)), std::istreambuf_iterator<char>());
 		ctx.response.body = s;
 		ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "200", ""};
 		ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
-		std::cout << "Leaving LoadPath Module without problem" << std::endl;
 		return dems::CodeStatus::OK;
 	});
 	return MODULE_NAME;
