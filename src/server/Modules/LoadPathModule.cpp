@@ -27,7 +27,7 @@ std::string registerHooks(dems::StageManager &manager) {
 		std::cout << "Open path : " << path << std::endl;
 		std::ifstream fStream(path);
 		std::string s((std::istreambuf_iterator<char>(fStream)), std::istreambuf_iterator<char>());
-		ctx.response.body = s;
+		ctx.response.body = std::move(s);
 		return dems::CodeStatus::OK;
 	});
 
