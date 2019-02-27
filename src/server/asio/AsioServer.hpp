@@ -33,11 +33,23 @@ public:
           std::unique_lock<std::mutex> clientLock(clientMutex_);
         	zia::utils::JsonParser jsp(file);
 
-          std::cout << "JE SUIS LA MODIFICATION" << std::endl;
           for (auto &client : clients_)
             dems::header::constructConfig(client->getContext(), jsp);
         }
       });
+    });
+
+    thp_.addTask<void>([this]() {
+			using namespace std::chrono_literals;
+			zia::utils::FileWatcher fw(MODULES_PATH, 5000ms);
+
+			fw.watch([this](const std::string &file, zia::utils::FileWatcher::State status) {
+				std::cout << file << std::endl;
+				if (status == zia::utils::FileWatcher::State::CREATED) {
+					std::cout << "Load module : " << file << std::endl;
+					moduleManager_.loadOneModule(file);
+				}
+			});
     });
     moduleManager_.loadModules(MODULES_PATH);
     startAccept();
