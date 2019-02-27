@@ -63,9 +63,9 @@ add_library(engine ${SOURCES})
 
 # Add an executable for the file main.cpp, here called main.x.
 # If you add more executables, copy these three lines accordingly.
-add_executable(zia app/main.cpp)   # Name of exec. and location of file.
-add_dependencies(zia engine)       # main.cpp uses the 'engine', add dep.
-target_link_libraries(zia engine)  # Link the executable to the 'engine'.
+add_executable(serverzia app/main.cpp)   # Name of exec. and location of file.
+add_dependencies(serverzia engine)       # main.cpp uses the 'engine', add dep.
+target_link_libraries(serverzia engine)  # Link the executable to the 'engine'.
 
 
 set(CONAN_CMAKE_VER v0.13)
