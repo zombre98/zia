@@ -11,13 +11,12 @@
 
 int main() {
   zia::AsioServer serv("0.0.0.0", 4242);
-	zia::utils::JsonParser config("config.json");
 
-  serv.whenOnConnected([&serv, &config](zia::IClient &client) {
-    client.whenOnRead([&client, &serv, &config](zia::Buffer &b){
+  serv.whenOnConnected([&serv](zia::IClient &client) {
+    client.whenOnRead([&client, &serv](zia::Buffer &b){
       auto data = b.read<std::string>();
       auto &context = client.getContext();
-      dems::header::constructConfig(client.getContext(), config);
+
 			std::copy(data.begin(), data.end(), std::back_inserter(context.rawData));
 			dems::header::fillHeading(data, context, *context.request.headers);
 			context.socketFd = client.getRawSocket();

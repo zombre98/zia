@@ -30,7 +30,6 @@ std::string registerHooks(dems::StageManager &manager) {
 		  ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
 		  return dems::CodeStatus::OK;
 		}
-		std::cout << "['object']['object'] = " << std::get<std::string>(std::get<dems::config::ConfigObject>(ctx.config["object"].v)["object"].v) << std::endl;
 		std::ifstream fStream(path);
 		std::string s((std::istreambuf_iterator<char>(fStream)), std::istreambuf_iterator<char>());
 		ctx.response.body = s;
