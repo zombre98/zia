@@ -21,6 +21,7 @@ set(HEADER
 set(UTILS
         Utils/Logger.hpp
         Utils/JsonParser.hpp
+        Utils/Utils.hpp
         )
 
 set(MAIN

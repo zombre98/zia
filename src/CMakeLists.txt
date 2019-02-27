@@ -14,7 +14,7 @@ include_directories(
 include(${CMAKE_BINARY_DIR}/conan-${CONAN_CMAKE_VER}.cmake)
 
 
-add_executable(${PROJECT_NAME} ${SRCS} Utils/Utils.hpp)
+add_executable(${PROJECT_NAME} ${SRCS})
 
 target_include_directories(${TARGET_NAME} PRIVATE lib/asio/include)
 target_include_directories(${TARGET_NAME} PRIVATE src)
