@@ -18,4 +18,4 @@ else()
     target_link_libraries(${TARGET_NAME} PRIVATE stdc++fs)
     target_link_libraries(${TARGET_NAME} PRIVATE dl)
     target_link_libraries(${TARGET_NAME} PRIVATE pthread)
-endif()x
+endif()
