@@ -1,17 +1,16 @@
-#include <utility>
-
 //
 // Created by Thomas Burgaud on 2019-02-23.
 //
 
 #pragma once
 
+#include <utility>
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <string>
 #include <iostream>
 
-namespace zia::Utils {
+namespace zia::utils {
 	class JsonParser {
 
 	public:
@@ -23,6 +22,12 @@ namespace zia::Utils {
 		template<typename T>
 		T get(std::string const &key) {
 			return data_[key].get<T>();
+		}
+
+		bool reloadFile(std::string const &filename) {
+			filename_ = filename;
+			open();
+			return true;
 		}
 
 		nlohmann::json &getJsonObject() {

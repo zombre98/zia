@@ -38,10 +38,14 @@ install:
   - ${CXX} --version
   - ${CXX} -v
   - sudo pip install codecov
+  - sudo pip install conan
+  - conan user
 
 script:
   - mkdir -p build
+  - conan remote add json https://api.bintray.com/conan/vthiery/conan-packages
   - cd build
+  - conan install ..
   - cmake ..
   - make unit_tests
   - ./unit_tests

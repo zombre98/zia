@@ -12,6 +12,7 @@
 #include "server/api/Heading.hpp"
 #include "HeaderEnum.hpp"
 #include "Utils/Utils.hpp"
+#include "Utils/JsonParser.hpp"
 
 constexpr char CRLF[] = "\r\n";
 
@@ -65,7 +66,7 @@ class Heading : public IHeaders {
 					headers_.emplace(headerName, value);
 					return;
 				}
-				headers_[headerName] += "," + value;
+				headers_[headerName] = value;
 			}
 
 			/**
@@ -101,6 +102,69 @@ void fillHeading(const std::string &data, dems::Context &context, IHeaders &head
 				heading[members[0]] = members[1];
 		}
 	}
+}
+
+void constructObject(dems::config::Config &config, nlohmann::json const &jsonObject);
+
+void createJsonArray(dems::config::ConfigArray &arrConf, nlohmann::json const &jsonObject) {
+	for (auto &arrIt : jsonObject) {
+		if (arrIt.is_number())
+			arrConf.emplace_back(dems::config::ConfigValue{arrIt.get<long long>()});
+		else if (arrIt.is_boolean())
+			arrConf.emplace_back(dems::config::ConfigValue{arrIt.get<bool>()});
+		else if (arrIt.is_string())
+			arrConf.emplace_back(dems::config::ConfigValue{arrIt.get<std::string>()});
+		else if (arrIt.is_array()) {
+			arrConf.emplace_back(dems::config::ConfigValue{dems::config::ConfigArray{}});
+			createJsonArray(std::get<dems::config::ConfigArray>(arrConf.back().v), arrIt);
+		} else if (arrIt.is_object()) {
+			arrConf.emplace_back(dems::config::ConfigValue{dems::config::ConfigObject{}});
+			constructObject(std::get<dems::config::ConfigObject>(arrConf.back().v), arrIt);
+		}
+	}
+}
+
+void constructObject(dems::config::Config &config, nlohmann::json const &jsonObject) {
+	for (nlohmann::json::const_iterator it = jsonObject.begin(); it != jsonObject.end(); ++it) {
+		if (jsonObject[it.key()].is_string()) {
+			config[it.key()].v = jsonObject[it.key()].get<std::string>();
+		}
+		if (jsonObject[it.key()].is_boolean()) {
+			config[it.key()].v = jsonObject[it.key()].get<bool>();
+		}
+		if (jsonObject[it.key()].is_number()) {
+			config[it.key()].v = jsonObject[it.key()].get<long long>();
+		}
+		if(jsonObject[it.key()].is_array()) {
+			config.emplace(it.key(), dems::config::ConfigValue{dems::config::ConfigArray{}});
+			createJsonArray(std::get<dems::config::ConfigArray>(config[it.key()].v), jsonObject[it.key()]);
+		}
+		if (jsonObject[it.key()].is_object()) {
+			config.emplace(it.key(), dems::config::ConfigValue{dems::config::ConfigObject{}});
+			constructObject(std::get<dems::config::Config>(config[it.key()].v), jsonObject[it.key()].get<nlohmann::json>());
+		}
+	}
+}
+
+void constructConfig(Context &ctx, zia::utils::JsonParser &config) {
+		auto &jsonObject = config.getJsonObject();
+		constructObject(ctx.config, jsonObject);
+	}
+
+std::string constructResponse(Context &context) {
+	std::string response;
+	header::Response ctxResponse;
+	try {
+		ctxResponse = std::get<header::Response>(context.response.firstLine);
+	} catch(const std::bad_variant_access& e) {
+		ctxResponse = header::Response{"HTTP/1.1", "501", "Not_Implemented"};
+		context.response.headers->setHeader("Content-Length", "0");
+	}
+
+	response = ctxResponse.httpVersion + " " + ctxResponse.statusCode + " " + ctxResponse.message + CRLF;
+	response += context.response.headers->getWholeHeaders() + CRLF;
+	response += context.response.body;
+	return response;
 }
 
 }

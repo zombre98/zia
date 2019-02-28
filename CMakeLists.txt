@@ -63,11 +63,27 @@ add_library(engine ${SOURCES})
 
 # Add an executable for the file main.cpp, here called main.x.
 # If you add more executables, copy these three lines accordingly.
-add_executable(zia app/main.cpp)   # Name of exec. and location of file.
-add_dependencies(zia engine)       # main.cpp uses the 'engine', add dep.
-target_link_libraries(zia engine)  # Link the executable to the 'engine'.
+add_executable(serverzia app/main.cpp)   # Name of exec. and location of file.
+add_dependencies(serverzia engine)       # main.cpp uses the 'engine', add dep.
+target_link_libraries(serverzia engine)  # Link the executable to the 'engine'.
 
 
+set(CONAN_CMAKE_VER v0.13)
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan-${CONAN_CMAKE_VER}.cmake")
+       message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+       file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/${CONAN_CMAKE_VER}/conan.cmake"
+           "${CMAKE_BINARY_DIR}/conan-${CONAN_CMAKE_VER}.cmake")
+endif()
+
+include(${CMAKE_BINARY_DIR}/conan-${CONAN_CMAKE_VER}.cmake)
+
+if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/conan-${CONAN_CMAKE_VER}.cmake)
+   set(CONAN_EXPORTED)
+   set(CMAKE_BUILD_TYPE Debug)
+endif()
+
+include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
+include_directories(${CONAN_INCLUDE_DIRS})
 
 # --------------------------------------------------------------------------------
 #                         Make Tests (no change needed).
@@ -76,7 +92,7 @@ target_link_libraries(zia engine)  # Link the executable to the 'engine'.
 # The setup of Google Test is done at the very end of this file.
 add_executable(${TEST_MAIN} ${TESTFILES})
 add_dependencies(${TEST_MAIN} googletest engine)
-target_link_libraries(${TEST_MAIN} googletest engine pthread)
+target_link_libraries(${TEST_MAIN} googletest engine pthread ${CONAN_LIBS})
 add_custom_target(gtest 
     COMMAND "${PROJECT_BINARY_DIR}/${TEST_MAIN}"
     DEPENDS engine ${TEST_MAIN})

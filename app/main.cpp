@@ -1,5 +1,6 @@
 #include <iostream>
 #include <server/ModulesManager.hpp>
+#include <Utils/JsonParser.hpp>
 
 #define ASIO_STANDALONE 1
 
@@ -7,17 +8,16 @@
 #include "server/asio/AsioServer.hpp"
 #include "server/IClient.hpp"
 #include "server/header/ResponseHeading.hpp"
-//#include "Utils/JsonParser.hpp"
 
 int main() {
-
   zia::AsioServer serv("0.0.0.0", 4242);
+	zia::utils::JsonParser config("config.json");
 
-  serv.whenOnConnected([&serv](zia::IClient &client) {
-    client.whenOnRead([&client, &serv](zia::Buffer &b){
+  serv.whenOnConnected([&serv, &config](zia::IClient &client) {
+    client.whenOnRead([&client, &serv, &config](zia::Buffer &b){
       auto data = b.read<std::string>();
       auto &context = client.getContext();
-
+      dems::header::constructConfig(client.getContext(), config);
 			std::copy(data.begin(), data.end(), std::back_inserter(context.rawData));
 			dems::header::fillHeading(data, context, *context.request.headers);
 			context.socketFd = client.getRawSocket();
@@ -30,6 +30,10 @@ int main() {
       for (auto &end : serv.getModulesManager().getStageManager().request().endHooks()) {
         end.second.callback(client.getContext());
       }
+      auto response = dems::header::constructResponse(client.getContext());
+      zia::Buffer responseBuffer;
+      responseBuffer.write<std::string>(response);
+      client.write(responseBuffer);
       //logging::debug << LOG_TIME << b.read<std::string>() << std::endl;
 			/*header::ResponseHeading responseHeading(http::StatusCode::OK);
 			responseHeading.setHeader("Content-Length", "28");
