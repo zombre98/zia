@@ -25,8 +25,7 @@ public:
 	 * @param buffer The data to send
 	 */
   void write(const Buffer &buffer) override {
-    asio::async_write(socket_, asio::buffer(buffer.getBufferContainer(), buffer.getWroteSize()), [](asio::error_code, std::size_t){
-        logging::debug << "Send data" << std::endl;
+    asio::async_write(socket_, asio::buffer(buffer.getBufferContainer(), buffer.getWroteSize()), [](asio::error_code, std::size_t) {
     });
   }
 
@@ -54,7 +53,6 @@ public:
    * Read from the client without delimitation
    */
   void read() {
-    logging::debug << LOG_DEBUG << "Read Some" << std::endl;
     socket_.async_read_some(asio::buffer(buffer_.getBufferContainer()), [this](asio::error_code error, std::size_t bTranfered) {
       if (!onReadCall(error, bTranfered))
         return;

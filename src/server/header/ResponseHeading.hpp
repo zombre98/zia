@@ -23,7 +23,9 @@ namespace header {
 std::tuple<std::string, std::string, std::string> parseFirstLine(std::string line) {
 	std::vector<std::string> tokens = zia::utils::split(std::move(line), ' ');
 
-	return std::make_tuple(tokens[0], tokens[1], tokens[2]);
+	if (tokens.size() == 3)
+		return std::make_tuple(tokens[0], tokens[1], tokens[2]);
+	return std::make_tuple("", "", "");
 }
 
 class Heading : public IHeaders {
