@@ -18,7 +18,7 @@ namespace http {
 		CONNECT,
 		OPTIONS,
 		TRACE,
-		PATCH
+		PATCH,
 	};
 
 	/**
@@ -69,6 +69,6 @@ namespace http {
 		Bad_Gateway = 502,
 		Service_Unavailable = 503,
 		Gateway_Time_out = 504,
-		HTTP_Version_not_supported = 505
+		HTTP_Version_not_supported = 505,
 	};
 }
