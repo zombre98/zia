@@ -27,7 +27,7 @@ public:
 	void loadModules(const std::string &directoryPath) override {
 		for (const auto &entry : std::filesystem::directory_iterator(directoryPath)) {
 			if (entry.is_regular_file()) {
-				loadOneModule(entry.path());
+				loadOneModule(entry.path().string());
 			}
 		}
 	}

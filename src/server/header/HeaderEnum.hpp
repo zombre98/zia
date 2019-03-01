@@ -14,7 +14,7 @@ namespace http {
 		HEAD,
 		POST,
 		PUT,
-		DELETE,
+//		DELETE,
 		CONNECT,
 		OPTIONS,
 		TRACE,
