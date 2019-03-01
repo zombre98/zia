@@ -45,7 +45,7 @@ public:
 	template<typename fncType>
 	fncType getSymbol(const std::string &symbol) const {
 #ifdef WIN32
-		auto ret = reinterpret_cast<fncType>(GetProcAddress(handler_, symbol.c_str());
+		auto ret = reinterpret_cast<fncType>(GetProcAddress(handler_, symbol.c_str()));
 		if (ret == nullptr)
 			throw std::runtime_error("Cannot get the symbol");
 		return ret;
