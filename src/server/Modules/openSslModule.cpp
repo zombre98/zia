@@ -37,7 +37,16 @@ std::string registerHooks(dems::StageManager &manager) {
 			throw std::runtime_error("Error while set cipher list");
 		if (SSL_CTX_use_certificate_file(ssl_ctx, cert_path.c_str(), SSL_FILETYPE_PEM) <= 0)
 			throw std::runtime_error("Error while using the certificate");
-		SSL_CTX_set_default_passwd_cb_userdata(ctx, );
+		SSL_CTX_set_default_passwd_cb_userdata(ssl_ctx, (void *)ssl_pass.c_str());
+		if (SSL_CTX_use_PrivateKey_file(ssl_ctx, key_path.c_str(), SSL_FILETYPE_PEM) <= 0)
+			throw std::runtime_error("Error while using the private key");
+		if (SSL_CTX_check_private_key(ssl_ctx) == 0)
+			throw std::runtime_error("Cetificat and key doesn't match");
+		SSL_CTX_set_verify(ssl_ctx, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT, NULL);
+		if (SSL_CTX_load_verify_locations(ssl_ctx, cert_path.c_str(), NULL) < 1)
+			throw std::runtime_error("Setting the verify location");
+		if (SSL_CTX_load_and_set_client_CA_file(ssl_ctx, cert_path.c_str()) < 1)
+			throw std::runtime_error("Error setting CA file");
 
 		return dems::CodeStatus::OK;
 	});
