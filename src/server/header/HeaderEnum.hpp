@@ -9,12 +9,15 @@ namespace http {
 	/**
 	 * @brief The Method  token indicates the method to be performed on the resource identified by the Request-URI
 	 */
-	enum class Mehod {
+#ifdef WIN32
+	#undef DELETE
+#endif
+enum class Mehod {
 		GET,
 		HEAD,
 		POST,
 		PUT,
-//		DELETE,
+		DELETE,
 		CONNECT,
 		OPTIONS,
 		TRACE,
