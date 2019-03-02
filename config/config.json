@@ -2,6 +2,6 @@
     "root": "/tmp/",
     "default_file": "index.html",
     "key_path": "/Users/zombre/Epitech/zia/config/key.pem",
-    "cert_path": "/Users/zombre/Epitech/zia/config/cert.pm",
+    "cert_path": "/Users/zombre/Epitech/zia/config/cert.pem",
     "ssl_password": "juge"
 }
