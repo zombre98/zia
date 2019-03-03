@@ -49,6 +49,13 @@ public:
 					std::cout << "Load module : " << file << std::endl;
 					moduleManager_.loadOneModule(file);
 				}
+				if (status == zia::utils::FileWatcher::State::DELETED) {
+					std::cout << "Unload module : " << file << std::endl;
+					auto &modules = moduleManager_.getModulesLoaded();
+
+					if (modules.find(file) != modules.end())
+						moduleManager_.unloadModule(modules[file]);
+				}
 			});
     });
     moduleManager_.loadModules(MODULES_PATH);
