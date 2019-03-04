@@ -37,7 +37,12 @@ public:
   }
   ThreadPool(const ThreadPool &) = delete;
   ThreadPool &operator=(const ThreadPool &) = delete;
-  ~ThreadPool();
+  ~ThreadPool() {
+    running_ = false;
+    taskCond_.notify_all();
+    for (auto &thread : threads_)
+      thread.join();
+  }
 
 public:
   /**

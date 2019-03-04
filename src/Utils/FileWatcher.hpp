@@ -8,7 +8,7 @@
 #include <chrono>
 #include <thread>
 
-namespace zia::Utils {
+namespace zia::utils {
 
 class FileWatcher {
   using chronoDelay = std::chrono::duration<int, std::milli>;

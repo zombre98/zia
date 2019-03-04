@@ -43,7 +43,7 @@ public:
 			auto fnc = handlers_[filePath].getSymbol<std::string(*)(dems::StageManager &)>("registerHooks");
 
 			logging::debug << LOG_DEBUG << "Module Path : " << filePath << std::endl;
-			modulesNames_.push_back(fnc(getStageManager()));
+			modulesNames_[filePath] = fnc(getStageManager());
 		} catch (const std::exception &e) {
 			logging::error << "Dl Error: " << e.what() << std::endl;
 		}
@@ -58,16 +58,22 @@ public:
 		getStageManager().request().unhookAll(moduleName);
 		getStageManager().chunks().unhookAll(moduleName);
 		getStageManager().disconnect().unhookAll(moduleName);
+		modulesNames_.erase(moduleName);
 	}
 
 	void unloadModules() {
-		for (const auto &name : modulesNames_) {
+		for (const auto &[path, name] : modulesNames_) {
 			unloadModule(name);
 		}
 	}
 
+	auto &getModulesLoaded() {
+		return modulesNames_;
+	}
+
 private:
-	std::vector<std::string> modulesNames_;
+	// Module Path - Module Name
+	std::unordered_map<std::string, std::string> modulesNames_;
 	std::unordered_map<std::string, zia::DlWrapper> handlers_;
 };
 

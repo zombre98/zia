@@ -54,7 +54,6 @@ public:
    * Read from the client without delimitation
    */
   void read() {
-    logging::debug << LOG_DEBUG << "Read Some" << std::endl;
     socket_.async_read_some(asio::buffer(buffer_.getBufferContainer()), [this](asio::error_code error, std::size_t bTranfered) {
       if (!onReadCall(error, bTranfered))
         return;
@@ -69,12 +68,10 @@ public:
    */
   void read(const std::string &delim) {
     socket_.cancel();
-    std::cout << "Reading Until" << std::endl;
     asio::async_read_until(socket_, streamBuffer_, delim, [delim, this](asio::error_code error, std::size_t bTranfered) {
       std::istream is(&streamBuffer_);
       std::string streamData = getUntilDelim(is, delim);
 
-      std::cout << "RECEIVED:" << streamData << std::endl;
       buffer_.setData(streamData.data(), streamData.size());
       if (!onReadCall(error, bTranfered))
         return;

@@ -148,6 +148,7 @@ void constructObject(dems::config::Config &config, nlohmann::json const &jsonObj
 
 void constructConfig(Context &ctx, zia::utils::JsonParser &config) {
 		auto &jsonObject = config.getJsonObject();
+		ctx.config.clear();
 		constructObject(ctx.config, jsonObject);
 	}
 
