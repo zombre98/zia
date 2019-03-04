@@ -17,7 +17,7 @@ add_library(OpenSSL SHARED
 if (APPLE)
     target_link_directories(${PROJECT_NAME} PRIVATE /usr/local/opt/llvm/lib)
     target_link_libraries(${PROJECT_NAME} PRIVATE c++fs)
-else()
+elseif(UNIX)
     target_link_libraries(${PROJECT_NAME} PRIVATE stdc++fs)
     target_link_libraries(${PROJECT_NAME} PRIVATE dl)
     target_link_libraries(${PROJECT_NAME} PRIVATE pthread)

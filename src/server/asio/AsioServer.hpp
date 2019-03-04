@@ -1,6 +1,9 @@
 #pragma once
 
 #include <asio.hpp>
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include "Utils/Logger.hpp"
 #include "server/IServer.hpp"
 #include "AsioClient.hpp"
@@ -12,13 +15,13 @@ constexpr char MODULES_PATH[] = "/tmp/modules";
 
 class AsioServer : public IServer {
 public:
-	/**
+  /**
 	 * Construct Asio Server with an ip and a port
 	 * @param ip the ip as a string
 	 * @param port the port
 	 */
   AsioServer(const std::string &ip, unsigned short port) :
-  acceptor_(service_, asio::ip::tcp::endpoint(asio::ip::address::from_string(ip), port)) {
+    acceptor_(service_, asio::ip::tcp::endpoint(asio::ip::address::from_string(ip), port)) {
     moduleManager_.loadModules(MODULES_PATH);
     startAccept();
   }
@@ -44,7 +47,7 @@ public:
    * @return
    */
   std::string getIpAddress() {
-      return acceptor_.local_endpoint().address().to_string();
+    return acceptor_.local_endpoint().address().to_string();
   }
 
   zia::ModulesManager &getModulesManager() {

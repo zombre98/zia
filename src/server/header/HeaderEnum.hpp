@@ -9,7 +9,10 @@ namespace http {
 	/**
 	 * @brief The Method  token indicates the method to be performed on the resource identified by the Request-URI
 	 */
-	enum class Mehod {
+#ifdef WIN32
+	#undef DELETE
+#endif
+enum class Mehod {
 		GET,
 		HEAD,
 		POST,
@@ -18,7 +21,7 @@ namespace http {
 		CONNECT,
 		OPTIONS,
 		TRACE,
-		PATCH
+		PATCH,
 	};
 
 	/**
@@ -69,6 +72,6 @@ namespace http {
 		Bad_Gateway = 502,
 		Service_Unavailable = 503,
 		Gateway_Time_out = 504,
-		HTTP_Version_not_supported = 505
+		HTTP_Version_not_supported = 505,
 	};
 }
