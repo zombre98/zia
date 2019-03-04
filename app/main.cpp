@@ -14,15 +14,17 @@ int main() {
 
   serv.whenOnConnected([&serv](zia::IClient &client) {
     client.whenOnRead([&client, &serv](zia::Buffer &b){
+			auto &context = client.getContext();
+			context.socketFd = client.getRawSocket();
+
+			for (auto &first : serv.getModulesManager().getStageManager().request().firstHooks()) {
+				first.second.callback(client.getContext());
+			}
+
       auto data = b.read<std::string>();
-      auto &context = client.getContext();
 
 			std::copy(data.begin(), data.end(), std::back_inserter(context.rawData));
 			dems::header::fillHeading(data, context, *context.request.headers);
-			context.socketFd = client.getRawSocket();
-      for (auto &first : serv.getModulesManager().getStageManager().request().firstHooks()) {
-        first.second.callback(client.getContext());
-      }
       for (auto &middle : serv.getModulesManager().getStageManager().request().middleHooks()) {
         middle.second.callback(client.getContext());
       }

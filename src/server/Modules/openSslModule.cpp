@@ -21,10 +21,11 @@ std::string registerHooks(dems::StageManager &manager) {
 		auto key_path = std::get<std::string>(ctx.config["key_path"].v);
 		auto ssl_pass = std::get<std::string>(ctx.config["ssl_password"].v);
 
+		std::cout << "Hi from ssl Hooktofirst request" << std::endl;
 		std::cout << "Key path : " << key_path << std::endl;
 		std::cout << "Certificat path : " << cert_path << std::endl;
 
-		SSL_CTX  *ssl_ctx;
+/*		SSL_CTX  *ssl_ctx;
 		SSL  *myssl;
 
 		SSL_library_init();
@@ -58,7 +59,7 @@ std::string registerHooks(dems::StageManager &manager) {
 		char buff[1024];
 		if (SSL_read(myssl, buff, sizeof(buff)) < 1)
 			throw std::runtime_error("SSL read failed");
-		std::cout << "Receive from client :" << std::endl << buff << std::endl;
+		std::cout << "Receive from client :" << std::endl << buff << std::endl;*/
 
 		return dems::CodeStatus::OK;
 	});
