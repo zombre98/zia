@@ -24,8 +24,7 @@ std::string registerHooks(dems::StageManager &manager) {
 		  auto &defaultFile = std::get<std::string>(ctx.config["default_file"].v);
 		  path = root + defaultFile;
 		}
-		std::cout << "Open path : " << path << std::endl;
-		std::ifstream fStream(path);
+    std::ifstream fStream(path);
 		std::string s((std::istreambuf_iterator<char>(fStream)), std::istreambuf_iterator<char>());
 		ctx.response.body = std::move(s);
 		return dems::CodeStatus::OK;

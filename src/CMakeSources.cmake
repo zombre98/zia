@@ -21,6 +21,8 @@ set(HEADER
 set(UTILS
         Utils/Logger.hpp
         Utils/JsonParser.hpp
+        Utils/FileWatcher.hpp
+        Utils/ThreadPool.hpp
         Utils/Utils.hpp
         )
 

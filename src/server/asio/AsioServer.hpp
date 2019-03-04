@@ -8,10 +8,14 @@
 #include "server/IServer.hpp"
 #include "AsioClient.hpp"
 #include "server/ModulesManager.hpp"
+#include "Utils/ThreadPool.hpp"
+#include "Utils/FileWatcher.hpp"
+#include "Utils/JsonParser.hpp"
 
 namespace zia {
 
-constexpr char MODULES_PATH[] = "/tmp/modules";
+constexpr char MODULES_PATH[] = "/tmp/modules/";
+constexpr char CONFIG_DIRECTORY[] = "/tmp/configs/";
 
 class AsioServer : public IServer {
 public:
@@ -22,6 +26,41 @@ public:
 	 */
   AsioServer(const std::string &ip, unsigned short port) :
     acceptor_(service_, asio::ip::tcp::endpoint(asio::ip::address::from_string(ip), port)) {
+    thp_.addTask<void>([this]() {
+      using namespace std::chrono_literals;
+      zia::utils::FileWatcher fw(CONFIG_DIRECTORY, 5000ms);
+
+      fw.watch([this](const std::string &file, zia::utils::FileWatcher::State status) {
+        std::cout << file << std::endl;
+        if (status == zia::utils::FileWatcher::State::MODIFIED) {
+          std::unique_lock<std::mutex> clientLock(clientMutex_);
+        	zia::utils::JsonParser jsp(file);
+
+          for (auto &client : clients_)
+            dems::header::constructConfig(client->getContext(), jsp);
+        }
+      });
+    });
+
+    thp_.addTask<void>([this]() {
+			using namespace std::chrono_literals;
+			zia::utils::FileWatcher fw(MODULES_PATH, 5000ms);
+
+			fw.watch([this](const std::string &file, zia::utils::FileWatcher::State status) {
+				std::cout << file << std::endl;
+				if (status == zia::utils::FileWatcher::State::CREATED) {
+					std::cout << "Load module : " << file << std::endl;
+					moduleManager_.loadOneModule(file);
+				}
+				if (status == zia::utils::FileWatcher::State::DELETED) {
+					std::cout << "Unload module : " << file << std::endl;
+					auto &modules = moduleManager_.getModulesLoaded();
+
+					if (modules.find(file) != modules.end())
+						moduleManager_.unloadModule(modules[file]);
+				}
+			});
+    });
     moduleManager_.loadModules(MODULES_PATH);
     startAccept();
   }
@@ -104,9 +143,13 @@ private:
     });
 
     acceptor_.async_accept(newClient_->socket(), [this](asio::error_code) {
+      std::unique_lock<std::mutex> clientLock(clientMutex_);
+      zia::utils::JsonParser jsp("/tmp/configs/config.json");
+
       clients_.push_back(std::move(newClient_));
       clients_.back()->getContext().request.headers = std::make_unique<dems::header::Heading>();
       clients_.back()->getContext().response.headers = std::make_unique<dems::header::Heading>();
+      dems::header::constructConfig(clients_.back()->getContext(), jsp);
       // First Hooks
       for (auto &first: moduleManager_.getStageManager().connection().firstHooks()) {
         first.second.callback(clients_.back()->getContext());
@@ -139,6 +182,9 @@ private:
   std::vector<AsioClient::AsioClientUPtr> clients_;
   zia::ModulesManager moduleManager_;
   AsioClient::AsioClientUPtr newClient_;
+
+  zia::ThreadPool thp_;
+  std::mutex clientMutex_;
 };
 
 }

@@ -70,12 +70,10 @@ public:
    */
   void read(const std::string &delim) {
     socket_.cancel();
-    std::cout << "Reading Until" << std::endl;
     asio::async_read_until(socket_, streamBuffer_, delim, [delim, this](asio::error_code error, std::size_t bTranfered) {
       std::istream is(&streamBuffer_);
       std::string streamData = getUntilDelim(is, delim);
 
-      std::cout << "RECEIVED:" << streamData << std::endl;
       buffer_.setData(streamData.data(), streamData.size());
       if (!onReadCall(error, bTranfered))
         return;
