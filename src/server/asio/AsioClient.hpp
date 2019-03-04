@@ -1,13 +1,13 @@
-#include <memory>
-
 #pragma once
 
-#include "../IClient.hpp"
-#include "server/header/ResponseHeading.hpp"
+#include <memory>
 #include <asio.hpp>
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <iostream>
-#include <server/header/ResponseHeading.hpp>
-
+#include "server/header/ResponseHeading.hpp"
+#include "../IClient.hpp"
 namespace zia {
 
 class AsioClient : public IClient {
@@ -26,7 +26,7 @@ public:
 	 */
   void write(const Buffer &buffer) override {
     asio::async_write(socket_, asio::buffer(buffer.getBufferContainer(), buffer.getWroteSize()), [](asio::error_code, std::size_t){
-        logging::debug << "Send data" << std::endl;
+      logging::debug << "Send data" << std::endl;
     });
   }
 
@@ -92,14 +92,14 @@ public:
   asio::ip::tcp::socket &socket() { return socket_; }
 
 private:
-	/**
+  /**
 	 * Function called on read, return false on error
 	 * @param error If an error happend
 	 * @param bytesTransfered The byted transfered
 	 * @return
 	 */
   bool onReadCall(asio::error_code error, std::size_t bytesTransfered) {
-		buffer_.setCursor(bytesTransfered);
+    buffer_.setCursor(bytesTransfered);
     if (error) {
       if (onDisconnectedCallback_)
         onDisconnectedCallback_(*this);

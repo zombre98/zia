@@ -1,6 +1,9 @@
 #pragma once
 
 #include <asio.hpp>
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include "Utils/Logger.hpp"
 #include "server/IServer.hpp"
 #include "AsioClient.hpp"
@@ -16,7 +19,7 @@ constexpr char CONFIG_DIRECTORY[] = "/tmp/configs/";
 
 class AsioServer : public IServer {
 public:
-	/**
+  /**
 	 * Construct Asio Server with an ip and a port
 	 * @param ip the ip as a string
 	 * @param port the port
@@ -83,7 +86,7 @@ public:
    * @return
    */
   std::string getIpAddress() {
-      return acceptor_.local_endpoint().address().to_string();
+    return acceptor_.local_endpoint().address().to_string();
   }
 
   zia::ModulesManager &getModulesManager() {
