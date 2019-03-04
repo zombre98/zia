@@ -27,8 +27,7 @@ public:
 	 * @param buffer The data to send
 	 */
   void write(const Buffer &buffer) override {
-    asio::async_write(socket_, asio::buffer(buffer.getBufferContainer(), buffer.getWroteSize()), [](asio::error_code, std::size_t){
-      logging::debug << "Send data" << std::endl;
+    asio::async_write(socket_, asio::buffer(buffer.getBufferContainer(), buffer.getWroteSize()), [](asio::error_code, std::size_t) {
     });
   }
 
