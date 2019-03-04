@@ -3,6 +3,7 @@
 //
 
 #include <openssl/ssl.h>
+#include <sys/socket.h>
 #include "../api/AModulesManager.hpp"
 #include "../../Utils/Logger.hpp"
 #include "../api/Config.hpp"
@@ -22,10 +23,11 @@ std::string registerHooks(dems::StageManager &manager) {
 		auto ssl_pass = std::get<std::string>(ctx.config["ssl_password"].v);
 
 		std::cout << "Hi from ssl Hooktofirst request" << std::endl;
+		std::cout << "From context we got : " <<  ctx.socketFd << std::endl;
 		std::cout << "Key path : " << key_path << std::endl;
 		std::cout << "Certificat path : " << cert_path << std::endl;
 
-/*		SSL_CTX  *ssl_ctx;
+		SSL_CTX  *ssl_ctx;
 		SSL  *myssl;
 
 		SSL_library_init();
@@ -51,15 +53,21 @@ std::string registerHooks(dems::StageManager &manager) {
 		if (!myssl)
 			throw std::runtime_error("SSL_new failed");
 		SSL_set_fd(myssl, ctx.socketFd);
-		if (SSL_accept(myssl) < 1)
-			throw std::runtime_error("SSL accept failed");
+		int err;
+		err = SSL_accept(myssl);
+//			throw std::runtime_error("SSL accept failed");
+		if (err<1) {
+			err=SSL_get_error(myssl,err);
+			printf("SSL error #%d in SSL_accept,program terminated\n",err);
+			exit(0);
+		}
 		if (SSL_get_verify_result(myssl) != X509_V_OK)
 			throw std::runtime_error("SSL Client Authentication error");
 		std::cout << "SSL connection on socket " << ctx.socketFd << ", Version: " << SSL_get_version(myssl) << ", Cipher: " << SSL_get_cipher(myssl) << std::endl;
 		char buff[1024];
 		if (SSL_read(myssl, buff, sizeof(buff)) < 1)
 			throw std::runtime_error("SSL read failed");
-		std::cout << "Receive from client :" << std::endl << buff << std::endl;*/
+		std::cout << "Receive from client :" << std::endl << buff << std::endl;
 
 		return dems::CodeStatus::OK;
 	});

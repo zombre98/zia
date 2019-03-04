@@ -59,6 +59,14 @@ public:
 					if (modules.find(file) != modules.end())
 						moduleManager_.unloadModule(modules[file]);
 				}
+				if (status == zia::utils::FileWatcher::State::MODIFIED) {
+					auto &modules = moduleManager_.getModulesLoaded();
+					std::cout << "Reload Module" << std::endl;
+					if (modules.find(file) != modules.end()) {
+						moduleManager_.unloadModule(modules[file]);
+						moduleManager_.loadOneModule(file);
+					}
+				}
 			});
     });
     moduleManager_.loadModules(MODULES_PATH);
