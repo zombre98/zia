@@ -154,9 +154,15 @@ void constructConfig(Context &ctx, zia::utils::JsonParser &config) {
 
 std::string constructResponse(Context &context) {
 	std::string response;
-	auto ctxReponse = std::get<header::Response>(context.response.firstLine);
+	header::Response ctxResponse;
+	try {
+		ctxResponse = std::get<header::Response>(context.response.firstLine);
+	} catch(const std::bad_variant_access& e) {
+		ctxResponse = header::Response{"HTTP/1.1", "501", "Not_Implemented"};
+		context.response.headers->setHeader("Content-Length", "0");
+	}
 
-	response = ctxReponse.httpVersion + " " + ctxReponse.statusCode + " " + ctxReponse.message + CRLF;
+	response = ctxResponse.httpVersion + " " + ctxResponse.statusCode + " " + ctxResponse.message + CRLF;
 	response += context.response.headers->getWholeHeaders() + CRLF;
 	response += context.response.body;
 	return response;
