@@ -3,12 +3,23 @@
 //
 
 #include <filesystem>
+#include <unordered_map>
 #include "LoadPathModule.hpp"
 #include "../api/AModulesManager.hpp"
 #include "../../Utils/Logger.hpp"
 #include "../api/Config.hpp"
 
 static constexpr char MODULE_NAME[] = "LoadPath";
+
+static std::unordered_map<std::string, std::string> const fileExtension {
+	{".html", "text/html"},
+	{".jpeg", "image/jpeg"},
+	{".png", "image/png"},
+	{".mp4", "video/mp4"},
+	{".mp3", "audio/mpeg"},
+	{".json", "application/json"},
+	{".css", "text/css"}
+};
 
 extern "C" {
 
@@ -30,6 +41,10 @@ std::string registerHooks(dems::StageManager &manager) {
     std::ifstream fStream(path);
 		std::string s((std::istreambuf_iterator<char>(fStream)), std::istreambuf_iterator<char>());
 		ctx.response.body = std::move(s);
+
+		auto ext = std::filesystem::path(path).extension();
+		if (fileExtension.count(ext))
+		  ctx.response.headers->setHeader("content-type", fileExtension.at(ext));
 		return dems::CodeStatus::OK;
 	});
 
