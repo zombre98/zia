@@ -3,6 +3,7 @@
 //
 
 #include <boost/asio/ssl.hpp>
+#include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <sys/socket.h>
 #include "../api/AModulesManager.hpp"
@@ -27,17 +28,19 @@ std::string registerHooks(dems::StageManager &manager) {
 		std::cout << "From context we got : " <<  ctx.socketFd << std::endl;
 		std::cout << "Key path : " << key_path << std::endl;
 		std::cout << "Certificat path : " << cert_path << std::endl;
-		boost::asio::io_service ioserv;
-		boost::asio::ip::tcp::socket socket(ioserv);
 
-		socket.assign(boost::asio::ip::tcp::v4(), ctx.socketFd);
 		boost::asio::ssl::context sslContext(boost::asio::ssl::context::sslv23);
-		sslContext.set_password_callback([&ssl_pass]() { return ssl_pass; });
+
+		sslContext.set_options(
+			boost::asio::ssl::context::default_workarounds
+			| boost::asio::ssl::context::no_sslv2
+			| boost::asio::ssl::context::single_dh_use);
+		sslContext.set_password_callback([&ssl_pass](std::size_t, boost::asio::ssl::context::password_purpose) { return ssl_pass;});
 		sslContext.use_certificate_chain_file(cert_path);
-		sslContext.use_private_key_file(key_path, boost::asio::ssl::context::pem);
-		boost::asio::ssl::stream<boost::asio::ip::tcp::socket> stream(ioserv, sslContext);
-//		sslContext.set_verify_mode(boost::asio::ssl::verify_peer);
-	//	sslContext.load_verify_file(cert_path);
+		sslContext.use_private_key_file(cert_path, boost::asio::ssl::context::pem);
+		//sslContext.use_certificate_chain_file("server.pem");
+		//sslContext.use_private_key_file("server.pem", boost::asio::ssl::context::pem);
+		//sslContext.use_tmp_dh_file("dh512.pem");
 		return dems::CodeStatus::OK;
 	});
 
