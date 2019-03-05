@@ -26,14 +26,10 @@ std::string registerHooks(dems::StageManager &manager) {
 			return dems::CodeStatus::DECLINED;
 
 		auto command = "php " + path;
-		std::cout << "Command :'" << command << "'" << std::endl;
 		FILE *file = popen(command.c_str(), "r");
 
 		int ch;
-		std::cout << "Before push_back : " << ctx.response.body << std::endl;
-		std::cout << "Start to stock" << std::endl;
 		while((ch = fgetc(file)) != EOF) {
-			std::cout << (char)ch;
 			ctx.response.body.push_back(ch);
 		}
 		pclose(file);
