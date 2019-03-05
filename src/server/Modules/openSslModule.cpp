@@ -31,13 +31,14 @@ std::string registerHooks(dems::StageManager &manager) {
 
 		boost::asio::ssl::context sslContext(boost::asio::ssl::context::sslv23);
 
+		sslContext.load_verify_file(cert_path);
 		sslContext.set_options(
 			boost::asio::ssl::context::default_workarounds
 			| boost::asio::ssl::context::no_sslv2
 			| boost::asio::ssl::context::single_dh_use);
 		sslContext.set_password_callback([&ssl_pass](std::size_t, boost::asio::ssl::context::password_purpose) { return ssl_pass;});
-		sslContext.use_certificate_chain_file(cert_path);
-		sslContext.use_private_key_file(cert_path, boost::asio::ssl::context::pem);
+		// sslContext.use_certificate_chain_file(cert_path);
+		sslContext.use_private_key_file(key_path, boost::asio::ssl::context::pem);
 		//sslContext.use_certificate_chain_file("server.pem");
 		//sslContext.use_private_key_file("server.pem", boost::asio::ssl::context::pem);
 		//sslContext.use_tmp_dh_file("dh512.pem");
