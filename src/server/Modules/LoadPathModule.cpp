@@ -17,9 +17,12 @@ extern "C" {
  * @param manager The Stage manager to hook the module
  */
 std::string registerHooks(dems::StageManager &manager) {
-	manager.request().hookToFirst(2, MODULE_NAME, [](dems::Context &ctx) {
+	manager.request().hookToFirst(1, MODULE_NAME, [](dems::Context &ctx) {
 		auto &root = std::get<std::string>(ctx.config["root"].v);
 		auto path = root + std::get<dems::header::Request>(ctx.request.firstLine).path;
+		if (std::filesystem::path(path).extension() == ".php")
+			return dems::CodeStatus::DECLINED;
+
 		if (std::filesystem::is_directory(path)) {
 		  auto &defaultFile = std::get<std::string>(ctx.config["default_file"].v);
 		  path = root + defaultFile;
