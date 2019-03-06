@@ -13,13 +13,9 @@ int main() {
   zia::AsioServer serv("0.0.0.0", 4242);
 
   serv.whenOnConnected([&serv](zia::IClient &client) {
+		client.getContext().socketFd = client.getRawSocket();
     client.whenOnRead([&client, &serv](zia::Buffer &b){
 			auto &context = client.getContext();
-			context.socketFd = client.getRawSocket();
-
-			for (auto &first : serv.getModulesManager().getStageManager().request().firstHooks()) {
-				first.second.callback(client.getContext());
-			}
 
       auto data = b.read<std::string>();
 

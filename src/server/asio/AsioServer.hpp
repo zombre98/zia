@@ -175,6 +175,11 @@ private:
         last.second.callback(clients_.back()->getContext());
       }
 
+      clients_.back()->setBeforeRead([this](IClient &client) {
+				for (auto &first: moduleManager_.getStageManager().request().firstHooks()) {
+					first.second.callback(client.getContext());
+				}
+      });
       clients_.back()->read();
       startAccept();
     });

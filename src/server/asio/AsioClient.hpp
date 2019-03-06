@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <asio.hpp>
+#include "Utils/ThreadPool.hpp"
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -15,11 +16,16 @@ namespace zia {
 class AsioClient : public IClient {
 public:
   using AsioClientUPtr = std::unique_ptr<AsioClient>;
+  using beforeReadFnc = std::function<void(IClient &client)>;
 
   explicit AsioClient(asio::io_service &ios, onDisconnected &&callback) : onDisconnectedCallback_(std::move(callback)),
                                                                           socket_(ios), repeatRead_(true)
   {
     context_.response.headers = std::make_unique<dems::header::Heading>();
+  }
+
+  ~AsioClient() {
+    setRepeatRead(false);
   }
 public:
   /**
@@ -47,6 +53,10 @@ public:
     onDisconnectedCallback_ = std::move(callback);
   }
 
+  void setBeforeRead(beforeReadFnc &&callback) {
+    beforeReadCallback_= std::move(callback);
+  }
+
   int getRawSocket() override {
     return socket_.native_handle();
   }
@@ -55,12 +65,18 @@ public:
    * Read from the client without delimitation
    */
   void read() {
-    socket_.async_read_some(asio::buffer(buffer_.getBufferContainer()), [this](asio::error_code error, std::size_t bTranfered) {
-      if (!onReadCall(error, bTranfered))
+  	threadPool_.addTask<void>([this]() {
+      asio::error_code ec;
+      socket_.wait(asio::ip::tcp::socket::wait_read);
+      if (beforeReadCallback_)
+        beforeReadCallback_(*this);
+      std::size_t bTransfered = socket_.read_some(asio::buffer(buffer_.getBufferContainer()), ec);
+
+      if (!onReadCall(ec, bTransfered))
         return;
       if (repeatRead_)
         read();
-    });
+  	});
   }
 
   /**
@@ -68,13 +84,18 @@ public:
    * @param delim The delimitation
    */
   void read(const std::string &delim) {
-    socket_.cancel();
-    asio::async_read_until(socket_, streamBuffer_, delim, [delim, this](asio::error_code error, std::size_t bTranfered) {
+    threadPool_.addTask<void>([this, delim]() {
+      asio::error_code ec;
+
+      socket_.cancel();
+      if (beforeReadCallback_)
+        beforeReadCallback_(*this);
+      std::size_t bTransfered = asio::read_until(socket_, streamBuffer_, delim);
       std::istream is(&streamBuffer_);
       std::string streamData = getUntilDelim(is, delim);
 
       buffer_.setData(streamData.data(), streamData.size());
-      if (!onReadCall(error, bTranfered))
+      if (!onReadCall(ec, bTransfered))
         return;
       if (repeatRead_)
         read(delim);
@@ -145,6 +166,7 @@ public:
 private:
   onRead onReadCallback_;
   onDisconnected onDisconnectedCallback_;
+  beforeReadFnc beforeReadCallback_;
 
   asio::io_service service_;
   asio::ip::tcp::socket socket_;
@@ -155,6 +177,8 @@ private:
 
   dems::Context context_;
   dems::header::Heading heading_;
+  zia::ThreadPool threadPool_;
+
 };
 
 }

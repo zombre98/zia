@@ -17,6 +17,10 @@ extern "C" {
  * @param manager The Stage manager to hook the module
  */
 std::string registerHooks(dems::StageManager &manager) {
+	manager.request().hookToFirst(1, MODULE_NAME, [](dems::Context &lol) {
+		std::cout << "LOL DES BARRES" << std::endl;
+		return dems::CodeStatus::OK;
+	});
 	manager.request().hookToMiddle(2, MODULE_NAME, [](dems::Context &ctx) {
 		auto &root = std::get<std::string>(ctx.config["root"].v);
 		auto path = root + std::get<dems::header::Request>(ctx.request.firstLine).path;
