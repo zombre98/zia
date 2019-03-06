@@ -1,11 +1,11 @@
-#include <utility>
-
 //
 // Created by Thomas Burgaud on 2019-01-22.
 //
 
 #pragma once
 
+#include <memory>
+#include <utility>
 #include <unordered_map>
 #include <string>
 #include "server/api/Stage.hpp"
@@ -146,18 +146,30 @@ void constructObject(dems::config::Config &config, nlohmann::json const &jsonObj
 	}
 }
 
+
 void constructConfig(Context &ctx, zia::utils::JsonParser &config) {
-		auto &jsonObject = config.getJsonObject();
-		ctx.config.clear();
-		constructObject(ctx.config, jsonObject);
-	}
+	auto &jsonObject = config.getJsonObject();
+	ctx.config.clear();
+	constructObject(ctx.config, jsonObject);
+}
+
+void resetContext(Context &ctx) {
+	auto &response = std::get<header::Response>(ctx.response.firstLine);
+
+	response.httpVersion.clear();
+	response.statusCode.clear();
+	response.message.clear();
+	ctx.request.headers = std::make_unique<Heading>();
+	ctx.response.headers = std::make_unique<Heading>();
+	ctx.response.body.clear();
+}
 
 std::string constructResponse(Context &context) {
 	std::string response;
 	header::Response ctxResponse;
 	try {
 		ctxResponse = std::get<header::Response>(context.response.firstLine);
-	} catch(const std::bad_variant_access& e) {
+	} catch (const std::bad_variant_access& e) {
 		ctxResponse = header::Response{"HTTP/1.1", "501", "Not_Implemented"};
 		context.response.headers->setHeader("Content-Length", "0");
 	}
@@ -165,6 +177,7 @@ std::string constructResponse(Context &context) {
 	response = ctxResponse.httpVersion + " " + ctxResponse.statusCode + " " + ctxResponse.message + CRLF;
 	response += context.response.headers->getWholeHeaders() + CRLF;
 	response += context.response.body;
+	resetContext(context);
 	return response;
 }
 

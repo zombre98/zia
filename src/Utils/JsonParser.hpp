@@ -15,7 +15,6 @@ namespace zia::utils {
 
 	public:
 		explicit JsonParser(std::string filename) : filename_(std::move(filename)) {
-			std::cout << "In Json Parser" << std::endl;
 			open();
 		}
 
