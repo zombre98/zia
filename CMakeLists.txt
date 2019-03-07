@@ -61,13 +61,6 @@ set(TEST_MAIN unit_tests)  # Default name for test executable (change if you wis
 # Compile all sources into a library. Called engine here (change if you wish).
 add_library(engine ${SOURCES})
 
-# Add an executable for the file main.cpp, here called main.x.
-# If you add more executables, copy these three lines accordingly.
-add_executable(serverzia app/main.cpp)   # Name of exec. and location of file.
-add_dependencies(serverzia engine)       # main.cpp uses the 'engine', add dep.
-target_link_libraries(serverzia engine)  # Link the executable to the 'engine'.
-
-
 set(CONAN_CMAKE_VER v0.13)
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan-${CONAN_CMAKE_VER}.cmake")
        message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
