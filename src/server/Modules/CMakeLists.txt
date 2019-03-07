@@ -11,6 +11,9 @@ set(CMAKE_CXX_STANDARD 17)
 add_library(${PROJECT_NAME} SHARED
         LoadPathModule.cpp)
 
+add_library(PHPModule SHARED
+            PHPModule.cpp)
+
 add_library(OpenSSL SHARED
         openSslModule.cpp)
 
