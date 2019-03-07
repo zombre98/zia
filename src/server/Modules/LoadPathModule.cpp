@@ -4,7 +4,6 @@
 
 #include <filesystem>
 #include <unordered_map>
-#include "LoadPathModule.hpp"
 #include "../api/AModulesManager.hpp"
 #include "../../Utils/Logger.hpp"
 #include "../api/Config.hpp"

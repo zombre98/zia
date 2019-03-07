@@ -4,12 +4,11 @@
 
 #include <stdio.h>
 #include <filesystem>
-#include "LoadPathModule.hpp"
 #include "../api/AModulesManager.hpp"
 #include "../../Utils/Logger.hpp"
 #include "../api/Config.hpp"
 
-static constexpr char MODULE_NAME[] = "LoadPath";
+static constexpr char MODULE_NAME[] = "PhpModule";
 
 extern "C" {
 
@@ -18,7 +17,7 @@ extern "C" {
  * @param manager The Stage manager to hook the module
  */
 std::string registerHooks(dems::StageManager &manager) {
-	manager.request().hookToFirst(2, MODULE_NAME, [](dems::Context &ctx) {
+	manager.request().hookToMiddle(2, MODULE_NAME, [](dems::Context &ctx) {
 		auto &root = std::get<std::string>(ctx.config["root"].v);
 		auto path = root + std::get<dems::header::Request>(ctx.request.firstLine).path;
 
