@@ -2,9 +2,7 @@
 // Created by Thomas Burgaud on 2019-02-23.
 //
 
-#include <boost/asio/ssl.hpp>
-#include <boost/bind.hpp>
-#include <boost/asio.hpp>
+#include <openssl/ssl.h>
 #include <sys/socket.h>
 #include "../api/AModulesManager.hpp"
 #include "../../Utils/Logger.hpp"
@@ -29,19 +27,53 @@ std::string registerHooks(dems::StageManager &manager) {
 		std::cout << "Key path : " << key_path << std::endl;
 		std::cout << "Certificat path : " << cert_path << std::endl;
 
-		boost::asio::ssl::context sslContext(boost::asio::ssl::context::sslv23);
+		SSL_CTX  *ssl_ctx;
+		SSL  *myssl;
 
-		sslContext.load_verify_file(cert_path);
-		sslContext.set_options(
-			boost::asio::ssl::context::default_workarounds
-			| boost::asio::ssl::context::no_sslv2
-			| boost::asio::ssl::context::single_dh_use);
-		sslContext.set_password_callback([&ssl_pass](std::size_t, boost::asio::ssl::context::password_purpose) { return ssl_pass;});
-		// sslContext.use_certificate_chain_file(cert_path);
-		sslContext.use_private_key_file(key_path, boost::asio::ssl::context::pem);
-		//sslContext.use_certificate_chain_file("server.pem");
-		//sslContext.use_private_key_file("server.pem", boost::asio::ssl::context::pem);
-		//sslContext.use_tmp_dh_file("dh512.pem");
+		SSL_library_init();
+		OpenSSL_add_all_algorithms();
+		SSL_load_error_strings();
+		SSL_METHOD const *meth = SSLv23_server_method();
+		if (!(ssl_ctx = SSL_CTX_new(meth)))
+			throw std::runtime_error("Error while init ssl");
+		SSL_CTX_set_ecdh_auto(ssl_ctx, 1);
+		//if (SSL_CTX_set_cipher_list(ssl_ctx, "AES128-SHA") <= 0)
+		//	throw std::runtime_error("Error while set cipher list");
+		if (SSL_CTX_use_certificate_file(ssl_ctx, cert_path.c_str(), SSL_FILETYPE_PEM) <= 0)
+			throw std::runtime_error("Error while using the certificate");
+//		SSL_CTX_set_default_passwd_cb_userdata(ssl_ctx, (void *)ssl_pass.c_str());
+		if (SSL_CTX_use_PrivateKey_file(ssl_ctx, key_path.c_str(), SSL_FILETYPE_PEM) <= 0)
+			throw std::runtime_error("Error while using the private key");
+//		if (SSL_CTX_check_private_key(ssl_ctx) == 0)
+//			throw std::runtime_error("Certificat and key doesn't match");
+//		SSL_CTX_set_verify(ssl_ctx, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT, NULL);
+//		if (SSL_CTX_load_verify_locations(ssl_ctx, cert_path.c_str(), NULL) < 1)
+//			throw std::runtime_error("Setting the verify location");
+		//	if (SSL_CTX_load_and_set_client_CA_file(ssl_ctx, cert_path.c_str()) < 1)
+		// throw std::runtime_error("Error setting CA file");
+
+		myssl = SSL_new(ssl_ctx);
+		if (!myssl)
+			throw std::runtime_error("SSL_new failed");
+		SSL_set_fd(myssl, ctx.socketFd);
+		int err;
+		err = SSL_accept(myssl);
+		if (err <= 0)
+			return dems::CodeStatus::DECLINED;
+//			throw std::runtime_error("SSL accept failed");
+		if (err<1) {
+			err=SSL_get_error(myssl,err);
+			printf("SSL error #%d in SSL_accept,program terminated\n",err);
+			exit(0);
+		}
+		if (SSL_get_verify_result(myssl) != X509_V_OK)
+			throw std::runtime_error("SSL Client Authentication error");
+		std::cout << "SSL connection on socket " << ctx.socketFd << ", Version: " << SSL_get_version(myssl) << ", Cipher: " << SSL_get_cipher(myssl) << std::endl;
+		char buff[1024];
+		if (SSL_read(myssl, buff, sizeof(buff)) < 1)
+			throw std::runtime_error("SSL read failed");
+		std::cout << "Receive from client :" << std::endl << buff << std::endl;
+
 		return dems::CodeStatus::OK;
 	});
 
