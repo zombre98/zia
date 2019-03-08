@@ -39,6 +39,11 @@ std::string registerHooks(dems::StageManager &manager) {
 		  path = root + defaultFile;
 		}
     std::ifstream fStream(path);
+		if (!fStream.is_open()) {
+			std::cout << "Open failed" << std::endl;
+			ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "404", ""};
+			return dems::CodeStatus::OK;
+		}
 		std::string s((std::istreambuf_iterator<char>(fStream)), std::istreambuf_iterator<char>());
 		ctx.response.body = std::move(s);
 
@@ -49,7 +54,14 @@ std::string registerHooks(dems::StageManager &manager) {
 	});
 
 	manager.request().hookToEnd(1, MODULE_NAME, [](dems::Context &ctx) {
-		ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "200", ""};
+		try {
+			auto &response = std::get<dems::header::Response>(ctx.request.firstLine);
+		}
+		catch (std::bad_variant_access &e) {
+			ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "200", ""};
+			ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
+			return dems::CodeStatus::OK;
+		}
 		ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
 		return dems::CodeStatus::OK;
 	});
