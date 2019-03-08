@@ -4,6 +4,7 @@
 
 #include <openssl/ssl.h>
 #include <sys/socket.h>
+#include <unistd.h>
 #include "../api/AModulesManager.hpp"
 #include "../../Utils/Logger.hpp"
 #include "../api/Config.hpp"
@@ -16,63 +17,60 @@ extern "C" {
  * The fonction requested by the ModuleManager to load the module
  * @param manager The Stage manager to hook the module
  */
+static SSL_CTX  *ssl_ctx;
+
 std::string registerHooks(dems::StageManager &manager) {
+	SSL_library_init();
+	OpenSSL_add_all_algorithms();
+	SSL_load_error_strings();
+	SSL_METHOD const *meth = SSLv23_server_method();
+	if (!(ssl_ctx = SSL_CTX_new(meth)))
+		throw std::runtime_error("Error while init ssl");
+	SSL_CTX_set_ecdh_auto(ssl_ctx, 1);
+	//if (SSL_CTX_set_cipher_list(ssl_ctx, "AES128-SHA") <= 0)
+	//	throw std::runtime_error("Error while set cipher list");
+	if (SSL_CTX_use_certificate_file(ssl_ctx, "./cert.pem", SSL_FILETYPE_PEM) <= 0)
+		throw std::runtime_error("Error while using the certificate");
+//		SSL_CTX_set_default_passwd_cb_userdata(ssl_ctx, (void *)ssl_pass.c_str());
+	if (SSL_CTX_use_PrivateKey_file(ssl_ctx, "./key.pem", SSL_FILETYPE_PEM) <= 0)
+		throw std::runtime_error("Error while using the private key");
+
 	manager.request().hookToFirst(1, MODULE_NAME, [](dems::Context &ctx) {
 		auto cert_path = std::get<std::string>(ctx.config["cert_path"].v);
 		auto key_path = std::get<std::string>(ctx.config["key_path"].v);
 		auto ssl_pass = std::get<std::string>(ctx.config["ssl_password"].v);
 
-		std::cout << "Hi from ssl Hooktofirst request" << std::endl;/*
-		std::cout << "From context we got : " <<  ctx.socketFd << std::endl;
-		std::cout << "Key path : " << key_path << std::endl;
-		std::cout << "Certificat path : " << cert_path << std::endl;*/
-
-		SSL_CTX  *ssl_ctx;
 		SSL  *myssl;
-
-		SSL_library_init();
-		OpenSSL_add_all_algorithms();
-		SSL_load_error_strings();
-		SSL_METHOD const *meth = SSLv23_server_method();
-		if (!(ssl_ctx = SSL_CTX_new(meth)))
-			throw std::runtime_error("Error while init ssl");
-		SSL_CTX_set_ecdh_auto(ssl_ctx, 1);
-		//if (SSL_CTX_set_cipher_list(ssl_ctx, "AES128-SHA") <= 0)
-		//	throw std::runtime_error("Error while set cipher list");
-		if (SSL_CTX_use_certificate_file(ssl_ctx, cert_path.c_str(), SSL_FILETYPE_PEM) <= 0)
-			throw std::runtime_error("Error while using the certificate");
-//		SSL_CTX_set_default_passwd_cb_userdata(ssl_ctx, (void *)ssl_pass.c_str());
-		if (SSL_CTX_use_PrivateKey_file(ssl_ctx, key_path.c_str(), SSL_FILETYPE_PEM) <= 0)
-			throw std::runtime_error("Error while using the private key");
-//		if (SSL_CTX_check_private_key(ssl_ctx) == 0)
-//			throw std::runtime_error("Certificat and key doesn't match");
-//		SSL_CTX_set_verify(ssl_ctx, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT, NULL);
-//		if (SSL_CTX_load_verify_locations(ssl_ctx, cert_path.c_str(), NULL) < 1)
-//			throw std::runtime_error("Setting the verify location");
-		//	if (SSL_CTX_load_and_set_client_CA_file(ssl_ctx, cert_path.c_str()) < 1)
-		// throw std::runtime_error("Error setting CA file");
-
 		myssl = SSL_new(ssl_ctx);
-		if (!myssl)
-			throw std::runtime_error("SSL_new failed");
-		SSL_set_fd(myssl, ctx.socketFd);
 		int err;
-		err = SSL_accept(myssl);
-		if (err <= 0)
-			return dems::CodeStatus::DECLINED;
-//			throw std::runtime_error("SSL accept failed");
-		if (err<1) {
-			err=SSL_get_error(myssl,err);
-			printf("SSL error #%d in SSL_accept,program terminated\n",err);
-			exit(0);
+		std::cout << "After SSL_new" << std::endl;
+		if (!myssl) {
+			err = SSL_get_error(myssl, err);
+			std::cout << "SSL_new failed error value : #" << err << std::endl;
+			throw std::runtime_error("SSL_new failed");
 		}
-		if (SSL_get_verify_result(myssl) != X509_V_OK)
+		SSL_set_fd(myssl, ctx.socketFd);
+		std::cout << "After set_fd" << std::endl;
+		err = SSL_accept(myssl);
+		std::cout << "Return value of SSL_accept : " << err << std::endl;
+		if (err <= 0) {
+			err = SSL_get_error(myssl, err);
+
+			std::cout << "Request is'nt a ssl request with ssl error : #" << err << std::endl;
+			return dems::CodeStatus::DECLINED;
+		}
+//			throw std::runtime_error("SSL accept failed");
+		if (SSL_get_verify_result(myssl) != X509_V_OK) {
+			std::cout << "SSL_get_verify_result" << std::endl;
 			throw std::runtime_error("SSL Client Authentication error");
+		}
 		std::cout << "SSL connection on socket " << ctx.socketFd << ", Version: " << SSL_get_version(myssl) << ", Cipher: " << SSL_get_cipher(myssl) << std::endl;
 		char buff[1024];
-		if (SSL_read(myssl, buff, sizeof(buff)) < 1)
+		int value_ssl_read = SSL_read(myssl, buff, sizeof(buff));
+		if (value_ssl_read < 1)
 			throw std::runtime_error("SSL read failed");
-		std::cout << "Receive from client :" << std::endl << buff << std::endl;
+		std::cout << "We've read : " << value_ssl_read << std::endl;
+		std::cout << "Receive from client in ssl_read :" << std::endl << buff << std::endl;
 
 		return dems::CodeStatus::OK;
 	});

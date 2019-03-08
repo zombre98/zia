@@ -18,7 +18,7 @@ int main() {
 			auto &context = client.getContext();
 
       auto data = b.read<std::string>();
-//      std::cout << "Received data : " << data << std::endl;
+      std::cout << "Received data : " << data << std::endl;
 
 			std::copy(data.begin(), data.end(), std::back_inserter(context.rawData));
 			dems::header::fillHeading(data, context, *context.request.headers);
