@@ -180,7 +180,9 @@ private:
 					first.second.callback(client.getContext());
 				}
       });
+      std::cout << "We are goind to read" << std::endl;
       clients_.back()->read();
+			std::cout << "We have read to read" << std::endl;
       startAccept();
     });
   }

@@ -22,10 +22,10 @@ std::string registerHooks(dems::StageManager &manager) {
 		auto key_path = std::get<std::string>(ctx.config["key_path"].v);
 		auto ssl_pass = std::get<std::string>(ctx.config["ssl_password"].v);
 
-		std::cout << "Hi from ssl Hooktofirst request" << std::endl;
+		std::cout << "Hi from ssl Hooktofirst request" << std::endl;/*
 		std::cout << "From context we got : " <<  ctx.socketFd << std::endl;
 		std::cout << "Key path : " << key_path << std::endl;
-		std::cout << "Certificat path : " << cert_path << std::endl;
+		std::cout << "Certificat path : " << cert_path << std::endl;*/
 
 		SSL_CTX  *ssl_ctx;
 		SSL  *myssl;
