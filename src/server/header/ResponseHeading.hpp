@@ -98,6 +98,8 @@ inline void fillHeading(const std::string &data, dems::Context &context, IHeader
 	while (std::getline(dataStream, line)) {
 		auto members = zia::utils::split(line, ' ');
 
+		if (line == "\r")
+			break;
 		if (!members[0].empty() && !members[1].empty()) {
 			members[0].resize(members[0].size() - 1);
 			if (!members[0].empty() && !members[1].empty()) {
@@ -105,6 +107,9 @@ inline void fillHeading(const std::string &data, dems::Context &context, IHeader
 				heading[members[0]] = members[1];
 			}
 		}
+	}
+	while (std::getline(dataStream, line)) {
+		context.request.body += line;
 	}
 }
 
