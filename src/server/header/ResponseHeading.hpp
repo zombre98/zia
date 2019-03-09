@@ -154,14 +154,18 @@ void constructConfig(Context &ctx, zia::utils::JsonParser &config) {
 }
 
 void resetContext(Context &ctx) {
-	auto &response = std::get<header::Response>(ctx.response.firstLine);
+	try {
+		auto &response = std::get<header::Response>(ctx.response.firstLine);
 
-	response.httpVersion.clear();
-	response.statusCode.clear();
-	response.message.clear();
-	ctx.request.headers = std::make_unique<Heading>();
-	ctx.response.headers = std::make_unique<Heading>();
-	ctx.response.body.clear();
+		response.httpVersion.clear();
+		response.statusCode.clear();
+		response.message.clear();
+		ctx.request.headers = std::make_unique<Heading>();
+		ctx.response.headers = std::make_unique<Heading>();
+		ctx.response.body.clear();
+	} catch (std::bad_variant_access &e) {
+		return;
+	}
 }
 
 std::string constructResponse(Context &context) {
