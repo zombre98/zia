@@ -174,7 +174,7 @@ inline void resetContext(Context &ctx) {
 		response.message.clear();
 		ctx.request.headers = std::make_unique<Heading>();
 		ctx.response.headers = std::make_unique<Heading>();
-		ctx.response.body.clear();
+		ctx.response.body = "";
 		ctx.request.body.clear();
 	} catch (std::bad_variant_access &e) {
 		return;

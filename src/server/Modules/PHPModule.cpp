@@ -74,7 +74,7 @@ std::string registerHooks(dems::StageManager &manager) {
 			}
 		}
 		while (std::getline(dataStream, line)) {
-			std::cout << line << std::endl;
+			std::cout << "With getline : " << line << std::endl;
 			ctx.response.body.append(line);
 		}
 		std::cout << "Before leaving the php module" << std::endl << ctx.response.body << std::endl;
