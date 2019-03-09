@@ -34,14 +34,12 @@ std::string registerHooks(dems::StageManager &manager) {
 		if (std::filesystem::path(path).extension() == ".php")
 			return dems::CodeStatus::DECLINED;
 
-		std::cout << "File extension is : " << std::filesystem::path(path).extension() << std::endl;
 		if (std::filesystem::is_directory(path)) {
 		  auto &defaultFile = std::get<std::string>(ctx.config["default_file"].v);
 		  path = root + defaultFile;
 		}
     std::ifstream fStream(path);
 		if (!fStream.is_open()) {
-			std::cout << "Open failed" << std::endl;
 			ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "404", ""};
 			return dems::CodeStatus::OK;
 		}
