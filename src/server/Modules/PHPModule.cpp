@@ -62,7 +62,6 @@ std::string registerHooks(dems::StageManager &manager) {
 		while (std::getline(dataStream, line)) {
 			if (line == "\r")
 				break;
-			std::cout << "Header line " << line << std::endl;
 
 			auto members = zia::utils::split(line, ' ');
 			if (!members[0].empty() && !members[1].empty()) {
@@ -74,10 +73,8 @@ std::string registerHooks(dems::StageManager &manager) {
 			}
 		}
 		while (std::getline(dataStream, line)) {
-			std::cout << "With getline : " << line << std::endl;
 			ctx.response.body.append(line);
 		}
-		std::cout << "Before leaving the php module" << std::endl << ctx.response.body << std::endl;
 		return dems::CodeStatus::OK;
 	});
 	return MODULE_NAME;
