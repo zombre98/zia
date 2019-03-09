@@ -39,10 +39,8 @@ std::string registerHooks(dems::StageManager &manager) {
 		  path = root + defaultFile;
 		}
     std::ifstream fStream(path);
-		if (!fStream.is_open()) {
-			ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "404", ""};
-			return dems::CodeStatus::OK;
-		}
+		if (!fStream.is_open())
+			return dems::CodeStatus::DECLINED;
 		std::string s((std::istreambuf_iterator<char>(fStream)), std::istreambuf_iterator<char>());
 		ctx.response.body = std::move(s);
 
