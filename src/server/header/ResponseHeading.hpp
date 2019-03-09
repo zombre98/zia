@@ -20,7 +20,7 @@ namespace dems {
 
 namespace header {
 
-std::tuple<std::string, std::string, std::string> parseFirstLine(std::string line) {
+inline std::tuple<std::string, std::string, std::string> parseFirstLine(std::string line) {
 	std::vector<std::string> tokens = zia::utils::split(std::move(line), ' ');
 
 	if (tokens.size() >= 3)
@@ -87,7 +87,7 @@ class Heading : public IHeaders {
 				std::unordered_map<std::string, std::string> headers_;
 		};
 
-void fillHeading(const std::string &data, dems::Context &context, IHeaders &heading) {
+inline void fillHeading(const std::string &data, dems::Context &context, IHeaders &heading) {
 	std::istringstream dataStream(data);
 
 	std::string line;
@@ -100,15 +100,17 @@ void fillHeading(const std::string &data, dems::Context &context, IHeaders &head
 
 		if (!members[0].empty() && !members[1].empty()) {
 			members[0].resize(members[0].size() - 1);
-			if (!members[0].empty() && !members[1].empty())
+			if (!members[0].empty() && !members[1].empty()) {
+				members[1].erase(members[1].size() - 1, 1);
 				heading[members[0]] = members[1];
+			}
 		}
 	}
 }
 
-void constructObject(dems::config::Config &config, nlohmann::json const &jsonObject);
+inline void constructObject(dems::config::Config &config, nlohmann::json const &jsonObject);
 
-void createJsonArray(dems::config::ConfigArray &arrConf, nlohmann::json const &jsonObject) {
+inline void createJsonArray(dems::config::ConfigArray &arrConf, nlohmann::json const &jsonObject) {
 	for (auto &arrIt : jsonObject) {
 		if (arrIt.is_number())
 			arrConf.emplace_back(dems::config::ConfigValue{arrIt.get<long long>()});
@@ -126,7 +128,7 @@ void createJsonArray(dems::config::ConfigArray &arrConf, nlohmann::json const &j
 	}
 }
 
-void constructObject(dems::config::Config &config, nlohmann::json const &jsonObject) {
+inline void constructObject(dems::config::Config &config, nlohmann::json const &jsonObject) {
 	for (nlohmann::json::const_iterator it = jsonObject.begin(); it != jsonObject.end(); ++it) {
 		if (jsonObject[it.key()].is_string()) {
 			config[it.key()].v = jsonObject[it.key()].get<std::string>();
@@ -148,14 +150,13 @@ void constructObject(dems::config::Config &config, nlohmann::json const &jsonObj
 	}
 }
 
-
-void constructConfig(Context &ctx, zia::utils::JsonParser &config) {
+inline void constructConfig(Context &ctx, zia::utils::JsonParser &config) {
 	auto &jsonObject = config.getJsonObject();
 	ctx.config.clear();
 	constructObject(ctx.config, jsonObject);
 }
 
-void resetContext(Context &ctx) {
+inline void resetContext(Context &ctx) {
 	try {
 		auto &response = std::get<header::Response>(ctx.response.firstLine);
 
@@ -170,7 +171,7 @@ void resetContext(Context &ctx) {
 	}
 }
 
-std::string constructResponse(Context &context) {
+inline std::string constructResponse(Context &context) {
 	std::string response;
 	header::Response ctxResponse;
 	try {
