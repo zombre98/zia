@@ -10,7 +10,7 @@
 
 namespace zia::utils {
 
-std::vector<std::string> split(std::string str, char delim) {
+inline std::vector<std::string> split(std::string str, char delim) {
 	std::vector<std::string> tokens;
 	std::string token;
 	std::istringstream tokenStream(str);
