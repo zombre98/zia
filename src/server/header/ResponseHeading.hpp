@@ -96,10 +96,10 @@ inline void fillHeading(const std::string &data, dems::Context &context, IHeader
 	context.request.firstLine = dems::header::Request {method, path, httpversion};
 
 	while (std::getline(dataStream, line)) {
-		auto members = zia::utils::split(line, ' ');
-
 		if (line == "\r")
 			break;
+
+		auto members = zia::utils::split(line, ' ');
 		if (!members[0].empty() && !members[1].empty()) {
 			members[0].resize(members[0].size() - 1);
 			if (!members[0].empty() && !members[1].empty()) {
@@ -164,13 +164,18 @@ inline void constructConfig(Context &ctx, zia::utils::JsonParser &config) {
 inline void resetContext(Context &ctx) {
 	try {
 		auto &response = std::get<header::Response>(ctx.response.firstLine);
+		auto &request = std::get<header::Request>(ctx.response.firstLine);
 
+		request.method.clear();
+		request.httpVersion.clear();
+		request.path.clear();
 		response.httpVersion.clear();
 		response.statusCode.clear();
 		response.message.clear();
 		ctx.request.headers = std::make_unique<Heading>();
 		ctx.response.headers = std::make_unique<Heading>();
 		ctx.response.body.clear();
+		ctx.request.body.clear();
 	} catch (std::bad_variant_access &e) {
 		return;
 	}
