@@ -72,6 +72,7 @@ std::string registerHooks(dems::StageManager &manager) {
 				}
 			}
 		}
+		ctx.response.body = "";
 		while (std::getline(dataStream, line)) {
 			ctx.response.body.append(line);
 		}
