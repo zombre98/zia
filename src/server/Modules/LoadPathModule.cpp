@@ -34,16 +34,17 @@ std::string registerHooks(dems::StageManager &manager) {
 		if (std::filesystem::path(path).extension() == ".php")
 			return dems::CodeStatus::DECLINED;
 
+		std::cout << "File extension is : " << std::filesystem::path(path).extension() << std::endl;
 		if (std::filesystem::is_directory(path)) {
 		  auto &defaultFile = std::get<std::string>(ctx.config["default_file"].v);
 		  path = root + defaultFile;
 		}
     std::ifstream fStream(path);
-//		if (!fStream.is_open()) {
-//			std::cout << "Open failed" << std::endl;
-//			ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "404", ""};
-//			return dems::CodeStatus::OK;
-//		}
+		if (!fStream.is_open()) {
+			std::cout << "Open failed" << std::endl;
+			ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "404", ""};
+			return dems::CodeStatus::OK;
+		}
 		std::string s((std::istreambuf_iterator<char>(fStream)), std::istreambuf_iterator<char>());
 		ctx.response.body = std::move(s);
 
@@ -54,16 +55,21 @@ std::string registerHooks(dems::StageManager &manager) {
 	});
 
 	manager.request().hookToEnd(1, MODULE_NAME, [](dems::Context &ctx) {
-	//	try {
-	//		auto &response = std::get<dems::header::Response>(ctx.request.firstLine);
-//		}
-//		catch (std::bad_variant_access &e) {
-			ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "200", ""};
-			ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
+		auto &root = std::get<std::string>(ctx.config["root"].v);
+		auto path = root + std::get<dems::header::Request>(ctx.request.firstLine).path;
+
+		if (std::filesystem::is_directory(path)) {
+			auto &defaultFile = std::get<std::string>(ctx.config["default_file"].v);
+			path = root + defaultFile;
+		}
+		if (!std::filesystem::exists(path)) {
+			ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "404", "Not Found"};
+			ctx.response.headers->setHeader("Content-Length", "0");
 			return dems::CodeStatus::OK;
-	//	}
-//		ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
-//		return dems::CodeStatus::OK;
+		}
+		ctx.response.firstLine = dems::header::Response{"HTTP/1.1", "200", ""};
+		ctx.response.headers->setHeader("Content-Length", std::to_string(ctx.response.body.length()));
+		return dems::CodeStatus::OK;
 	});
 	return MODULE_NAME;
 }
