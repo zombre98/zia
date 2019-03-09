@@ -56,7 +56,7 @@ std::string registerHooks(dems::StageManager &manager) {
 
 		auto ext = std::filesystem::path(path).extension();
 		if (fileExtension.count(ext))
-		  ctx.response.headers->setHeader("content-type", fileExtension.at(ext));
+		  ctx.response.headers->setHeader("Content-type", fileExtension.at(ext));
 		return dems::CodeStatus::OK;
 	});
 
