@@ -31,6 +31,7 @@ extern "C" {
  */
 std::string registerHooks(dems::StageManager &manager) {
 	manager.request().hookToMiddle(1, MODULE_NAME, [](dems::Context &ctx) {
+		auto &requestFirstLine = std::get<dems::header::Request>(ctx.request.firstLine);
 		auto &root = std::get<std::string>(ctx.config["root"].v);
 		auto requestPath = std::get<dems::header::Request>(ctx.request.firstLine).path;
 
@@ -40,7 +41,6 @@ std::string registerHooks(dems::StageManager &manager) {
 			if (request.size() > 1)
 				path = root + request[0];
 		}
-
 		if (std::filesystem::path(path).extension() == ".php")
 			return dems::CodeStatus::DECLINED;
 
