@@ -4,9 +4,11 @@
 
 #include <filesystem>
 #include <unordered_map>
+#include <iostream>
+#include <fstream>
 #include "LoadPathModule.hpp"
 #include "../api/AModulesManager.hpp"
-#include "../../Utils/Logger.hpp"
+#include "../../Utils/Utils.hpp"
 #include "../api/Config.hpp"
 
 static constexpr char MODULE_NAME[] = "LoadPath";
@@ -30,7 +32,15 @@ extern "C" {
 std::string registerHooks(dems::StageManager &manager) {
 	manager.request().hookToMiddle(1, MODULE_NAME, [](dems::Context &ctx) {
 		auto &root = std::get<std::string>(ctx.config["root"].v);
-		auto path = root + std::get<dems::header::Request>(ctx.request.firstLine).path;
+		auto requestPath = std::get<dems::header::Request>(ctx.request.firstLine).path;
+
+		std::string path = root + requestPath;
+		if (requestPath.find('?') != std::string::npos) {
+			auto request = zia::utils::split(requestPath, '?');
+			if (request.size() > 1)
+				path = root + request[0];
+		}
+
 		if (std::filesystem::path(path).extension() == ".php")
 			return dems::CodeStatus::DECLINED;
 
@@ -52,7 +62,14 @@ std::string registerHooks(dems::StageManager &manager) {
 
 	manager.request().hookToEnd(1, MODULE_NAME, [](dems::Context &ctx) {
 		auto &root = std::get<std::string>(ctx.config["root"].v);
-		auto path = root + std::get<dems::header::Request>(ctx.request.firstLine).path;
+		auto requestPath = std::get<dems::header::Request>(ctx.request.firstLine).path;
+
+		auto path = root + requestPath;
+		if (requestPath.find('?') != std::string::npos) {
+			auto request = zia::utils::split(requestPath, '?');
+			if (request.size() > 1)
+				path = root + request[0];
+		}
 
 		if (std::filesystem::is_directory(path)) {
 			auto &defaultFile = std::get<std::string>(ctx.config["default_file"].v);
