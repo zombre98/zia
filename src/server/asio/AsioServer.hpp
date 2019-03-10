@@ -14,8 +14,8 @@
 
 namespace zia {
 
-constexpr char MODULES_PATH[] = "/tmp/modules/";
-constexpr char CONFIG_DIRECTORY[] = "/tmp/configs/";
+constexpr char MODULES_PATH[] = "/var/modules";
+constexpr char CONFIG_DIRECTORY[] = "/var/config/";
 
 class AsioServer : public IServer {
 public:
@@ -49,11 +49,11 @@ public:
 			fw.watch([this](const std::string &file, zia::utils::FileWatcher::State status) {
 				std::cout << file << std::endl;
 				if (status == zia::utils::FileWatcher::State::CREATED) {
-					std::cout << "Load module : " << file << std::endl;
+					logging::debug << LOG_DEBUG << "New Module Path : " << file << std::endl;
 					moduleManager_.loadOneModule(file);
 				}
 				if (status == zia::utils::FileWatcher::State::DELETED) {
-					std::cout << "Unload module : " << file << std::endl;
+					logging::debug << LOG_DEBUG << "Unload Module Path : " << file << std::endl;
 					auto &modules = moduleManager_.getModulesLoaded();
 
 					if (modules.find(file) != modules.end())
@@ -144,7 +144,8 @@ private:
 
     acceptor_.async_accept(newClient_->socket(), [this](asio::error_code) {
       std::unique_lock<std::mutex> clientLock(clientMutex_);
-      zia::utils::JsonParser jsp("/tmp/configs/config.json");
+      std::string configDirectory = CONFIG_DIRECTORY;
+      zia::utils::JsonParser jsp(configDirectory + "config.json");
 
       clients_.push_back(std::move(newClient_));
       clients_.back()->getContext().request.headers = std::make_unique<dems::header::Heading>();
