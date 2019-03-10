@@ -44,7 +44,6 @@ std::string registerHooks(dems::StageManager &manager) {
 			setenv("REQUEST_METHOD", "GET", 1);
 			setenv("SCRIPT_FILENAME", path.c_str(), 1);
 			if (request.size() > 1) {
-				std::cout << "QUERY_STRING" << request[1] << std::endl;
 				setenv("QUERY_STRING", request[1].c_str(), 1);
 			}
 			command = "php-cgi " + path;
