@@ -14,7 +14,7 @@
 
 namespace zia {
 
-constexpr char MODULES_PATH[] = "/var/modules";
+constexpr char MODULES_PATH[] = "/var/modules/";
 constexpr char CONFIG_DIRECTORY[] = "/var/config/";
 
 class AsioServer : public IServer {

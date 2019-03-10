@@ -48,12 +48,12 @@ public:
       for (auto &file : std::filesystem::recursive_directory_iterator(path_)) {
         auto lastWrite = std::filesystem::last_write_time(file);
 
-        if (filesPaths_.find(file.path()) == filesPaths_.end()) {
-          filesPaths_[file.path()] = lastWrite;
-          callback(file.path(), FileWatcher::State::CREATED);
-        } else if (filesPaths_[file.path()] != lastWrite) {
-          filesPaths_[file.path()] = lastWrite;
-          callback(file.path(), FileWatcher::State::MODIFIED);
+        if (filesPaths_.find(file.path().string()) == filesPaths_.end()) {
+          filesPaths_[file.path().string()] = lastWrite;
+          callback(file.path().string(), FileWatcher::State::CREATED);
+        } else if (filesPaths_[file.path().string()] != lastWrite) {
+          filesPaths_[file.path().string()] = lastWrite;
+          callback(file.path().string(), FileWatcher::State::MODIFIED);
         }
       }
     }
