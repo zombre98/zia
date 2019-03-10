@@ -25,7 +25,7 @@ public:
 	 */
   FileWatcher(std::string path, chronoDelay delay) : path_(std::move(path)), delay_(delay), running_(true) {
     for (auto &file : std::filesystem::recursive_directory_iterator(path_))
-      filesPaths_[file.path()] = std::filesystem::last_write_time(file);
+      filesPaths_[file.path().string()] = std::filesystem::last_write_time(file);
   }
 
 public:
