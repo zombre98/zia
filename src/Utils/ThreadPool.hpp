@@ -6,6 +6,9 @@
 #include <queue>
 #include <memory>
 #include <future>
+#ifdef WIN32
+#include <windows.h>
+#endif
 #include <functional>
 
 namespace zia {
