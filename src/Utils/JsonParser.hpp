@@ -9,12 +9,21 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <sys/stat.h>
 
 namespace zia::utils {
+
+bool fileExist(std::string filename) {
+	struct stat buf;
+
+	return stat(filename.c_str(), &buf) == 0;
+}
 	class JsonParser {
 
 	public:
 		explicit JsonParser(std::string filename) : filename_(std::move(filename)) {
+			if (!fileExist(filename_))
+				throw std::runtime_error("Config Directory Not Found");
 			open();
 		}
 

@@ -28,40 +28,52 @@ public:
     acceptor_(service_, asio::ip::tcp::endpoint(asio::ip::address::from_string(ip), port)) {
     thp_.addTask<void>([this]() {
       using namespace std::chrono_literals;
-      zia::utils::FileWatcher fw(CONFIG_DIRECTORY, 5000ms);
+			try {
+				zia::utils::FileWatcher fw(CONFIG_DIRECTORY, 5000ms);
 
-      fw.watch([this](const std::string &file, zia::utils::FileWatcher::State status) {
-        std::cout << file << std::endl;
-        if (status == zia::utils::FileWatcher::State::MODIFIED) {
-          std::unique_lock<std::mutex> clientLock(clientMutex_);
-        	zia::utils::JsonParser jsp(file);
+				fw.watch([this](const std::string &file, zia::utils::FileWatcher::State status) {
+					std::cout << file << std::endl;
+					if (status == zia::utils::FileWatcher::State::MODIFIED) {
+						std::unique_lock<std::mutex> clientLock(clientMutex_);
+						zia::utils::JsonParser jsp(file);
 
-          for (auto &client : clients_)
-            dems::header::constructConfig(client->getContext(), jsp);
-        }
-      });
-    });
+						for (auto &client : clients_)
+							dems::header::constructConfig(client->getContext(), jsp);
+					}
+				});
+			} catch (std::exception &e) {
+				std::cout << "Cannot find the directory: " <<  e.what() << std::endl;
+			}
+		});
 
     thp_.addTask<void>([this]() {
 			using namespace std::chrono_literals;
-			zia::utils::FileWatcher fw(MODULES_PATH, 5000ms);
+			try {
+				zia::utils::FileWatcher fw(MODULES_PATH, 5000ms);
 
-			fw.watch([this](const std::string &file, zia::utils::FileWatcher::State status) {
-				std::cout << file << std::endl;
-				if (status == zia::utils::FileWatcher::State::CREATED) {
-					logging::debug << LOG_DEBUG << "New Module Path : " << file << std::endl;
-					moduleManager_.loadOneModule(file);
-				}
-				if (status == zia::utils::FileWatcher::State::DELETED) {
-					logging::debug << LOG_DEBUG << "Unload Module Path : " << file << std::endl;
-					auto &modules = moduleManager_.getModulesLoaded();
+				fw.watch([this](const std::string &file, zia::utils::FileWatcher::State status) {
+					std::cout << file << std::endl;
+					if (status == zia::utils::FileWatcher::State::CREATED) {
+						logging::debug << LOG_DEBUG << "New Module Path : " << file << std::endl;
+						moduleManager_.loadOneModule(file);
+					}
+					if (status == zia::utils::FileWatcher::State::DELETED) {
+						logging::debug << LOG_DEBUG << "Unload Module Path : " << file << std::endl;
+						auto &modules = moduleManager_.getModulesLoaded();
 
-					if (modules.find(file) != modules.end())
-						moduleManager_.unloadModule(modules[file]);
-				}
-			});
+						if (modules.find(file) != modules.end())
+							moduleManager_.unloadModule(modules[file]);
+					}
+				});
+			} catch (std::exception &e) {
+				std::cout << "Cannot find the directory: " <<  e.what() << std::endl;
+			}
     });
-    moduleManager_.loadModules(MODULES_PATH);
+    try {
+			moduleManager_.loadModules(MODULES_PATH);
+		} catch (std::exception &e) {
+    	std::cout << "Cannot find the directory: " <<  e.what() << std::endl;
+    }
     startAccept();
   }
 
@@ -144,8 +156,7 @@ private:
 
     acceptor_.async_accept(newClient_->socket(), [this](asio::error_code) {
       std::unique_lock<std::mutex> clientLock(clientMutex_);
-      std::string configDirectory = CONFIG_DIRECTORY;
-      zia::utils::JsonParser jsp(configDirectory + "config.json");
+      zia::utils::JsonParser jsp(std::string(CONFIG_DIRECTORY) + "config.json");
 
       clients_.push_back(std::move(newClient_));
       clients_.back()->getContext().request.headers = std::make_unique<dems::header::Heading>();
