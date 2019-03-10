@@ -35,19 +35,26 @@ std::string registerHooks(dems::StageManager &manager) {
 		if (std::filesystem::path(path).extension() != ".php")
 			return dems::CodeStatus::DECLINED;
 
+		std::string command;
+		setenv("GATEWAY_INTERFACE", "CGI/1.1", 0);
+		setenv("REQUEST_SCHEME", "http", 0);
 		if (requestFirstLine.method == "GET") {
 			auto request = zia::utils::split(requestPath, '?');
 
-			setenv("GATEWAY_INTERFACE", "CGI/1.1", 0);
 			setenv("REQUEST_METHOD", "GET", 1);
-			setenv("REQUEST_SCHEME", "http", 0);
 			setenv("SCRIPT_FILENAME", path.c_str(), 1);
 			if (request.size() > 1)
 				setenv("QUERY_STRING", request[1].c_str(), 1);
-
+			command = "php-cgi " + path;
+		} else if (requestFirstLine.method == "POST") {
+			setenv("REQUEST_METHOD", "POST", 1);
+			setenv("SCRIPT_FILENAME", path.c_str(), 1);
+			setenv("CONTENT_LENGTH", ctx.request.headers->getHeader("Content-Length").c_str(), 1);
+			setenv("CONTENT_TYPE", ctx.request.headers->getHeader("Content-Type").c_str(), 1);
+			command = "echo \"" + ctx.request.body + "\" | php-cgi " + path;
+			ctx.request.body = "";
 		}
 
-		auto command = "php-cgi " + path;
 		FILE *file = popen(command.c_str(), "r");
 
 		int ch;
