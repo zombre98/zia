@@ -43,8 +43,10 @@ std::string registerHooks(dems::StageManager &manager) {
 
 			setenv("REQUEST_METHOD", "GET", 1);
 			setenv("SCRIPT_FILENAME", path.c_str(), 1);
-			if (request.size() > 1)
+			if (request.size() > 1) {
+				std::cout << "QUERY_STRING" << request[1] << std::endl;
 				setenv("QUERY_STRING", request[1].c_str(), 1);
+			}
 			command = "php-cgi " + path;
 		} else if (requestFirstLine.method == "POST") {
 			setenv("REQUEST_METHOD", "POST", 1);
@@ -55,6 +57,7 @@ std::string registerHooks(dems::StageManager &manager) {
 			ctx.request.body = "";
 		}
 
+		std::cout << "Php command launched : " << command << std::endl;
 		FILE *file = popen(command.c_str(), "r");
 
 		int ch;
@@ -83,6 +86,8 @@ std::string registerHooks(dems::StageManager &manager) {
 		while (std::getline(dataStream, line)) {
 			ctx.response.body.append(line);
 		}
+		unsetenv("CONTENT_LENGTH");
+		unsetenv("CONTENT_TYPE");
 		return dems::CodeStatus::OK;
 	});
 	return MODULE_NAME;
