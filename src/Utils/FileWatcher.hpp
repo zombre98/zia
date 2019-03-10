@@ -25,7 +25,7 @@ public:
 	 */
   FileWatcher(std::string path, chronoDelay delay) : path_(std::move(path)), delay_(delay), running_(true) {
     for (auto &file : std::filesystem::recursive_directory_iterator(path_))
-      filesPaths_[file.path()] = std::filesystem::last_write_time(file);
+      filesPaths_[file.path().string()] = std::filesystem::last_write_time(file);
   }
 
 public:
@@ -48,12 +48,12 @@ public:
       for (auto &file : std::filesystem::recursive_directory_iterator(path_)) {
         auto lastWrite = std::filesystem::last_write_time(file);
 
-        if (filesPaths_.find(file.path()) == filesPaths_.end()) {
-          filesPaths_[file.path()] = lastWrite;
-          callback(file.path(), FileWatcher::State::CREATED);
-        } else if (filesPaths_[file.path()] != lastWrite) {
-          filesPaths_[file.path()] = lastWrite;
-          callback(file.path(), FileWatcher::State::MODIFIED);
+        if (filesPaths_.find(file.path().string()) == filesPaths_.end()) {
+          filesPaths_[file.path().string()] = lastWrite;
+          callback(file.path().string(), FileWatcher::State::CREATED);
+        } else if (filesPaths_[file.path().string()] != lastWrite) {
+          filesPaths_[file.path().string()] = lastWrite;
+          callback(file.path().string(), FileWatcher::State::MODIFIED);
         }
       }
     }

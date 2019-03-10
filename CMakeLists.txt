@@ -28,11 +28,13 @@ include(Colors)
 set(CMAKE_CXX_STANDARD 17)
 
 # Things to always include as flags. Change as needed.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")  
+if (!WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 
-# Build-type specific flags. Change as needed.
-SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+    # Build-type specific flags. Change as needed.
+    SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+    SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+endif()
 
 message(STATUS "Building with the following extra flags: ${CMAKE_CXX_FLAGS}")
 
