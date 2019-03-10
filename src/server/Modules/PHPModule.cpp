@@ -57,7 +57,6 @@ std::string registerHooks(dems::StageManager &manager) {
 			ctx.request.body = "";
 		}
 
-		std::cout << "Php command launched : " << command << std::endl;
 		FILE *file = popen(command.c_str(), "r");
 
 		int ch;
