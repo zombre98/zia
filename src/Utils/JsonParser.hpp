@@ -13,11 +13,12 @@
 
 namespace zia::utils {
 
-bool fileExist(std::string filename) {
-	struct stat buf;
+	inline bool fileExist(std::string filename) {
+		struct stat buf;
 
-	return stat(filename.c_str(), &buf) == 0;
-}
+		return stat(filename.c_str(), &buf) == 0;
+	}
+
 	class JsonParser {
 
 	public:
