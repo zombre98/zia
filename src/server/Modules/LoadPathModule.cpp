@@ -41,7 +41,7 @@ std::string registerHooks(dems::StageManager &manager) {
 			if (request.size() > 1)
 				path = root + request[0];
 		}
-		if (std::filesystem::path(path).extension() == ".php")
+		if (std::filesystem::path(path).extension().string() == ".php")
 			return dems::CodeStatus::DECLINED;
 
 		if (std::filesystem::is_directory(path)) {
@@ -54,7 +54,7 @@ std::string registerHooks(dems::StageManager &manager) {
 		std::string s((std::istreambuf_iterator<char>(fStream)), std::istreambuf_iterator<char>());
 		ctx.response.body = std::move(s);
 
-		auto ext = std::filesystem::path(path).extension();
+		auto ext = std::filesystem::path(path).extension().string();
 		if (fileExtension.count(ext))
 		  ctx.response.headers->setHeader("Content-type", fileExtension.at(ext));
 		return dems::CodeStatus::OK;
